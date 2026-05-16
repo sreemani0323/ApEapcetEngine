@@ -83,12 +83,12 @@ export default function CalculatorPage() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="text-center mb-12 max-w-2xl mx-auto">
         <div className="w-14 h-14 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl flex items-center justify-center text-amber-600 mx-auto mb-5 border border-amber-100">
           <Calculator size={28} />
         </div>
-        <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4">Reverse Calculator</h1>
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4">Reverse Calculator</h1>
         <p className="text-ink-3 text-lg">Target a probability. The engine solves backwards for your required rank.</p>
       </div>
 
@@ -230,7 +230,7 @@ function ResultCard({ result }: { result: ReverseResult }) {
         </span>
 
         <p className="text-white/50 text-[10px] font-bold uppercase tracking-[0.15em] mb-1">Required Rank</p>
-        <motion.div className="text-4xl md:text-5xl font-bold font-mono tracking-tighter leading-none"
+        <motion.div className="text-3xl sm:text-4xl md:text-5xl font-bold font-mono tracking-tighter leading-none"
           initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
           {required_rank?.toLocaleString('en-IN')}
         </motion.div>

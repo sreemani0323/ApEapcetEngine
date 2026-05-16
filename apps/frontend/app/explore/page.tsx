@@ -40,23 +40,23 @@ function ExploreContent() {
   }, [colleges]);
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="text-center mb-10 max-w-2xl mx-auto">
-        <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4">Institution Index</h1>
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4">Institution Index</h1>
         <p className="text-ink-3 text-lg">Verified registry of AP EAPCET engineering institutions.</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-surface border border-node-border rounded-2xl p-4 flex flex-col md:flex-row gap-3 items-center mb-6 shadow-float">
-        <select value={district} onChange={e => setDistrict(e.target.value)} className="liquid-input py-2.5 text-sm w-full md:w-44">
+      <div className="bg-surface border border-node-border rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center mb-6 shadow-float">
+        <select value={district} onChange={e => setDistrict(e.target.value)} className="liquid-input py-2.5 text-sm w-full sm:w-44">
           <option value="">All Districts</option>
           {DISTRICTS.map(d => <option key={d} value={d}>{d}</option>)}
         </select>
-        <select value={type} onChange={e => setType(e.target.value)} className="liquid-input py-2.5 text-sm w-full md:w-44">
+        <select value={type} onChange={e => setType(e.target.value)} className="liquid-input py-2.5 text-sm w-full sm:w-44">
           <option value="">All Types</option>
           {Object.entries(COLLEGE_TYPE_MAP).map(([code, label]) => <option key={code} value={code}>{label}</option>)}
         </select>
-        <select value={affiliation} onChange={e => setAffiliation(e.target.value)} className="liquid-input py-2.5 text-sm w-full md:w-52">
+        <select value={affiliation} onChange={e => setAffiliation(e.target.value)} className="liquid-input py-2.5 text-sm w-full sm:w-52">
           <option value="">All Affiliations</option>
           {Object.entries(AFFILIATION_MAP).map(([code, label]) => <option key={code} value={code}>{label}</option>)}
         </select>

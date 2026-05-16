@@ -146,7 +146,7 @@ export function SmartAutocomplete({ value, onChange, placeholder = 'Search colle
     <div ref={containerRef} className="relative">
       {label && <label className="block text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted mb-1.5">{label}</label>}
       <div className="relative">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-ghost pointer-events-none" />
+        <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-ghost pointer-events-none" />
         <input
           ref={inputRef}
           type="text"
@@ -155,7 +155,8 @@ export function SmartAutocomplete({ value, onChange, placeholder = 'Search colle
           onFocus={() => { if (results.length > 0) setOpen(true); }}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="liquid-input pl-9 pr-8 text-sm"
+          className="liquid-input pr-8 text-sm"
+          style={{ paddingLeft: '2.5rem' }}
           autoComplete="off"
         />
         {query && (

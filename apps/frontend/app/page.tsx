@@ -46,28 +46,28 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       {/* Hero */}
-      <motion.div initial="hidden" animate="visible" variants={c} className="flex flex-col items-center text-center mb-20 pt-8">
+      <motion.div initial="hidden" animate="visible" variants={c} className="flex flex-col items-center text-center mb-10 sm:mb-20 pt-4 sm:pt-8">
         <motion.div variants={i} className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 text-signal text-sm font-semibold rounded-full border border-blue-100 mb-8">
           <motion.div className="w-2 h-2 rounded-full bg-validated" animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 2, repeat: Infinity }} />
           AP EAPCET 2024 · Live Data
         </motion.div>
-        <motion.h1 variants={i} className="font-display text-5xl md:text-[3.5rem] font-extrabold tracking-tight text-ink mb-6 leading-[1.08] max-w-3xl">
+        <motion.h1 variants={i} className="font-display text-3xl sm:text-5xl md:text-[3.5rem] font-extrabold tracking-tight text-ink mb-4 sm:mb-6 leading-[1.08] max-w-3xl">
           Your Rank. Your Seat.<br />
           <span className="relative">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-500 to-violet-500">Predicted in Seconds.</span>
             <motion.span className="absolute -bottom-1 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-600 to-violet-500 rounded-full" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.8, duration: 0.6 }} />
           </span>
         </motion.h1>
-        <motion.p variants={i} className="text-lg text-ink-3 max-w-xl leading-relaxed">
+        <motion.p variants={i} className="text-base sm:text-lg text-ink-3 max-w-xl leading-relaxed px-2 sm:px-0">
           Multi-year cutoff analysis. Use the tools below to find your best-fit college.
         </motion.p>
       </motion.div>
 
       {/* Metrics Strip */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-        className="flex flex-wrap justify-center gap-3 mb-16">
+        className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-10 sm:mb-16">
         <MetricPill icon={<Building size={15} />} value={stats?.total_colleges} label="Institutions" loading={loading} />
         <MetricPill icon={<Database size={15} />} value={stats?.total_cutoff_records} label="Data Points" loading={loading} suffix="+" />
         <MetricPill icon={<MapPin size={15} />} value={stats?.districts_covered} label="Districts" loading={loading} />
@@ -75,7 +75,7 @@ export default function HomePage() {
       </motion.div>
 
       {/* Tool Grid — Elite Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 mb-10 sm:mb-16">
         {tools.map((tool, idx) => (
           <motion.div key={tool.href} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + idx * 0.08 }}>
             <Link href={tool.href}
@@ -129,7 +129,7 @@ export default function HomePage() {
 
       {/* Trust signals */}
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}
-        className="flex flex-wrap justify-center gap-3 mt-16 mb-4">
+        className="flex flex-wrap justify-center gap-2 sm:gap-3 mt-10 sm:mt-16 mb-4 px-2">
         {['200+ Institutions', '25 Districts', '2022–2024 Cutoff Data', 'ML Predictions', 'Source: APSCHE'].map(t => (
           <span key={t} className="px-3 py-1.5 bg-phantom/70 text-ink-muted text-[10px] font-bold uppercase tracking-widest rounded-lg border border-node-border/50">{t}</span>
         ))}
@@ -140,10 +140,10 @@ export default function HomePage() {
 
 function MetricPill({ icon, value, label, loading, suffix = '' }: any) {
   return (
-    <div className="flex items-center gap-3 px-5 py-3.5 bg-surface rounded-2xl border border-node-border shadow-float hover:shadow-node transition-shadow group">
+    <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 sm:py-3.5 bg-surface rounded-xl sm:rounded-2xl border border-node-border shadow-float hover:shadow-node transition-shadow group">
       <div className="text-signal group-hover:scale-110 transition-transform">{icon}</div>
       <div>
-        <div className="font-mono font-bold text-lg text-ink leading-none">
+        <div className="font-mono font-bold text-sm sm:text-lg text-ink leading-none">
           {loading ? <div className="h-5 w-14 skeleton rounded" /> : <>{value?.toLocaleString('en-IN')}{suffix}</>}
         </div>
         <div className="text-[9px] font-bold uppercase tracking-[0.15em] text-ink-muted mt-0.5">{label}</div>

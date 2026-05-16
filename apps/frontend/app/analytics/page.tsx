@@ -31,9 +31,9 @@ export default function AnalyticsPage() {
   const ttStyle: React.CSSProperties = { borderRadius: '14px', border: '1px solid #e5e7eb', boxShadow: '0 8px 32px rgba(0,0,0,0.06)', fontFamily: 'Inter', fontSize: '12px' };
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-8">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="text-center mb-12 max-w-2xl mx-auto">
-        <h1 className="font-display text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4">Market Intelligence</h1>
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-ink mb-4">Market Intelligence</h1>
         <p className="text-ink-3 text-lg">Placement economics and cutoff trajectories across branches.</p>
       </div>
 
@@ -108,7 +108,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Trend cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mt-6">
                   {trends.slice(0, 9).map((t: any) => {
                     const hot = t.competition_increase > 3000;
                     const cold = t.competition_increase < -3000;

@@ -80,7 +80,7 @@ export const CollegeCard = memo(function CollegeCard({ college }: { college: any
           </div>
 
           {/* Metrics grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3.5 bg-canvas/80 rounded-xl border border-node-border/40">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 p-3 sm:p-3.5 bg-canvas/80 rounded-xl border border-node-border/40">
             <Metric label="Cutoff '24" value={college.cutoff_rank_2024?.toLocaleString('en-IN')} />
             <Metric label="Gap" 
               value={hasGap ? `${gap > 0 ? '+' : ''}${gap.toLocaleString('en-IN')}` : undefined}

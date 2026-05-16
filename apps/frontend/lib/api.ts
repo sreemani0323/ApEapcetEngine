@@ -46,10 +46,10 @@ api.interceptors.response.use(
       (error as any).userMessage = 'Too many requests. Please wait a moment.';
     } else if (error.response.status === 400) {
       (error as any).classified = 'validation';
-      (error as any).userMessage = error.response.data?.message || 'Invalid input parameters.';
+      (error as any).userMessage = (error.response.data as any)?.message || 'Invalid input parameters.';
     } else if (error.response.status >= 500) {
       (error as any).classified = 'server';
-      (error as any).userMessage = error.response.data?.message || 'Server error. Please try again.';
+      (error as any).userMessage = (error.response.data as any)?.message || 'Server error. Please try again.';
     } else {
       (error as any).classified = 'unknown';
       (error as any).userMessage = 'An unexpected error occurred.';

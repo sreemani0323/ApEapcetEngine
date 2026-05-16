@@ -136,7 +136,7 @@ function SearchContent() {
   const isProcessing = taskState === 'processing';
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex gap-6">
         {/* Desktop sidebar */}
         <div className="w-[320px] flex-shrink-0 hidden lg:block">
@@ -207,11 +207,11 @@ function SearchContent() {
                 {isProcessing ? (
                   Array.from({ length: 3 }).map((_, n) => (
                     <div key={n} className="bg-surface border border-node-border rounded-2xl p-6 flex gap-5 animate-pulse">
-                      <div className="w-16 h-16 rounded-full bg-phantom flex-shrink-0" />
+                      <div className="w-16 h-16 rounded-full bg-phantom flex-shrink-0 hidden sm:block" />
                       <div className="flex-1">
                         <div className="h-5 w-3/5 bg-phantom rounded mb-3" />
                         <div className="h-3 w-2/5 bg-phantom rounded mb-5" />
-                        <div className="grid grid-cols-4 gap-3">{[1, 2, 3, 4].map(k => <div key={k} className="h-10 bg-phantom rounded-lg" />)}</div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">{[1, 2, 3, 4].map(k => <div key={k} className="h-10 bg-phantom rounded-lg" />)}</div>
                       </div>
                     </div>
                   ))
