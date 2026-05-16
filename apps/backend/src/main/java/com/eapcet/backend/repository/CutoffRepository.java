@@ -25,4 +25,18 @@ public interface CutoffRepository extends JpaRepository<Cutoff, Long> {
             @Param("cbIds") List<Long> cbIds,
             @Param("category") String category,
             @Param("years") List<Integer> years);
+
+    /** Efficient aggregation: median cutoff per branch per year (computed in SQL) */
+    @Query(value = """
+        SELECT b.branch_code, b.branch_type, c.year,
+               PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY c.cutoff_rank) AS median_cutoff,
+               COUNT(*) AS cnt
+        FROM cutoffs c
+        JOIN college_branches cb ON c.college_branch_id = cb.college_branch_id
+        JOIN branches b ON cb.branch_id = b.branch_id
+        WHERE c.cutoff_rank IS NOT NULL
+        GROUP BY b.branch_code, b.branch_type, c.year
+        ORDER BY b.branch_code, c.year
+        """, nativeQuery = true)
+    List<Object[]> findMedianCutoffByBranchAndYear();
 }

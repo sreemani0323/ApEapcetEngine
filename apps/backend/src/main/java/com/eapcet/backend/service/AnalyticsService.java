@@ -123,68 +123,49 @@ public class AnalyticsService {
 
     /**
      * Compare 2022 vs 2024 cutoff ranks per branch to extract what is trending.
-     * FIXED: Works with single-year data (2024 only) — does not require 2022.
+     * Uses efficient SQL aggregation — no findAll().
      */
     @Cacheable("trendingBranches")
     public List<TrendingBranchDTO> getTrendingBranches() {
-        log.info("Calculating trending branch velocity using Cutoff metrics");
+        log.info("Calculating trending branch velocity using SQL aggregation");
 
-        List<Cutoff> allCutoffs = cutoffRepository.findAll();
+        List<Object[]> rows = cutoffRepository.findMedianCutoffByBranchAndYear();
 
-        if (allCutoffs.isEmpty()) {
+        if (rows.isEmpty()) {
             log.warn("No cutoff data found in database");
             return Collections.emptyList();
         }
 
-        // 1. Split by Year -> Branch -> List of cutoffs with strict null-safety
-        Map<Integer, Map<String, List<Integer>>> cutoffGraph = allCutoffs.stream()
-                .filter(c -> c != null && c.getYear() != null && c.getCutoffRank() != null 
-                        && c.getCollegeBranch() != null && c.getCollegeBranch().getBranch() != null 
-                        && c.getCollegeBranch().getBranch().getBranchCode() != null)
-                .collect(Collectors.groupingBy(
-                        Cutoff::getYear,
-                        Collectors.groupingBy(
-                                c -> c.getCollegeBranch().getBranch().getBranchCode(),
-                                Collectors.mapping(Cutoff::getCutoffRank, Collectors.toList())
-                        )
-                ));
+        // Parse rows into: branchCode -> year -> median
+        // Each row: [branch_code, branch_type, year, median_cutoff, count]
+        Map<String, Map<Integer, Double>> branchYearMedian = new LinkedHashMap<>();
+        Map<String, String> branchTypeMap = new HashMap<>();
 
-        Map<String, List<Integer>> data2022 = cutoffGraph.getOrDefault(2022, Collections.emptyMap());
-        Map<String, List<Integer>> data2024 = cutoffGraph.getOrDefault(2024, Collections.emptyMap());
+        for (Object[] row : rows) {
+            String branchCode = (String) row[0];
+            String branchType = row[1] != null ? (String) row[1] : "Other";
+            int year = ((Number) row[2]).intValue();
+            double median = ((Number) row[3]).doubleValue();
 
-        // If no 2024 data, try to use whatever year is available
-        Map<String, List<Integer>> primaryData = data2024.isEmpty() ? 
-                cutoffGraph.values().stream().findFirst().orElse(Collections.emptyMap()) : data2024;
+            branchYearMedian.computeIfAbsent(branchCode, k -> new HashMap<>()).put(year, median);
+            branchTypeMap.putIfAbsent(branchCode, branchType);
+        }
 
         List<TrendingBranchDTO> trends = new ArrayList<>();
 
-        // Build branch type cache
-        Map<String, String> branchTypeCache = allCutoffs.stream()
-                .filter(c -> c.getCollegeBranch() != null && c.getCollegeBranch().getBranch() != null)
-                .collect(Collectors.toMap(
-                        c -> c.getCollegeBranch().getBranch().getBranchCode(),
-                        c -> c.getCollegeBranch().getBranch().getBranchType() != null ? c.getCollegeBranch().getBranch().getBranchType() : "Other",
-                        (a, b) -> a
-                ));
+        for (Map.Entry<String, Map<Integer, Double>> entry : branchYearMedian.entrySet()) {
+            String branch = entry.getKey();
+            Map<Integer, Double> yearData = entry.getValue();
 
-        // 2. Iterate all branches in primary data
-        for (String branch : primaryData.keySet()) {
-            List<Integer> sorted24 = primaryData.get(branch).stream().sorted().toList();
-            if (sorted24.isEmpty()) continue;
+            // Primary: 2024, fallback to any available year
+            double med24 = yearData.getOrDefault(2024, yearData.values().iterator().next());
+            double med22 = yearData.getOrDefault(2022, med24);
+            double competitionIncrease = med22 - med24;
 
-            double med24 = sorted24.get(sorted24.size() / 2);
-            double med22 = med24;
-            double competitionIncrease = 0;
-
-            if (data2022.containsKey(branch)) {
-                List<Integer> sorted22 = data2022.get(branch).stream().sorted().toList();
-                if (!sorted22.isEmpty()) {
-                    med22 = sorted22.get(sorted22.size() / 2);
-                    competitionIncrease = med22 - med24;
-                }
+            // If we only have one year, mark as stable
+            if (!yearData.containsKey(2022) || !yearData.containsKey(2024)) {
+                competitionIncrease = 0;
             }
-
-            String bType = branchTypeCache.getOrDefault(branch, "Other");
 
             String status = "Stable";
             if (competitionIncrease > 3000) status = "Rising Star (Harder)";
@@ -193,7 +174,7 @@ public class AnalyticsService {
 
             trends.add(TrendingBranchDTO.builder()
                     .branchCode(branch)
-                    .branchType(bType)
+                    .branchType(branchTypeMap.getOrDefault(branch, "Other"))
                     .medianCutoff2022(med22)
                     .medianCutoff2024(med24)
                     .competitionIncrease(competitionIncrease)
