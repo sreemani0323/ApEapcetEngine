@@ -10,12 +10,63 @@ import { GhostPanel } from '@/components/liquid/ghost-panel';
 import { BRANCH_MAP, CATEGORIES, GENDERS, REGIONS, DISTRICTS } from '@/lib/constants';
 import { useAppStore } from '@/stores/app-store';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SlidersHorizontal, Search, Sparkles, Brain, ChevronDown } from 'lucide-react';
+import { SlidersHorizontal, Search, Sparkles, Brain, ChevronDown, Download, FileText } from 'lucide-react';
 
-
+import { BRANCH_MAP as DL_BRANCH_MAP } from '@/lib/constants';
 
 // ═══ WINDOW_SIZE: Only render this many cards at a time ═══
 const WINDOW_SIZE = 20;
+
+// ═══ Download Helpers ═══
+function downloadCSV(data: any[]) {
+  const headers = ['College Name', 'District', 'Branch', 'Cutoff 2024', 'Probability %', 'Rank Gap', 'Avg Package', 'Top Package'];
+  const rows = data.map(c => [
+    `"${(c.college_name || '').replace(/"/g, '""')}"`,
+    c.district || '',
+    DL_BRANCH_MAP[c.branch_code] || c.branch_code || '',
+    c.cutoff_rank_2024 ?? '',
+    c.probability_percent != null ? c.probability_percent.toFixed(1) : '',
+    c.rank_gap ?? '',
+    c.avg_package && c.avg_package !== 'unavailable' ? c.avg_package : '',
+    c.highest_package && c.highest_package !== 'unavailable' ? c.highest_package : '',
+  ]);
+  const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `eapcet_results_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function downloadPDF(data: any[]) {
+  // Generate a clean printable HTML table and trigger print-to-PDF
+  const rows = data.map(c => `
+    <tr>
+      <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:12px">${c.college_name || ''}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:12px">${c.district || ''}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:12px">${DL_BRANCH_MAP[c.branch_code] || c.branch_code || ''}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:12px;text-align:center">${c.cutoff_rank_2024?.toLocaleString('en-IN') ?? '—'}</td>
+      <td style="padding:6px 10px;border-bottom:1px solid #e5e7eb;font-size:12px;text-align:center;font-weight:bold;color:${
+        (c.probability_percent ?? 0) >= 80 ? '#10b981' : (c.probability_percent ?? 0) >= 40 ? '#f59e0b' : '#ef4444'
+      }">${c.probability_percent != null ? c.probability_percent.toFixed(1) + '%' : '—'}</td>
+    </tr>`).join('');
+
+  const html = `<!DOCTYPE html><html><head><title>EAPCET Results</title></head><body style="font-family:Inter,system-ui,sans-serif;padding:24px;max-width:900px;margin:auto">
+    <h1 style="font-size:20px;margin-bottom:4px">EAPCET Intelligence Engine — Search Results</h1>
+    <p style="font-size:12px;color:#64748b;margin-bottom:16px">${data.length} colleges · Generated ${new Date().toLocaleDateString('en-IN')}</p>
+    <table style="width:100%;border-collapse:collapse"><thead><tr style="background:#f8fafc">
+      <th style="padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;color:#64748b;border-bottom:2px solid #e5e7eb">College</th>
+      <th style="padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;color:#64748b;border-bottom:2px solid #e5e7eb">District</th>
+      <th style="padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;color:#64748b;border-bottom:2px solid #e5e7eb">Branch</th>
+      <th style="padding:8px 10px;text-align:center;font-size:11px;text-transform:uppercase;color:#64748b;border-bottom:2px solid #e5e7eb">Cutoff '24</th>
+      <th style="padding:8px 10px;text-align:center;font-size:11px;text-transform:uppercase;color:#64748b;border-bottom:2px solid #e5e7eb">Probability</th>
+    </tr></thead><tbody>${rows}</tbody></table>
+    <p style="font-size:10px;color:#94a3b8;margin-top:16px;text-align:center">© 2026 EAPCET Intelligence Engine · Data: APSCHE</p>
+  </body></html>`;
+
+  const win = window.open('', '_blank');
+  if (win) { win.document.write(html); win.document.close(); win.print(); }
+}
 
 function SearchContent() {
   const searchParams = useSearchParams();
@@ -78,6 +129,14 @@ function SearchContent() {
     if (!form.rank && !form.district && !form.branchCode) {
       toast.error('Configure at least one parameter.');
       return;
+    }
+    // Rank validation
+    if (form.rank) {
+      const r = Number(form.rank);
+      if (r < 1 || r > 250000) {
+        toast.error('Enter a valid rank between 1 and 2,50,000.', { duration: 4000, icon: '⚠️' });
+        return;
+      }
     }
     setTaskState('processing');
     setSearched(true);
@@ -197,6 +256,14 @@ function SearchContent() {
                       <option value="cutoff">Cutoff ↑</option>
                       <option value="name">Name A-Z</option>
                     </select>
+                    <button onClick={() => downloadCSV(filtered)} title="Download CSV"
+                      className="p-1.5 bg-phantom border border-node-border rounded-full text-ink-3 hover:text-validated hover:border-validated/30 transition-all cursor-pointer">
+                      <Download size={14} />
+                    </button>
+                    <button onClick={() => downloadPDF(filtered)} title="Download PDF"
+                      className="p-1.5 bg-phantom border border-node-border rounded-full text-ink-3 hover:text-signal hover:border-signal/30 transition-all cursor-pointer">
+                      <FileText size={14} />
+                    </button>
                   </div>
                 </motion.div>
               )}

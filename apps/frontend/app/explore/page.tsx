@@ -6,7 +6,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { exploreColleges } from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, MapPin, Building, ArrowRight, Grid3X3, List, SlidersHorizontal } from 'lucide-react';
+import { Search, MapPin, Building, ArrowRight, Grid3X3, List, SlidersHorizontal, ExternalLink } from 'lucide-react';
 import { DISTRICTS, COLLEGE_TYPE_MAP, AFFILIATION_MAP } from '@/lib/constants';
 
 function ExploreContent() {
@@ -90,7 +90,18 @@ function ExploreContent() {
                     <span className="text-[10px] font-bold text-ink-muted bg-phantom px-2 py-0.5 rounded">{COLLEGE_TYPE_MAP[c.type] || c.type}</span>
                   </div>
                   <h3 className="font-display font-bold text-ink text-sm leading-tight mb-1.5 group-hover:text-signal transition-colors">{c.name}</h3>
-                  <p className="text-xs text-ink-3 flex items-center gap-1 mb-4"><MapPin size={11} className="text-ink-muted" /> {c.district}</p>
+                  <p className="text-xs text-ink-3 flex items-center gap-1 mb-4">
+                    <MapPin size={11} className="text-ink-muted" /> {c.district}
+                    <a
+                      href={`https://www.google.com/maps/search/${encodeURIComponent((c.name || '') + ', ' + (c.district || '') + ', Andhra Pradesh')}`}
+                      target="_blank" rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="ml-1 text-signal/60 hover:text-signal transition-colors"
+                      title="View on Google Maps"
+                    >
+                      <ExternalLink size={10} />
+                    </a>
+                  </p>
                   <div className="flex flex-wrap gap-3 text-xs pt-3 border-t border-node-border/50">
                     {c.type && <Stat label="Type" value={COLLEGE_TYPE_MAP[c.type] || c.type} />}
                     {c.branch_count && <Stat label="Branches" value={c.branch_count} />}
@@ -109,7 +120,18 @@ function ExploreContent() {
                 <span className="font-mono text-[10px] font-bold text-ink-muted bg-phantom px-2 py-1 rounded min-w-[60px] text-center group-hover:text-signal group-hover:bg-signal/10 transition-colors">{COLLEGE_TYPE_MAP[c.type] || c.type}</span>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-display font-semibold text-ink text-sm truncate group-hover:text-signal transition-colors">{c.name}</h3>
-                  <p className="text-xs text-ink-3 flex items-center gap-1"><MapPin size={10} /> {c.district}</p>
+                  <p className="text-xs text-ink-3 flex items-center gap-1">
+                    <MapPin size={10} /> {c.district}
+                    <a
+                      href={`https://www.google.com/maps/search/${encodeURIComponent((c.name || '') + ', ' + (c.district || '') + ', Andhra Pradesh')}`}
+                      target="_blank" rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="ml-1 text-signal/60 hover:text-signal transition-colors"
+                      title="View on Google Maps"
+                    >
+                      <ExternalLink size={10} />
+                    </a>
+                  </p>
                 </div>
                 <div className="hidden md:flex items-center gap-6 text-xs">
                   {c.branch_count && <Stat label="Branches" value={c.branch_count} />}
