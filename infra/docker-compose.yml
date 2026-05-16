@@ -1,0 +1,79 @@
+# ============================================================
+# EAPCET Intelligence Engine — Local Development
+# ============================================================
+# Usage: docker compose -f infra/docker-compose.yml up -d
+#
+# This file is for LOCAL DEVELOPMENT ONLY.
+# Production uses: Vercel (frontend) + Render (backend, ML) + Supabase (DB).
+# ============================================================
+
+services:
+  # ═══ PostgreSQL Database ═══
+  db:
+    image: postgres:16-alpine
+    container_name: eapcet-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-localdev}
+      POSTGRES_DB: eapcet_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ../data-pipeline/sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ═══ Python ML Microservice ═══
+  ml-service:
+    build:
+      context: ../apps/ml-service
+      dockerfile: Dockerfile
+    container_name: eapcet-ml
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8000/readiness"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+  # ═══ Spring Boot Backend ═══
+  backend:
+    build:
+      context: ../apps/backend
+      dockerfile: Dockerfile
+    container_name: eapcet-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      ml-service:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/eapcet_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: ${DB_PASSWORD:-localdev}
+      ML_SERVICE_URL: http://ml-service:8000
+    ports:
+      - "8080:8080"
+
+  # ═══ Next.js Frontend ═══
+  frontend:
+    build:
+      context: ../apps/frontend
+      dockerfile: Dockerfile
+    container_name: eapcet-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pg_data:

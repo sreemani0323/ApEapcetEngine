@@ -1,0 +1,45 @@
+# ============================================================
+# Render Blueprint — EAPCET Intelligence Engine
+# ============================================================
+# This file tells Render how to deploy both services.
+# Commit this to the repo root, then connect the repo in Render.
+# ============================================================
+
+services:
+  # ═══ Spring Boot API Gateway ═══
+  - type: web
+    name: eapcet-backend
+    runtime: java
+    region: oregon
+    plan: free
+    buildCommand: cd apps/backend && ./mvnw clean package -DskipTests
+    startCommand: cd apps/backend && java -jar target/backend-1.0.0.jar
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: ML_SERVICE_URL
+        fromService:
+          name: eapcet-ml
+          type: web
+          property: hostport
+          envVarKey: RENDER_INTERNAL_URL
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx512m
+
+  # ═══ Python ML Microservice ═══
+  - type: web
+    name: eapcet-ml
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r apps/ml-service/requirements.txt
+    startCommand: cd apps/ml-service && uvicorn app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /readiness
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.0"

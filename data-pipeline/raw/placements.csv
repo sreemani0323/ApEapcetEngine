@@ -1,0 +1,1001 @@
+instcode,branch_code,average_package,highest_package,placement_drive_quality
+ACEE,"Civil Engineering",3.05,3.60,Good
+ACEE,"Computer Science & Engineering",3.08,3.60,Good
+ACEE,"Electronics & Communication Engineering",3.28,3.60,Good
+ACEE,"Electrical & Electronics Engineering",3.14,3.60,Good
+ACEE,"Mechanical Engineering",3.86,3.60,Good
+ACET,"Civil Engineering",3.66,12.00,Good
+ACET,"CSE (Data Science)",3.70,12.00,Good
+ACET,"Computer Science & Engineering",3.51,12.00,Good
+ACET,"CSE (AI & ML Specialization)",3.95,12.00,Good
+ACET,"Electronics & Communication Engineering",3.71,12.00,Good
+ACET,"Electrical & Electronics Engineering",3.72,12.00,Good
+ACET,"Information Technology",3.95,12.00,Good
+ACET,"Mechanical Engineering",3.61,12.00,Good
+ACPS,"Doctor of Pharmacy (Pharm.D)",4.14,11.20,Good
+ANURSF,"Civil Engineering",5.60,14.00,Good
+ANURSF,"Computer Science & Engineering",5.60,14.00,Good
+ANURSF,"Electronics & Communication Engineering",5.60,14.00,Good
+ANURSF,"Electronics & Instrumentation Engineering",5.60,14.00,Good
+ANURSF,"Mechanical Engineering",5.60,14.00,Good
+APCS,"Doctor of Pharmacy (Pharm.D)",6.49,26.45,Bad
+BVCE,"Artificial Intelligence & Machine Learning",5.25,18.81,Good
+BVCE,"Civil Engineering",5.73,15.94,Good
+BVCE,"Computer Science & Engineering",5.61,18.58,Good
+BVCE,"CSE (AI & ML Specialization)",5.96,24.55,Good
+BVCE,"Electronics & Communication Engineering",5.73,24.21,Good
+BVCE,"Electrical & Electronics Engineering",5.31,24.02,Good
+BVCE,"Information Technology",5.29,23.44,Good
+BVCE,"Mechanical Engineering",5.77,24.30,Good
+BVCR,"Artificial Intelligence & Data Science",5.40,13.00,Good
+BVCR,"Computer Science & Engineering",5.40,13.00,Good
+BVCR,"CSE (AI & ML Specialization)",5.40,13.00,Good
+BVCR,"Electronics & Communication Engineering",5.40,13.00,Good
+BVCR,"Information Technology",5.40,13.00,Good
+BVTS,"Artificial Intelligence & Machine Learning",4.90,12.00,Good
+BVTS,"Civil Engineering",4.90,12.00,Good
+BVTS,"Computer Science & Engineering",4.90,12.00,Good
+BVTS,"Electronics & Communication Engineering",4.90,12.00,Good
+BVTS,"Electrical & Electronics Engineering",4.90,12.00,Good
+BVTS,"Information Technology",4.90,12.00,Good
+CHKN,"Artificial Intelligence & Data Science",4.70,12.00,Good
+CHKN,"Artificial Intelligence & Machine Learning",4.70,12.00,Good
+CHKN,"Computer Science & Engineering",4.70,12.00,Good
+CHKN,"Electronics & Communication Engineering",4.70,12.00,Good
+GIET,"CSE (Data Science)",4.20,11.00,Good
+GIET,"Computer Science & Engineering",4.20,11.00,Good
+GIET,"CSE (AI & ML Specialization)",4.20,11.00,Good
+GIET,"Electronics & Communication Engineering",4.20,11.00,Good
+GIET,"Information Technology",4.20,11.00,Good
+GIET,"Mechanical Engineering",4.20,11.00,Good
+IDEL,"Computer Science & Engineering",4.13,7.25,Good
+IDEL,"CSE (AI & ML Specialization)",3.78,6.95,Good
+IDEL,"Electronics & Communication Engineering",3.18,6.82,Good
+IDEL,"Mechanical Engineering",3.81,7.07,Good
+ISTS,"Agricultural Engineering",5.30,16.00,Good
+ISTS,"Artificial Intelligence & Machine Learning",5.30,16.00,Good
+ISTS,"CSE (Artificial Intelligence)",5.30,16.00,Good
+ISTS,"Computer Science & Engineering",5.30,16.00,Good
+ISTS,"Electronics & Communication Engineering",5.30,16.00,Good
+ISTSOC,"Artificial Intelligence & Machine Learning",5.80,17.00,Good
+ISTSOC,"Computer Science & Engineering",5.80,17.00,Good
+JNKPSF,B.Pharm,6.73,25.59,Bad
+JNTK,"Civil Engineering",7.74,67.00,Excellent
+JNTK,"Computer Science & Engineering",7.51,67.00,Excellent
+JNTK,"Electronics & Communication Engineering",7.82,67.00,Excellent
+JNTK,"Electrical & Electronics Engineering",7.07,67.00,Excellent
+JNTK,"Mechanical Engineering",6.90,67.00,Excellent
+JNTKSF,"Chemical Engineering",6.78,67.00,Excellent
+JNTKSS,"CSE (AI & ML Specialization)",6.70,67.00,Excellent
+KIEK,"Artificial Intelligence & Data Science",5.01,15.64,Good
+KIEK,"CSE (Artificial Intelligence)",5.18,23.40,Good
+KIEK,"CSE (Cyber Security)",5.40,18.89,Good
+KIEK,"CSE (Data Science)",5.93,23.25,Good
+KIEK,"CSE (AI & ML Specialization)",5.09,16.77,Good
+KIET,"Artificial Intelligence & Data Science",5.42,24.41,Good
+KIET,"CSE (Artificial Intelligence)",5.14,17.80,Good
+KIET,"CSE (Cyber Security)",5.85,23.54,Good
+KIET,"CSE (Data Science)",5.95,22.02,Good
+KIET,"CSE (AI & ML Specialization)",5.41,21.54,Good
+KIEW,"Artificial Intelligence & Data Science",4.80,12.50,Good
+KIEW,"CSE (Artificial Intelligence)",4.80,12.50,Good
+KIEW,"CSE (AI & ML Specialization)",4.80,12.50,Good
+KISR,"Artificial Intelligence & Machine Learning",5.50,14.00,Good
+KISR,"Civil Engineering",5.50,14.00,Good
+KISR,"Computer Science & Engineering",5.50,14.00,Good
+KISR,"Electronics & Communication Engineering",5.50,14.00,Good
+KTSP,"Civil Engineering",5.30,13.50,Good
+KTSP,"CSE (Data Science)",5.30,13.50,Good
+KTSP,"Computer Science & Engineering",5.30,13.50,Good
+KTSP,"Electronics & Communication Engineering",5.30,13.50,Good
+KTSP,"Electrical & Electronics Engineering",5.30,13.50,Good
+KTSP,"Mechanical Engineering",5.30,13.50,Good
+LENO,"Civil Engineering",3.22,6.91,Good
+LENO,"Computer Science & Engineering",3.01,7.74,Good
+LENO,"Electronics & Communication Engineering",4.09,6.88,Good
+LENO,"Electrical & Electronics Engineering",4.12,7.10,Good
+LENO,"Mechanical Engineering",3.94,7.03,Good
+PRAG,"CSE (Artificial Intelligence)",3.65,40.00,Excellent
+PRAG,"Civil Engineering",3.91,40.00,Excellent
+PRAG,"CSE (Cyber Security)",3.59,40.00,Excellent
+PRAG,"CSE (Data Science)",4.23,40.00,Excellent
+PRAG,"Computer Science & Engineering",3.87,40.00,Excellent
+PRAG,"CSE (AI & ML Specialization)",4.66,40.00,Excellent
+PRAG,"Electronics & Communication Engineering",3.71,40.00,Excellent
+PRAG,"Electrical & Electronics Engineering",4.05,40.00,Excellent
+PRAG,"Information Technology",4.12,40.00,Excellent
+PRAG,"Mechanical Engineering",4.93,40.00,Excellent
+PREC,"Civil Engineering",3.25,9.65,Good
+PREC,"Computer Science & Engineering",3.90,6.13,Good
+PREC,"Electronics & Communication Engineering",4.36,11.65,Good
+PREC,"Electrical & Electronics Engineering",4.13,10.15,Good
+PREC,"Mechanical Engineering",3.20,10.07,Good
+PYDE,"CSE (Artificial Intelligence)",4.80,12.50,Good
+PYDE,"Computer Science & Engineering",4.80,12.50,Good
+PYDE,"Electronics & Communication Engineering",4.80,12.50,Good
+PYDE,"Mechanical Engineering",4.80,12.50,Good
+RIET,"CSE (Data Science)",5.00,13.00,Good
+RIET,"Computer Science & Engineering",5.00,13.00,Good
+RIET,"CSE (AI & ML Specialization)",5.00,13.00,Good
+RIET,"Electronics & Communication Engineering",5.00,13.00,Good
+SRIN,"Artificial Intelligence & Machine Learning",7.25,17.95,Good
+SRIN,"Civil Engineering",7.96,12.61,Good
+SRIN,"Computer Science & Engineering",6.55,10.99,Good
+SRIN,"Electronics & Communication Engineering",4.07,19.25,Good
+SRIN,"Mechanical Engineering",4.01,13.50,Good
+VSMR,"Civil Engineering",4.22,9.86,Good
+VSMR,"CSE (Data Science)",3.35,6.80,Good
+VSMR,"Computer Science & Engineering",3.11,10.52,Good
+VSMR,"CSE (AI & ML Specialization)",3.56,6.72,Good
+VSMR,"Electronics & Communication Engineering",3.55,8.98,Good
+VSMR,"Electrical & Electronics Engineering",3.92,8.05,Good
+VSMR,"Information Technology",3.48,6.18,Good
+VSMR,"Mechanical Engineering",3.85,9.03,Good
+AMRN,"Agricultural Engineering",4.80,12.00,Good
+AMRN,"Civil Engineering",4.80,12.00,Good
+AMRN,"Computer Science & Engineering",4.80,12.00,Good
+AMRN,"Electronics & Communication Engineering",4.80,12.00,Good
+AMRN,"Electrical & Electronics Engineering",4.80,12.00,Good
+ANCUSF,"Artificial Intelligence & Machine Learning",4.90,12.50,Good
+ANCUSF,"Civil Engineering",4.90,12.50,Good
+ANCUSF,"Computer Science & Engineering",4.90,12.50,Good
+ANCUSF,"Electronics & Communication Engineering",4.90,12.50,Good
+ANCUSF,"Electrical & Electronics Engineering",4.90,12.50,Good
+ANCUSF,"Mechanical Engineering",4.90,12.50,Good
+BCOP,B.Pharm,5.73,19.11,Bad
+BECB,"Civil Engineering",6.10,15.00,Good
+BECB,"CSE (Cyber Security)",6.10,15.00,Good
+BECB,"CSE (Data Science)",6.10,15.00,Good
+BECB,"Computer Science & Engineering",6.10,15.00,Good
+BECB,"CSE (AI & ML Specialization)",6.10,15.00,Good
+BECB,"Electronics & Communication Engineering",6.10,15.00,Good
+BECB,"Electrical & Electronics Engineering",6.10,15.00,Good
+BECB,"Information Technology",6.10,15.00,Good
+BECB,"Mechanical Engineering",6.10,15.00,Good
+BWEC,"Artificial Intelligence & Machine Learning",4.44,7.97,Good
+BWEC,"Computer Science & Engineering",4.17,10.17,Good
+BWEC,"Electronics & Communication Engineering",3.79,7.56,Good
+CIET,"CSE (Artificial Intelligence)",5.50,14.00,Good
+CIET,"Civil Engineering",5.50,14.00,Good
+CIET,"CSE (Cyber Security)",5.50,14.00,Good
+CIET,"CSE (Data Science)",5.50,14.00,Good
+CIET,"Computer Science & Engineering",5.50,14.00,Good
+CIET,"CSE (AI & ML Specialization)",5.50,14.00,Good
+CIET,"Electronics & Communication Engineering",5.50,14.00,Good
+CIET,"Electrical & Electronics Engineering",5.50,14.00,Good
+CITY,"Artificial Intelligence & Machine Learning",5.70,14.50,Good
+CITY,"CSE (Artificial Intelligence)",5.70,14.50,Good
+CITY,"Civil Engineering",5.70,14.50,Good
+CITY,"CSE (Cyber Security)",5.70,14.50,Good
+CITY,"CSE (Data Science)",5.70,14.50,Good
+CITY,"Computer Science & Engineering",5.70,14.50,Good
+CITY,"Electronics & Communication Engineering",5.70,14.50,Good
+CLPT,B.Pharm,6.51,22.26,Bad
+ESWR,"Agricultural Engineering",5.00,13.00,Good
+ESWR,"Automobile Engineering",5.00,13.00,Good
+ESWR,"CSE (Artificial Intelligence)",5.00,13.00,Good
+ESWR,"Civil Engineering",5.00,13.00,Good
+ESWR,"Computer Science & Engineering",5.00,13.00,Good
+ESWR,"CSE (AI & ML Specialization)",5.00,13.00,Good
+ESWR,"Electronics & Communication Engineering",5.00,13.00,Good
+GVRS,"Artificial Intelligence & Data Science",4.60,12.00,Good
+GVRS,"Computer Science & Engineering",4.60,12.00,Good
+GVRS,"CSE (AI & ML Specialization)",4.60,12.00,Good
+GVRS,"Electronics & Communication Engineering",4.60,12.00,Good
+GVRS,"Mechanical Engineering",4.60,12.00,Good
+HIND,"Artificial Intelligence & Machine Learning",4.50,12.00,Good
+HIND,"Computer Science & Engineering",4.50,12.00,Good
+HIND,"Electronics & Communication Engineering",4.50,12.00,Good
+JNTN,"Civil Engineering",5.86,20.46,Good
+JNTN,"Computer Science & Engineering",5.79,21.76,Good
+JNTN,"Electronics & Communication Engineering",5.33,24.42,Good
+JNTN,"Electrical & Electronics Engineering",5.06,23.08,Good
+JNTN,"Mechanical Engineering",5.23,23.82,Good
+KHIT,"Civil Engineering",4.90,12.50,Good
+KHIT,"Computer Science & Engineering",4.90,12.50,Good
+KHIT,"CSE (AI & ML Specialization)",4.90,12.50,Good
+KHIT,"Electronics & Communication Engineering",4.90,12.50,Good
+KHIT,"Electrical & Electronics Engineering",4.90,12.50,Good
+KHIT,"Information Technology",4.90,12.50,Good
+KHIT,"Mechanical Engineering",4.90,12.50,Good
+KITG,"CSE (Data Science)",3.08,13.48,Good
+KITG,"Computer Science & Engineering",5.80,11.34,Good
+KITG,"CSE (AI & ML Specialization)",7.42,13.64,Good
+KITG,"Electronics & Communication Engineering",5.63,18.89,Good
+KITG,"Information Technology",7.08,13.07,Good
+KITS,"CSE (Data Science)",5.20,13.50,Good
+KITS,"Computer Science & Engineering",5.20,13.50,Good
+KITS,"CSE (AI & ML Specialization)",5.20,13.50,Good
+KITS,"Electronics & Communication Engineering",5.20,13.50,Good
+KITS,"Electrical & Electronics Engineering",5.20,13.50,Good
+KITS,"Information Technology",5.20,13.50,Good
+LOYL,"Civil Engineering",4.80,12.50,Good
+LOYL,"CSE (Data Science)",4.80,12.50,Good
+LOYL,"Computer Science & Engineering",4.80,12.50,Good
+LOYL,"CSE (AI & ML Specialization)",4.80,12.50,Good
+LOYL,"Electronics & Communication Engineering",4.80,12.50,Good
+MAMN,B.Pharm,6.19,18.97,Bad
+MAMW,"CSE (Artificial Intelligence)",4.30,11.50,Good
+MAMW,"Computer Science & Engineering",4.30,11.50,Good
+MAMW,"Electronics & Communication Engineering",4.30,11.50,Good
+MLEW,"Artificial Intelligence & Data Science",3.73,10.03,Good
+MLEW,"CSE (Data Science)",4.03,8.59,Good
+MLEW,"Computer Science & Engineering",3.96,6.84,Good
+MLEW,"CSE (AI & ML Specialization)",3.04,10.75,Good
+MLEW,"Electronics & Communication Engineering",4.11,10.59,Good
+MLEW,"Information Technology",4.19,8.41,Good
+MPLG,"CSE (Artificial Intelligence)",4.90,12.50,Good
+MPLG,"CSE (Data Science)",4.90,12.50,Good
+MPLG,"Computer Science & Engineering",4.90,12.50,Good
+MPLG,"Electronics & Communication Engineering",4.90,12.50,Good
+MPLG,"Information Technology",4.90,12.50,Good
+NEWS,"Civil Engineering",4.60,12.00,Good
+NEWS,"Computer Science & Engineering",4.60,12.00,Good
+NEWS,"Electronics & Communication Engineering",4.60,12.00,Good
+NEWT,"Computer Science & Engineering",4.80,12.50,Good
+NEWT,"CSE (AI & ML Specialization)",4.80,12.50,Good
+NEWT,"Electronics & Communication Engineering",4.80,12.50,Good
+NRIT,"Artificial Intelligence & Machine Learning",3.59,10.52,Good
+NRIT,"Civil Engineering",3.55,10.26,Good
+NRIT,"CSE (Data Science)",3.57,10.17,Good
+NRIT,"Computer Science & Engineering",4.48,10.97,Good
+NRIT,"Electronics & Communication Engineering",3.53,8.79,Good
+NRIT,"Information Technology",4.20,8.23,Good
+NRML,"Doctor of Pharmacy (Pharm.D)",6.54,18.16,Bad
+NRML,B.Pharm,5.57,22.26,Bad
+NSPE,"CSE (Artificial Intelligence)",5.76,19.89,Good
+NSPE,"Civil Engineering",5.42,18.41,Good
+NSPE,"CSE (Cyber Security)",5.12,15.76,Good
+NSPE,"CSE (Data Science)",5.50,18.73,Good
+NSPE,"Computer Science & Engineering",5.51,19.05,Good
+NSPE,"CSE (AI & ML Specialization)",5.13,18.32,Good
+NSPE,"Electronics & Communication Engineering",5.93,21.65,Good
+NSPE,"Electrical & Electronics Engineering",5.46,21.49,Good
+NSPE,"Information Technology",5.32,18.39,Good
+NSPE,"Mechanical Engineering",5.01,20.94,Good
+NVRT,"CSE (Data Science)",4.70,12.50,Good
+NVRT,"Computer Science & Engineering",4.70,12.50,Good
+NVRT,"CSE (AI & ML Specialization)",4.70,12.50,Good
+PIIT,"Artificial Intelligence & Data Science",5.22,17.48,Good
+PIIT,"Computer Science & Engineering",5.18,18.70,Good
+PIIT,"Electronics & Communication Engineering",5.47,23.03,Good
+PIIT,"Mechanical Engineering",5.21,24.21,Good
+PITT,"Artificial Intelligence & Data Science",5.20,14.00,Good
+PITT,"Computer Science & Engineering",5.20,14.00,Good
+PITT,"Electronics & Communication Engineering",5.20,14.00,Good
+PITW,"Computer Science & Engineering",5.00,13.50,Good
+PITW,"Electronics & Communication Engineering",5.00,13.50,Good
+RVIT,"CSE (Data Science)",5.20,13.50,Good
+RVIT,"Computer Science & Engineering",5.20,13.50,Good
+RVIT,"CSE (AI & ML Specialization)",5.20,13.50,Good
+RVIT,"Electronics & Communication Engineering",5.20,13.50,Good
+RVJC,"Chemical Engineering",6.43,27.52,Good
+RVJC,"Civil Engineering",6.06,20.47,Good
+RVJC,"CSE (Business Systems)",6.23,19.20,Good
+RVJC,"CSE (Data Science)",6.76,18.59,Good
+RVJC,"Computer Science & Engineering",6.49,18.37,Good
+RVJC,"CSE (AI & ML Specialization)",6.85,19.75,Good
+RVJC,"Electronics & Communication Engineering",5.83,27.86,Good
+RVJC,"Electrical & Electronics Engineering",5.65,19.53,Good
+RVJC,"Information Technology",6.88,18.44,Good
+RVJC,"Mechanical Engineering",6.32,22.60,Good
+TMLN,"Computer Science & Engineering",3.03,11.30,Good
+TMLN,"CSE (AI & ML Specialization)",3.24,8.66,Good
+TMLN,"Electronics & Communication Engineering",4.23,8.75,Good
+TMLN,"Electrical & Electronics Engineering",3.18,10.28,Good
+TMLN,"Information Technology",4.29,8.65,Good
+UNIV,"Artificial Intelligence & Machine Learning",3.44,11.85,Good
+UNIV,"CSE (Data Science)",4.22,9.23,Good
+UNIV,"Computer Science & Engineering",4.19,8.68,Good
+UNIV,"Electronics & Communication Engineering",4.21,9.83,Good
+UNIV,"Mechanical Engineering",3.27,6.72,Good
+VCPG,B.Pharm,5.66,21.49,Bad
+VLIT,"CSE (Artificial Intelligence)",5.73,17.69,Good
+VLIT,"Civil Engineering",5.93,23.21,Good
+VLIT,"CSE (Data Science)",5.09,16.74,Good
+VLIT,"Computer Science & Engineering",5.31,24.15,Good
+VLIT,"CSE (AI & ML Specialization)",5.18,23.25,Good
+VLIT,"Electronics & Communication Engineering",5.61,19.31,Good
+VLIT,"Electrical & Electronics Engineering",5.97,22.61,Good
+VLIT,"Information Technology",5.03,20.90,Good
+VLIT,"Mechanical Engineering",5.72,18.60,Good
+VNIW,"CSE (Data Science)",5.72,11.96,Good
+VNIW,"Computer Science & Engineering",5.41,17.08,Good
+VNIW,"CSE (AI & ML Specialization)",3.09,19.83,Good
+VNIW,"Electronics & Communication Engineering",4.23,18.41,Good
+VNIW,"Electrical & Electronics Engineering",4.11,19.32,Good
+VNIW,"Information Technology",3.97,15.82,Good
+VNRC,"CSE (Data Science)",5.87,10.41,Good
+VNRC,"Computer Science & Engineering",7.37,17.76,Good
+VPCV,"Doctor of Pharmacy (Pharm.D)",5.63,22.80,Bad
+VPCV,B.Pharm,6.47,27.80,Bad
+VRIT,"Electronics & Communication Engineering",6.11,16.77,Good
+VRIT,"Internet of Things",4.84,15.20,Good
+VVIT,"Artificial Intelligence & Data Science",6.32,20.97,Good
+VVIT,"CSE (Artificial Intelligence)",6.29,26.32,Good
+VVIT,"Civil Engineering",5.64,19.35,Good
+VVIT,"Computer Science & Engineering",5.60,18.71,Good
+VVIT,"CSE (AI & ML Specialization)",6.15,19.27,Good
+VVIT,"Electronics & Communication Engineering",6.45,25.87,Good
+VVIT,"Electrical & Electronics Engineering",5.64,25.98,Good
+VVIT,"Information Technology",5.71,18.86,Good
+VVIT,"Mechanical Engineering",6.72,22.46,Good
+ALIT,"Civil Engineering",4.80,12.50,Good
+ALIT,"CSE (Data Science)",4.80,12.50,Good
+ALIT,"Computer Science & Engineering",4.80,12.50,Good
+ALIT,"CSE (AI & ML Specialization)",4.80,12.50,Good
+ALIT,"Electronics & Communication Engineering",4.80,12.50,Good
+ALIT,"Electrical & Electronics Engineering",4.80,12.50,Good
+ALIT,"Information Technology",4.80,12.50,Good
+ALIT,"Mechanical Engineering",4.80,12.50,Good
+ASIP,"Civil Engineering",4.60,11.50,Good
+ASIP,"CSE (Data Science)",4.60,11.50,Good
+ASIP,"Computer Science & Engineering",4.60,11.50,Good
+ASIP,"CSE (AI & ML Specialization)",4.60,11.50,Good
+ASIP,"Electronics & Communication Engineering",4.60,11.50,Good
+ASIP,"Electrical & Electronics Engineering",4.60,11.50,Good
+ASIP,"Mechanical Engineering",4.60,11.50,Good
+DHAN,"Civil Engineering",3.15,9.16,Good
+DHAN,"CSE (Data Science)",3.47,11.54,Good
+DHAN,"Computer Science & Engineering",3.13,10.84,Good
+DHAN,"CSE (AI & ML Specialization)",4.22,6.09,Good
+DHAN,"Electronics & Communication Engineering",4.06,6.18,Good
+DHAN,"Electrical & Electronics Engineering",3.05,8.57,Good
+DHAN,"Information Technology",3.39,11.23,Good
+DHAN,"Mechanical Engineering",4.05,10.19,Good
+DJRC,"Civil Engineering",4.60,12.00,Good
+DJRC,"Computer Science & Engineering",4.60,12.00,Good
+GDLV,"Artificial Intelligence & Data Science",5.69,25.11,Good
+GDLV,"Civil Engineering",5.67,22.98,Good
+GDLV,"Computer Science & Engineering",6.95,18.60,Good
+GDLV,"CSE (AI & ML Specialization)",6.08,24.57,Good
+GDLV,"Electronics & Communication Engineering",6.39,27.50,Good
+GDLV,"Electrical & Electronics Engineering",6.79,19.29,Good
+GDLV,"Information Technology",6.90,27.01,Good
+GDLV,"Internet of Things",5.51,27.61,Good
+GDLV,"Mechanical Engineering",6.64,19.57,Good
+KRUESF,"Computer Science & Engineering",4.80,12.50,Good
+KRUESF,"Electronics & Communication Engineering",4.80,12.50,Good
+LBCE,"Artificial Intelligence & Data Science",6.11,21.39,Good
+LBCE,"Aerospace Engineering",6.88,18.30,Good
+LBCE,"Civil Engineering",6.78,23.25,Good
+LBCE,"Computer Science & Engineering",6.90,24.99,Good
+LBCE,"CSE (AI & ML Specialization)",5.54,23.65,Good
+LBCE,"Electronics & Communication Engineering",5.62,22.31,Good
+LBCE,"Electrical & Electronics Engineering",5.99,19.14,Good
+LBCE,"Information Technology",6.16,20.83,Good
+LBCE,"Mechanical Engineering",6.11,21.45,Good
+LIMT,"Artificial Intelligence & Data Science",5.10,13.00,Good
+LIMT,"Artificial Intelligence & Machine Learning",5.10,13.00,Good
+LIMT,"Civil Engineering",5.10,13.00,Good
+LIMT,"Computer Science & Engineering",5.10,13.00,Good
+LIMT,"Electronics & Communication Engineering",5.10,13.00,Good
+MICT,"Artificial Intelligence & Data Science",5.45,20.22,Good
+MICT,"Artificial Intelligence & Machine Learning",5.02,21.73,Good
+MICT,"Civil Engineering",5.40,15.93,Good
+MICT,"Computer Science & Engineering",5.36,22.10,Good
+MICT,"Electronics & Communication Engineering",5.18,21.50,Good
+MICT,"Electrical & Electronics Engineering",5.27,24.63,Good
+MICT,"Information Technology",5.46,19.54,Good
+MICT,"Mechanical Engineering",5.36,24.49,Good
+MIET,"Civil Engineering",4.44,8.48,Good
+MIET,"Computer Science & Engineering",4.41,9.39,Good
+MIET,"CSE (AI & ML Specialization)",3.34,6.06,Good
+MIET,"Electronics & Communication Engineering",4.34,6.70,Good
+MIET,"Mechanical Engineering",4.45,6.79,Good
+MVRS,"Artificial Intelligence & Data Science",5.30,13.50,Good
+MVRS,"CSE (Artificial Intelligence)",5.30,13.50,Good
+MVRS,"Civil Engineering",5.30,13.50,Good
+MVRS,"Computer Science & Engineering",5.30,13.50,Good
+MVRS,"Electronics & Communication Engineering",5.30,13.50,Good
+MVRS,"Electrical & Electronics Engineering",5.30,13.50,Good
+MVRS,"Mechanical Engineering",5.30,13.50,Good
+NRIA,"Artificial Intelligence & Machine Learning",5.63,24.41,Good
+NRIA,"Civil Engineering",5.78,18.35,Good
+NRIA,"CSE (Data Science)",5.14,23.97,Good
+NRIA,"Computer Science & Engineering",5.73,15.32,Good
+NRIA,"CSE (AI & ML Specialization)",5.51,20.38,Good
+NRIA,"Electronics & Communication Engineering",5.11,24.28,Good
+NRIA,"Electrical & Electronics Engineering",5.61,22.91,Good
+NRIA,"Information Technology",5.56,21.79,Good
+NRIA,"Mechanical Engineering",5.20,22.77,Good
+PPDV,"CSE (Data Science)",3.44,8.63,Good
+PPDV,"Computer Science & Engineering",4.27,6.86,Good
+PPDV,"CSE (AI & ML Specialization)",3.64,10.75,Good
+PPDV,"Electronics & Communication Engineering",3.73,10.52,Good
+PPSV,"Civil Engineering",5.14,18.79,Good
+PPSV,"CSE (Data Science)",7.21,17.17,Good
+PPSV,"Computer Science & Engineering",6.43,17.73,Good
+PPSV,"CSE (AI & ML Specialization)",4.26,11.48,Good
+PPSV,"Electronics & Communication Engineering",7.68,11.83,Good
+PPSV,"Electrical & Electronics Engineering",5.70,18.12,Good
+PPSV,"Information Technology",5.17,17.07,Good
+PPSV,"Mechanical Engineering",6.24,19.61,Good
+PSCV,"Artificial Intelligence & Data Science",4.60,12.00,Good
+PSCV,"CSE (Artificial Intelligence)",4.60,12.00,Good
+PSCV,"CSE (Data Science)",4.60,12.00,Good
+PSCV,"Computer Science & Engineering",4.60,12.00,Good
+PSCV,"CSE (AI & ML Specialization)",4.60,12.00,Good
+PSCV,"Electronics & Communication Engineering",4.60,12.00,Good
+PSCV,"Electrical & Electronics Engineering",4.60,12.00,Good
+RKCE,"Artificial Intelligence & Machine Learning",4.70,12.50,Good
+RKCE,"Civil Engineering",4.70,12.50,Good
+RKCE,"CSE (Data Science)",4.70,12.50,Good
+RKCE,"Computer Science & Engineering",4.70,12.50,Good
+RKCE,"Electronics & Communication Engineering",4.70,12.50,Good
+RKCE,"Electrical & Electronics Engineering",4.70,12.50,Good
+SIEN,"Artificial Intelligence & Data Science",4.80,12.50,Good
+SIEN,"Computer Science & Engineering",4.80,12.50,Good
+SIEN,"Electronics & Communication Engineering",4.80,12.50,Good
+SIEN,"Electrical & Electronics Engineering",4.80,12.50,Good
+SPCN,B.Pharm,6.72,18.07,Bad
+SRKI,"Civil Engineering",4.80,12.50,Good
+SRKI,"CSE (Data Science)",4.80,12.50,Good
+SRKI,"Computer Science & Engineering",4.80,12.50,Good
+SRKI,"CSE (AI & ML Specialization)",4.80,12.50,Good
+SRKI,"Electronics & Communication Engineering",4.80,12.50,Good
+SRKI,"Electrical & Electronics Engineering",4.80,12.50,Good
+SRKI,"Information Technology",4.80,12.50,Good
+SRKI,"Mechanical Engineering",4.80,12.50,Good
+SUNL,"Electrical & Electronics Engineering",6.72,10.40,Good
+SVET,"Civil Engineering",6.99,10.17,Good
+SVET,"Computer Science & Engineering",5.31,16.71,Good
+SVET,"CSE (AI & ML Specialization)",3.46,16.90,Good
+SVET,"Electronics & Communication Engineering",7.84,11.98,Good
+SVHE,"Computer Science & Engineering",5.30,13.50,Good
+SVHE,"Electronics & Communication Engineering",5.30,13.50,Good
+URCE,"Artificial Intelligence & Data Science",3.70,7.12,Good
+URCE,"Artificial Intelligence & Machine Learning",3.69,10.63,Good
+URCE,"Computer Science & Engineering",3.88,11.97,Good
+URCE,"Electronics & Communication Engineering",4.40,11.63,Good
+URCE,"Electrical & Electronics Engineering",3.78,11.20,Good
+URCE,"Information Technology",3.76,6.09,Good
+URCE,"Mechanical Engineering",4.32,8.87,Good
+VCTN,"Agricultural Engineering",5.72,21.63,Good
+VCTN,"Civil Engineering",5.86,21.02,Good
+VCTN,"CSE (Data Science)",5.82,19.78,Good
+VCTN,"Computer Science & Engineering",5.87,21.67,Good
+VCTN,"CSE (AI & ML Specialization)",5.23,18.71,Good
+VCTN,"Electronics & Communication Engineering",5.52,15.43,Good
+VCTN,"Electrical & Electronics Engineering",5.85,19.85,Good
+VCTN,"Mechanical Engineering",5.53,23.19,Good
+VGTN,"Civil Engineering",4.79,12.40,Bad
+VGTN,"CSE (Data Science)",4.16,12.90,Good
+VGTN,"Computer Science & Engineering",3.88,18.86,Good
+VGTN,"CSE (AI & ML Specialization)",4.82,12.18,Good
+VGTN,"Electronics & Communication Engineering",5.97,11.57,Good
+VGTN,"Electrical & Electronics Engineering",3.74,10.56,Good
+VGTN,"Mechanical Engineering",6.50,13.94,Good
+VHNI,"Civil Engineering",5.39,16.96,Good
+VHNI,"CSE (Data Science)",5.60,18.54,Good
+VHNI,"Computer Science & Engineering",6.00,24.62,Good
+VHNI,"CSE (AI & ML Specialization)",5.48,15.93,Good
+VHNI,"Electronics & Communication Engineering",5.08,16.01,Good
+VHNI,"Electrical & Electronics Engineering",5.22,15.92,Good
+VHNI,"Mechanical Engineering",5.53,23.39,Good
+VITW,"Artificial Intelligence & Machine Learning",3.82,15.32,Good
+VITW,"CSE (Data Science)",7.31,15.62,Good
+VITW,"Computer Science & Engineering",3.41,17.27,Good
+VITW,"Electronics & Communication Engineering",4.20,17.84,Good
+VITW,"Information Technology",7.24,10.86,Good
+VRSP,"Doctor of Pharmacy (Pharm.D)",6.62,18.36,Bad
+VVGV,"Artificial Intelligence & Data Science",5.37,19.19,Good
+VVGV,"Computer Science & Engineering",6.18,13.03,Good
+VVGV,"CSE (AI & ML Specialization)",3.74,15.10,Good
+VVGV,"Electronics & Communication Engineering",4.57,14.31,Good
+VVGV,"Mechanical Engineering",7.66,14.63,Good
+VVIP,B.Pharm,6.80,24.21,Bad
+ABRK,"Agricultural Engineering",12.92,16.00,"Very Good"
+ABRK,"CSE (Artificial Intelligence)",11.34,16.00,"Very Good"
+ABRK,"Civil Engineering",12.93,16.00,"Very Good"
+ABRK,"CSE (Data Science)",11.61,16.00,"Very Good"
+ABRK,"Computer Science & Engineering",12.29,16.00,"Very Good"
+ABRK,"Electronics & Communication Engineering",11.62,16.00,"Very Good"
+ABRK,"Electrical & Electronics Engineering",12.22,16.00,"Very Good"
+ABRK,"Mechanical Engineering",11.25,16.00,"Very Good"
+ABRK,"Mining Engineering",12.58,16.00,"Very Good"
+ANSN,"Civil Engineering",3.71,9.40,Good
+ANSN,"CSE (Cyber Security)",4.28,9.92,Good
+ANSN,"CSE (Data Science)",4.43,7.81,Good
+ANSN,"Computer Science & Engineering",3.62,11.13,Good
+ANSN,"CSE (AI & ML Specialization)",3.50,9.10,Good
+ANSN,"Electronics & Communication Engineering",3.86,6.69,Good
+ANSN,"Electrical & Electronics Engineering",4.38,9.17,Good
+ANSN,"Mechanical Engineering",3.49,6.11,Good
+BLMP,B.Pharm,6.60,22.66,Bad
+BVSR,"Civil Engineering",5.21,12.55,Best
+BVSR,"CSE (Data Science)",7.75,11.24,Good
+BVSR,"Computer Science & Engineering",3.99,10.63,Good
+BVSR,"Electronics & Communication Engineering",7.49,16.22,Good
+CCVY,"Computer Science & Engineering",6.92,12.05,Good
+CCVY,"Electronics & Communication Engineering",3.42,19.16,Good
+CCVY,"Mechanical Engineering",6.36,16.11,Good
+CECC,"Civil Engineering",5.05,14.44,Good
+CECC,"Computer Science & Engineering",5.56,17.30,Good
+CECC,"Electronics & Communication Engineering",5.74,15.04,Good
+IITM,"CSE (Artificial Intelligence)",4.42,9.52,Good
+IITM,"CSE (Cyber Security)",3.13,11.92,Good
+IITM,"Computer Science & Engineering",3.15,8.83,Good
+IITM,"Electronics & Communication Engineering",3.09,6.42,Good
+KCIT,"Artificial Intelligence & Machine Learning",5.10,13.00,Good
+KCIT,"CSE (Artificial Intelligence)",5.10,13.00,Good
+KCIT,"Civil Engineering",5.10,13.00,Good
+KCIT,"Computer Science & Engineering",5.10,13.00,Good
+KCIT,"CSE (AI & ML Specialization)",5.10,13.00,Good
+KCIT,"Electronics & Communication Engineering",5.10,13.00,Good
+MSEW,"Computer Science & Engineering",4.60,12.00,Good
+PACE,"Artificial Intelligence & Data Science",3.38,6.51,Good
+PACE,"Artificial Intelligence & Machine Learning",3.34,11.98,Good
+PACE,"Civil Engineering",3.16,6.96,Good
+PACE,"Computer Science & Engineering",3.03,6.42,Good
+PACE,"Electronics & Communication Engineering",3.58,11.34,Good
+PACE,"Electrical & Electronics Engineering",3.32,7.66,Good
+PACE,"Information Technology",3.91,7.51,Good
+PACE,"Mechanical Engineering",3.91,7.72,Good
+PKSK,"CSE (Artificial Intelligence)",4.90,12.50,Good
+PKSK,"Civil Engineering",4.90,12.50,Good
+PKSK,"CSE (Cyber Security)",4.90,12.50,Good
+PKSK,"Computer Science & Engineering",4.90,12.50,Good
+PKSK,"Electronics & Communication Engineering",4.90,12.50,Good
+PKSK,"Electrical & Electronics Engineering",4.90,12.50,Good
+PKSK,"Mechanical Engineering",4.90,12.50,Good
+QISE,"Artificial Intelligence & Data Science",6.00,16.16,Good
+QISE,"Civil Engineering",5.22,21.42,Good
+QISE,"CSE (Data Science)",5.17,16.65,Good
+QISE,"Computer Science & Engineering",5.24,18.49,Good
+QISE,"CSE (AI & ML Specialization)",5.99,16.40,Good
+QISE,"Electronics & Communication Engineering",5.62,20.15,Good
+QISE,"Electrical & Electronics Engineering",5.82,20.33,Good
+QISE,"Information Technology",5.02,19.96,Good
+QISE,"Mechanical Engineering",5.03,21.18,Good
+QISP,"Doctor of Pharmacy (Pharm.D)",5.75,20.74,Bad
+RGAN,"CSE (Data Science)",4.90,12.50,Good
+RGAN,"Computer Science & Engineering",4.90,12.50,Good
+RGAN,"Electronics & Communication Engineering",4.90,12.50,Good
+RPRA,"Civil Engineering",5.10,13.00,Good
+RPRA,"CSE (Data Science)",5.10,13.00,Good
+RPRA,"Computer Science & Engineering",5.10,13.00,Good
+RPRA,"CSE (AI & ML Specialization)",5.10,13.00,Good
+RPRA,"Electronics & Communication Engineering",5.10,13.00,Good
+RPRA,"Electrical & Electronics Engineering",5.10,13.00,Good
+RPRA,"Mechanical Engineering",5.10,13.00,Good
+SGIT,"Artificial Intelligence & Machine Learning",4.80,12.50,Good
+SGIT,"Computer Science & Engineering",4.80,12.50,Good
+SGIT,"Electronics & Communication Engineering",4.80,12.50,Good
+SGIT,"Electrical & Electronics Engineering",4.80,12.50,Good
+ADIT,"Civil Engineering",4.29,17.73,Good
+ADIT,"CSE (Data Science)",4.26,21.26,Good
+ADIT,"Computer Science & Engineering",4.38,19.33,Good
+ADIT,"CSE (AI & ML Specialization)",4.85,20.98,Good
+ADIT,"Electronics & Communication Engineering",4.74,19.58,Good
+ADIT,"Electrical & Electronics Engineering",4.42,18.28,Good
+ADIT,"Information Technology",4.25,16.00,Good
+ADIT,"Mechanical Engineering",4.01,24.52,Good
+BRAUSF,"Civil Engineering",4.90,12.50,Good
+BRAUSF,"Computer Science & Engineering",4.90,12.50,Good
+BRAUSF,"Electronics & Communication Engineering",4.90,12.50,Good
+BRAUSF,"Electrical & Electronics Engineering",4.90,12.50,Good
+BRAUSF,"Mechanical Engineering",4.90,12.50,Good
+GMRI,"Civil Engineering",5.30,14.00,Good
+GMRI,"Computer Science & Engineering",5.30,14.00,Good
+GMRI,"CSE (AI & ML Specialization)",5.30,14.00,Good
+GMRI,"Electronics & Communication Engineering",5.30,14.00,Good
+GMRI,"Electrical & Electronics Engineering",5.30,14.00,Good
+GMRI,"Information Technology",5.30,14.00,Good
+GMRI,"Mechanical Engineering",5.30,14.00,Good
+SSCE,"Artificial Intelligence & Machine Learning",4.80,12.50,Good
+SSCE,"Civil Engineering",4.80,12.50,Good
+SSCE,"Computer Science & Engineering",4.80,12.50,Good
+SSCE,"Electronics & Communication Engineering",4.80,12.50,Good
+SSCE,"Electrical & Electronics Engineering",4.80,12.50,Good
+SSCE,"Mechanical Engineering",4.80,12.50,Good
+VETS,"Artificial Intelligence & Machine Learning",5.88,16.80,Good
+VETS,"Civil Engineering",5.62,23.50,Good
+VETS,"Computer Science & Engineering",5.79,20.27,Good
+VETS,"CSE (AI & ML Specialization)",5.43,18.59,Good
+VETS,"Electronics & Communication Engineering",5.10,15.78,Good
+VETS,"Electrical & Electronics Engineering",5.99,17.58,Good
+VETS,"Mechanical Engineering",5.01,17.00,Good
+ANIL,"Chemical Engineering",6.32,18.10,Good
+ANIL,"Civil Engineering",6.89,25.15,Good
+ANIL,"CSE (Data Science)",6.58,23.02,Good
+ANIL,"Computer Science & Engineering",6.02,19.02,Good
+ANIL,"CSE (AI & ML Specialization)",5.64,22.26,Good
+ANIL,"Electronics & Communication Engineering",6.40,19.75,Good
+ANIL,"Electrical & Electronics Engineering",6.43,22.86,Good
+ANIL,"Information Technology",6.11,24.54,Good
+ANIL,"Mechanical Engineering",5.63,18.60,Good
+AUCE,Biotechnology,5.80,22.00,Good
+AUCE,"Chemical Engineering",5.80,22.00,Good
+AUCE,"Civil Engineering",5.80,22.00,Good
+AUCE,"Computer Science & Engineering",5.80,22.00,Good
+AUCE,"Electronics & Communication Engineering",5.80,22.00,Good
+AUCE,"Electrical & Electronics Engineering",5.80,22.00,Good
+AUCE,"Geo-Informatics Engineering",5.80,22.00,Good
+AUCE,"Mechanical Engineering",5.80,22.00,Good
+AUCE,"Metallurgical Engineering",5.80,22.00,Good
+AUCESF,"Information Technology",4.67,13.40,"Very Good"
+AUCP,B.Pharm,8.75,12.00,Excellent
+AUCPSF,"Doctor of Pharmacy (Pharm.D)",8.51,12.00,Excellent
+AUEWSF,"Civil Engineering",4.53,12.00,"Very Good"
+AUEWSF,"Computer Science & Engineering",5.15,12.00,"Very Good"
+AUEWSF,"Electronics & Communication Engineering",4.67,12.00,"Very Good"
+AUEWSF,"Electrical & Electronics Engineering",5.40,12.00,"Very Good"
+AUEWSF,"Information Technology",5.49,12.00,"Very Good"
+AUEWSF,"Mechanical Engineering",4.77,12.00,"Very Good"
+AVEN,"CSE (Data Science)",4.70,12.50,Good
+AVEN,"Computer Science & Engineering",4.70,12.50,Good
+AVEN,"CSE (AI & ML Specialization)",4.70,12.50,Good
+AVEN,"Electronics & Communication Engineering",4.70,12.50,Good
+AVEN,"Electrical & Electronics Engineering",4.70,12.50,Good
+AVEN,"Mechanical Engineering",4.70,12.50,Good
+BABA,"Artificial Intelligence & Machine Learning",4.28,16.29,Good
+BABA,"Civil Engineering",4.52,17.74,Good
+BABA,"Computer Science & Engineering",4.37,16.86,Good
+BABA,"Electronics & Communication Engineering",5.16,17.25,Good
+BABA,"Electrical & Electronics Engineering",7.29,11.43,Good
+BABA,"Mechanical Engineering",6.04,11.75,Good
+BCET,"CSE (Data Science)",4.57,13.30,Good
+BCET,"Computer Science & Engineering",6.19,11.11,Good
+BCET,"Electronics & Communication Engineering",3.27,12.25,Good
+BCET,"Mechanical Engineering",7.41,12.62,Good
+CEVP,"Artificial Intelligence & Data Science",4.90,12.50,Good
+CEVP,"CSE (Artificial Intelligence)",4.90,12.50,Good
+CEVP,"Civil Engineering",4.90,12.50,Good
+CEVP,"Computer Science & Engineering",4.90,12.50,Good
+CEVP,"CSE (AI & ML Specialization)",4.90,12.50,Good
+CEVP,"Electronics & Communication Engineering",4.90,12.50,Good
+CEVP,"Electrical & Electronics Engineering",4.90,12.50,Good
+CEVP,"Mechanical Engineering",4.90,12.50,Good
+DIET,"Civil Engineering",4.39,8.07,Good
+DIET,"CSE (Data Science)",3.29,9.57,Good
+DIET,"Computer Science & Engineering",3.57,7.16,Good
+DIET,"CSE (AI & ML Specialization)",3.65,7.88,Good
+DIET,"Electronics & Communication Engineering",4.19,7.30,Good
+DIET,"Electrical & Electronics Engineering",3.27,7.87,Good
+DLBC,"Civil Engineering",5.31,19.71,Good
+DLBC,"Computer Science & Engineering",5.83,16.55,Good
+DLBC,"Electronics & Communication Engineering",5.01,22.02,Good
+DLBC,"Electrical & Electronics Engineering",5.71,24.49,Good
+GITS,"Civil Engineering",5.00,13.00,Good
+GITS,"Computer Science & Engineering",5.00,13.00,Good
+GITS,"Electronics & Communication Engineering",5.00,13.00,Good
+GITS,"Mechanical Engineering",5.00,13.00,Good
+GVPE,"Chemical Engineering",4.30,44.00,Excellent
+GVPE,"Civil Engineering",4.46,44.00,Excellent
+GVPE,"CSE (Data Science)",4.39,44.00,Excellent
+GVPE,"Computer Science & Engineering",4.56,44.00,Excellent
+GVPE,"CSE (AI & ML Specialization)",4.63,44.00,Excellent
+GVPE,"Electronics & Communication Engineering",4.49,44.00,Excellent
+GVPE,"Electrical & Electronics Engineering",4.55,44.00,Excellent
+GVPE,"Information Technology",4.30,44.00,Excellent
+GVPE,"Mechanical Engineering",4.82,44.00,Excellent
+GVPT,"Civil Engineering",5.10,13.00,Good
+GVPT,"Computer Science & Engineering",5.10,13.00,Good
+GVPT,"CSE (AI & ML Specialization)",5.10,13.00,Good
+GVPT,"Electronics & Communication Engineering",5.10,13.00,Good
+GVPT,"Mechanical Engineering",5.10,13.00,Good
+GVPW,"Computer Science & Engineering",4.23,44.00,Excellent
+GVPW,"CSE (AI & ML Specialization)",4.69,44.00,Excellent
+GVPW,"Electronics & Communication Engineering",4.75,44.00,Excellent
+GVPW,"Electrical & Electronics Engineering",4.66,44.00,Excellent
+GVPW,"Information Technology",4.07,44.00,Excellent
+NSRE,"Computer Science & Engineering",5.00,13.00,Good
+NSRE,"CSE (AI & ML Specialization)",5.00,13.00,Good
+NSRE,"Electronics & Communication Engineering",5.00,13.00,Good
+NSRE,"Electrical & Electronics Engineering",5.00,13.00,Good
+NSRE,"Mechanical Engineering",5.00,13.00,Good
+NSRT,"Civil Engineering",4.60,12.00,Good
+NSRT,"CSE (Data Science)",4.60,12.00,Good
+NSRT,"Computer Science & Engineering",4.60,12.00,Good
+NSRT,"CSE (AI & ML Specialization)",4.60,12.00,Good
+NSRT,"Electronics & Communication Engineering",4.60,12.00,Good
+NSRT,"Electrical & Electronics Engineering",4.60,12.00,Good
+NSRT,"Mechanical Engineering",4.60,12.00,Good
+RAGU,"Civil Engineering",5.38,22.02,Good
+RAGU,"CSE (Cyber Security)",5.87,23.04,Good
+RAGU,"CSE (Data Science)",5.13,24.49,Good
+RAGU,"Computer Science & Engineering",5.58,22.92,Good
+RAGU,"CSE (AI & ML Specialization)",5.80,20.06,Good
+RAGU,"Electronics & Communication Engineering",5.01,19.81,Good
+RAGU,"Electrical & Electronics Engineering",5.93,20.90,Good
+RAGU,"Mechanical Engineering",5.65,23.89,Good
+SAVE,"Artificial Intelligence & Data Science",4.80,12.50,Good
+SAVE,"Artificial Intelligence & Machine Learning",4.80,12.50,Good
+SAVE,"Civil Engineering",4.80,12.50,Good
+SAVE,"Computer Science & Engineering",4.80,12.50,Good
+SAVE,"Electronics & Communication Engineering",4.80,12.50,Good
+SAVE,"Electrical & Electronics Engineering",4.80,12.50,Good
+SAVE,"Mechanical Engineering",4.80,12.50,Good
+SAVEOC,"Computer Science & Engineering",4.60,12.00,Good
+SAVEOC,"Electronics & Communication Engineering",4.60,12.00,Good
+SIMH,"Computer Science & Engineering",3.34,11.71,Good
+SIMH,"Electronics & Communication Engineering",4.00,7.61,Good
+SIMH,"Electrical & Electronics Engineering",3.99,9.19,Good
+VIEW,"CSE (Artificial Intelligence)",5.97,20.85,Good
+VIEW,"CSE (Cyber Security)",5.67,16.18,Good
+VIEW,"CSE (Data Science)",5.90,24.80,Good
+VIEW,"Computer Science & Engineering",5.05,20.48,Good
+VIEW,"CSE (AI & ML Specialization)",5.84,20.96,Good
+VIEW,"Electronics & Communication Engineering",5.44,18.90,Good
+VIEW,"Electrical & Electronics Engineering",5.93,15.54,Good
+VIEW,"Information Technology",5.75,20.10,Good
+VIEW,"Mechanical Engineering",5.76,17.00,Good
+VIVP,"Artificial Intelligence & Data Science",6.55,21.85,Good
+VIVP,"CSE (Artificial Intelligence)",6.50,21.55,Good
+VIVP,"Civil Engineering",6.07,20.77,Good
+VIVP,"CSE (Cyber Security)",5.77,18.63,Good
+VIVP,"CSE (Data Science)",6.96,25.01,Good
+VIVP,"Computer Science & Engineering",6.84,25.63,Good
+VIVP,"Electronics & Communication Engineering",5.82,19.79,Good
+VIVP,"Electrical & Electronics Engineering",5.57,23.39,Good
+VIVP,"Information Technology",6.96,24.24,Good
+VIVP,"Mechanical Engineering",5.63,18.03,Good
+VNIP,"Doctor of Pharmacy (Pharm.D)",6.90,22.40,Bad
+VSPT,"Civil Engineering",7.87,15.96,Good
+VSPT,"CSE (Cyber Security)",4.10,14.94,Good
+VSPT,"CSE (Data Science)",3.06,12.55,Good
+VSPT,"Computer Science & Engineering",5.02,13.50,Good
+VSPT,"CSE (AI & ML Specialization)",6.64,13.36,Good
+VSPT,"Electronics & Communication Engineering",7.48,19.62,Good
+VSPT,"Electrical & Electronics Engineering",3.61,15.88,Good
+VSPT,"Mechanical Engineering",5.36,18.18,Good
+WSTM,"Civil Engineering",7.56,18.51,Good
+WSTM,"Computer Science & Engineering",5.45,13.02,Good
+WSTM,"Electronics & Communication Engineering",7.60,15.21,Good
+WSTM,"Electrical & Electronics Engineering",3.58,14.49,Good
+WSTM,"Mechanical Engineering",7.72,14.94,Good
+ARTB,"CSE (Cyber Security)",5.60,14.50,Good
+ARTB,"Computer Science & Engineering",5.60,14.50,Good
+ARTB,"CSE (AI & ML Specialization)",5.60,14.50,Good
+ARTB,"Electronics & Communication Engineering",5.60,14.50,Good
+ARTB,"Electrical & Electronics Engineering",5.60,14.50,Good
+ARTB,"Mechanical Engineering",5.60,14.50,Good
+ASTC,"Computer Science & Engineering",4.50,12.00,Good
+ASTC,"CSE (AI & ML Specialization)",4.50,12.00,Good
+ASTC,"Electronics & Communication Engineering",4.50,12.00,Good
+ASTC,"Electrical & Electronics Engineering",4.50,12.00,Good
+ASTC,"Mechanical Engineering",4.50,12.00,Good
+AVEV,"CSE (Data Science)",5.20,11.00,Good
+AVEV,"Computer Science & Engineering",5.01,11.00,Good
+AVEV,"CSE (AI & ML Specialization)",4.96,11.00,Good
+AVEV,"Electronics & Communication Engineering",5.26,11.00,Good
+AVEV,"Electrical & Electronics Engineering",4.92,11.00,Good
+AVEV,"Mechanical Engineering",5.31,11.00,Good
+GGIB,"CSE (Artificial Intelligence)",5.78,17.14,Good
+GGIB,"CSE (Data Science)",5.99,17.66,Good
+GGIB,"Computer Science & Engineering",5.72,16.36,Good
+GGIB,"Mechanical Engineering",5.78,16.87,Good
+JNTV,"Civil Engineering",4.70,12.00,Good
+JNTV,"Computer Science & Engineering",4.70,12.00,Good
+JNTV,"Electronics & Communication Engineering",4.70,12.00,Good
+JNTV,"Electrical & Electronics Engineering",4.70,12.00,Good
+JNTV,"Information Technology",4.70,12.00,Good
+JNTV,"Mechanical Engineering",4.70,12.00,Good
+JNTV,"Metallurgical Engineering",4.70,12.00,Good
+LIET,"Computer Science & Engineering",5.00,13.00,Good
+LIET,"CSE (AI & ML Specialization)",5.00,13.00,Good
+LIET,"Electronics & Communication Engineering",5.00,13.00,Good
+LIET,"Electrical & Electronics Engineering",5.00,13.00,Good
+LIET,"Mechanical Engineering",5.00,13.00,Good
+MHRJ,B.Pharm,6.81,21.34,Bad
+MRCL,"Artificial Intelligence & Data Science",4.90,12.50,Good
+MRCL,"Civil Engineering",4.90,12.50,Good
+MRCL,"Computer Science & Engineering",4.90,12.50,Good
+MRCL,"Electronics & Communication Engineering",4.90,12.50,Good
+MRCL,"Electrical & Electronics Engineering",4.90,12.50,Good
+MRCL,"Mechanical Engineering",4.90,12.50,Good
+MVRG,"Chemical Engineering",5.13,25.00,"Very Good"
+MVRG,"Civil Engineering",5.11,25.00,"Very Good"
+MVRG,"CSE (Data Science)",5.16,25.00,"Very Good"
+MVRG,"Computer Science & Engineering",5.08,25.00,"Very Good"
+MVRG,"CSE (AI & ML Specialization)",5.31,25.00,"Very Good"
+MVRG,"Electronics & Communication Engineering",5.13,25.00,"Very Good"
+MVRG,"Electrical & Electronics Engineering",5.12,25.00,"Very Good"
+MVRG,"Information Technology",5.22,25.00,"Very Good"
+MVRG,"Mechanical Engineering",5.33,25.00,"Very Good"
+SGVP,"Artificial Intelligence & Data Science",4.80,12.50,Good
+SGVP,"Civil Engineering",4.80,12.50,Good
+SGVP,"Computer Science & Engineering",4.80,12.50,Good
+SGVP,"Electronics & Communication Engineering",4.80,12.50,Good
+SGVP,"Electrical & Electronics Engineering",4.80,12.50,Good
+SGVP,"Mechanical Engineering",4.80,12.50,Good
+BVRM,"Computer Science & Engineering",3.94,10.88,Good
+BVRM,"CSE (AI & ML Specialization)",3.88,10.16,Good
+BVRM,"Electronics & Communication Engineering",3.82,11.18,Good
+CRRE,"Civil Engineering",5.62,12.00,Good
+CRRE,"CSE (Cyber Security)",7.37,12.00,Good
+CRRE,"Computer Science & Engineering",5.02,12.00,Good
+CRRE,"CSE (AI & ML Specialization)",5.96,12.00,Good
+CRRE,"Electronics & Communication Engineering",5.77,12.00,Good
+CRRE,"Electrical & Electronics Engineering",7.96,12.00,Good
+CRRE,"Information Technology",7.49,12.00,Good
+CRRE,"Mechanical Engineering",4.58,12.00,Good
+CRRP,"Doctor of Pharmacy (Pharm.D)",5.90,21.79,Bad
+CRRP,B.Pharm,5.84,20.06,Bad
+DNRE,"Artificial Intelligence & Data Science",5.00,13.00,Good
+DNRE,"Civil Engineering",5.00,13.00,Good
+DNRE,"Computer Science & Engineering",5.00,13.00,Good
+DNRE,"CSE (AI & ML Specialization)",5.00,13.00,Good
+DNRE,"Electronics & Communication Engineering",5.00,13.00,Good
+DNRE,"Electrical & Electronics Engineering",5.00,13.00,Good
+DNRE,"Information Technology",5.00,13.00,Good
+DNRE,"Mechanical Engineering",5.00,13.00,Good
+ELRU,"Artificial Intelligence & Data Science",4.20,11.50,Good
+ELRU,"CSE (Data Science)",4.20,11.50,Good
+ELRU,"Computer Science & Engineering",4.20,11.50,Good
+ELRU,"Electronics & Communication Engineering",4.20,11.50,Good
+ELRU,"Electrical & Electronics Engineering",4.20,11.50,Good
+ELRU,"Mechanical Engineering",4.20,11.50,Good
+HITE,"Civil Engineering",3.17,6.90,Good
+HITE,"Computer Science & Engineering",3.24,6.59,Good
+HITE,"CSE (AI & ML Specialization)",3.07,9.03,Good
+HITE,"Electronics & Communication Engineering",3.67,10.30,Good
+RCEE,"Artificial Intelligence & Data Science",5.10,13.50,Good
+RCEE,"Civil Engineering",5.10,13.50,Good
+RCEE,"CSE (Cyber Security)",5.10,13.50,Good
+RCEE,"Computer Science & Engineering",5.10,13.50,Good
+RCEE,"CSE (AI & ML Specialization)",5.10,13.50,Good
+RCEE,"Electronics & Communication Engineering",5.10,13.50,Good
+RCEE,"Electrical & Electronics Engineering",5.10,13.50,Good
+RCEE,"Mechanical Engineering",5.10,13.50,Good
+SASI,"Artificial Intelligence & Machine Learning",5.20,13.50,Good
+SASI,"Civil Engineering",5.20,13.50,Good
+SASI,"CSE (Data Science)",5.20,13.50,Good
+SASI,"Computer Science & Engineering",5.20,13.50,Good
+SASI,"CSE (AI & ML Specialization)",5.20,13.50,Good
+SASI,"Electronics & Communication Engineering",5.20,13.50,Good
+SASI,"Electrical & Electronics Engineering",5.20,13.50,Good
+SASI,"Information Technology",5.20,13.50,Good
+SASI,"Mechanical Engineering",5.20,13.50,Good
+SCPB,"Doctor of Pharmacy (Pharm.D)",6.79,23.07,Bad
+SCPB,B.Pharm,6.00,25.84,Bad
+SRKR,"Artificial Intelligence & Data Science",5.07,47.60,Excellent
+SRKR,"Artificial Intelligence & Machine Learning",5.57,47.60,Excellent
+SRKR,"Civil Engineering",5.65,47.60,Excellent
+SRKR,"CSE (Business Systems)",5.53,47.60,Excellent
+SRKR,"Computer Science & Engineering",5.71,47.60,Excellent
+SRKR,"Electronics & Communication Engineering",5.96,47.60,Excellent
+SRKR,"Electrical & Electronics Engineering",5.64,47.60,Excellent
+SRKR,"Information Technology",5.35,47.60,Excellent
+SRKR,"Mechanical Engineering",5.84,47.60,Excellent
+SWRN,"Artificial Intelligence & Data Science",5.81,10.59,Good
+SWRN,"Artificial Intelligence & Machine Learning",4.93,15.75,Good
+SWRN,"Civil Engineering",5.46,16.02,Good
+SWRN,"CSE (Cyber Security)",6.23,10.05,Good
+SWRN,"CSE (Data Science)",5.02,19.51,Good
+SWRN,"Computer Science & Engineering",4.69,16.46,Good
+SWRN,"Electronics & Communication Engineering",3.08,14.47,Good
+SWRN,"Electrical & Electronics Engineering",5.47,10.98,Good
+SWRN,"Information Technology",3.12,14.41,Good
+SWRN,"Mechanical Engineering",7.99,11.43,Good
+VISW,"Civil Engineering",6.49,41.54,Excellent
+VISW,"CSE (Cyber Security)",6.96,41.54,Excellent
+VISW,"Computer Science & Engineering",6.31,41.54,Excellent
+VISW,"CSE (AI & ML Specialization)",6.16,41.54,Excellent
+VISW,"Electronics & Communication Engineering",7.36,41.54,Excellent
+VISW,"Electrical & Electronics Engineering",6.33,41.54,Excellent
+VISW,"Information Technology",6.59,41.54,Excellent
+VISW,"Mechanical Engineering",6.46,41.54,Excellent
+VITB,"Civil Engineering",5.11,16.24,Good
+VITB,"CSE (Business Systems)",5.51,16.67,Good
+VITB,"Computer Science & Engineering",5.76,15.59,Good
+VITB,"CSE (AI & ML Specialization)",5.81,21.16,Good
+VITB,"Electronics & Communication Engineering",5.49,16.82,Good
+VITB,"Electrical & Electronics Engineering",5.09,24.14,Good
+VITB,"Information Technology",5.33,22.22,Good
+VITB,"Mechanical Engineering",5.47,19.92,Good
+VSVT,"Artificial Intelligence & Machine Learning",5.89,23.59,Good
+VSVT,"CSE (Artificial Intelligence)",5.74,23.84,Good
+VSVT,"Civil Engineering",5.12,15.70,Good
+VSVT,"CSE (Data Science)",5.55,18.82,Good
+VSVT,"Computer Science & Engineering",5.43,21.18,Good
+VSVT,"Electronics & Communication Engineering",5.21,18.00,Good
+VSVT,"Electrical & Electronics Engineering",5.10,16.45,Good
+VSVT,"Mechanical Engineering",5.96,15.50,Good
+WISE,"CSE (Data Science)",3.80,16.75,Good
+WISE,"Computer Science & Engineering",7.79,16.25,Good
+WISE,"Electronics & Communication Engineering",4.71,16.77,Good
+WISE,"Mechanical Engineering",6.17,17.38,Good
+ALTS,"Civil Engineering",4.30,11.00,Good
+ALTS,"CSE (Data Science)",4.30,11.00,Good
+ALTS,"Computer Science & Engineering",4.30,11.00,Good
+ALTS,"CSE (AI & ML Specialization)",4.30,11.00,Good
+ALTS,"Electronics & Communication Engineering",4.30,11.00,Good
+ALTS,"Electrical & Electronics Engineering",4.30,11.00,Good
+ALTS,"Mechanical Engineering",4.30,11.00,Good
+BALA,"Doctor of Pharmacy (Pharm.D)",6.04,18.20,Bad
+CRIT,"Computer Science & Engineering",3.10,6.49,Good
+CVRT,"Artificial Intelligence & Machine Learning",3.13,6.00,Good
+CVRT,"Computer Science & Engineering",2.99,6.00,Good
+CVRT,"Electronics & Communication Engineering",3.29,6.00,Good
+GATE,"CSE (Artificial Intelligence)",5.70,14.50,Good
+GATE,"Civil Engineering",5.70,14.50,Good
+GATE,"Computer Science & Engineering",5.70,14.50,Good
+GATE,"Electronics & Communication Engineering",5.70,14.50,Good
+GATE,"Electrical & Electronics Engineering",5.70,14.50,Good
+GATE,"Mechanical Engineering",5.70,14.50,Good
+JNTA,"Chemical Engineering",5.74,11.00,Excellent
+JNTA,"Civil Engineering",5.63,11.00,Excellent
+JNTA,"Computer Science & Engineering",5.91,11.00,Excellent
+JNTA,"Electronics & Communication Engineering",5.69,11.00,Excellent
+JNTA,"Electrical & Electronics Engineering",5.69,11.00,Excellent
+JNTA,"Mechanical Engineering",5.38,11.00,Excellent
+PVKK,"Civil Engineering",4.60,12.00,Good
+PVKK,"Computer Science & Engineering",4.60,12.00,Good
+PVKK,"Electronics & Communication Engineering",4.60,12.00,Good
+PVKK,"Electrical & Electronics Engineering",4.60,12.00,Good
+PVKK,"Mechanical Engineering",4.60,12.00,Good
+PVKKOC,"Computer Science & Engineering",4.30,11.50,Good
+PVKKOC,"CSE (AI & ML Specialization)",4.30,11.50,Good
+PVKKOC,"Electronics & Communication Engineering",4.30,11.50,Good
+SKUASF,"Civil Engineering",5.20,13.50,Good
+SKUASF,"Computer Science & Engineering",5.20,13.50,Good
+SKUASF,"Electronics & Communication Engineering",5.20,13.50,Good
+SKUASF,"Electrical & Electronics Engineering",5.20,13.50,Good
+SKUASF,"Mechanical Engineering",5.20,13.50,Good
+SRIT,"Civil Engineering",5.55,21.92,Good
+SRIT,"Computer Science & Engineering",5.73,21.77,Good
+SRIT,"Electronics & Communication Engineering",5.97,21.34,Good
+SRIT,"Electrical & Electronics Engineering",5.86,24.55,Good
+SRIT,"Mechanical Engineering",5.60,19.35,Good
+SSSE,"Civil Engineering",4.90,12.50,Good
+SSSE,"Computer Science & Engineering",4.90,12.50,Good
+SSSE,"Electronics & Communication Engineering",4.90,12.50,Good
+SSSE,"Electrical & Electronics Engineering",4.90,12.50,Good
+SSSE,"Mechanical Engineering",4.90,12.50,Good
+SVIT,"Civil Engineering",7.42,17.72,Good
+SVIT,"CSE (Data Science)",7.63,11.18,Good
+SVIT,"Computer Science & Engineering",7.54,11.37,Good
+SVIT,"CSE (AI & ML Specialization)",5.75,12.70,Good
+SVIT,"Electronics & Communication Engineering",3.89,14.71,Good
+SVIT,"Mechanical Engineering",4.39,17.57,Good
+TECH,"CSE (Data Science)",3.71,14.91,Good
+TECH,"Computer Science & Engineering",5.34,11.59,Best
+TECH,"Electronics & Communication Engineering",6.26,18.63,Good
+TECH,"Electrical & Electronics Engineering",3.58,10.75,Good
+ACEM,"Artificial Intelligence & Data Science",6.67,19.92,Good
+ACEM,"CSE (Artificial Intelligence)",5.76,12.73,Good
+ACEM,"Civil Engineering",7.76,14.19,Good
+ACEM,"Computer Science & Engineering",5.59,16.85,Good
+ACEM,"Electronics & Communication Engineering",7.52,10.62,Good
+ACEM,"Electrical & Electronics Engineering",4.76,18.54,Good
+AITT,"Artificial Intelligence & Data Science",5.40,13.50,Good
+AITT,"Artificial Intelligence & Machine Learning",5.40,13.50,Good
+AITT,"Civil Engineering",5.40,13.50,Good
+AITT,"CSE (Data Science)",5.40,13.50,Good
+AITT,"Computer Science & Engineering",5.40,13.50,Good
+AITT,"Electronics & Communication Engineering",5.40,13.50,Good
+AITT,"Electrical & Electronics Engineering",5.40,13.50,Good
+AITT,"Mechanical Engineering",5.40,13.50,Good
+CHDL,"CSE (Artificial Intelligence)",4.60,11.50,Good
+CHDL,"CSE (Data Science)",4.60,11.50,Good
+CHDL,"Computer Science & Engineering",4.60,11.50,Good
+CHDL,"CSE (AI & ML Specialization)",4.60,11.50,Good
+CHDL,"Electronics & Communication Engineering",4.60,11.50,Good
+CHDL,"Electrical & Electronics Engineering",4.60,11.50,Good
+GVIC,"Computer Science & Engineering",4.60,12.00,Good
+GVIC,"Electronics & Communication Engineering",4.60,12.00,Good
+JNTC,"Civil Engineering",4.90,12.50,Good
+JNTC,"Computer Science & Engineering",4.90,12.50,Good
+JNTC,"Electronics & Communication Engineering",4.90,12.50,Good
+JNTC,"Electrical & Electronics Engineering",4.90,12.50,Good
+JNTC,"Mechanical Engineering",4.90,12.50,Good
+KMMT,"CSE (Artificial Intelligence)",5.40,14.00,Good
+KMMT,"CSE (Data Science)",5.40,14.00,Good
+KMMT,"Computer Science & Engineering",5.40,14.00,Good
+KMMT,"Electronics & Communication Engineering",5.40,14.00,Good
+KMMT,"Electrical & Electronics Engineering",5.40,14.00,Good
+KUPM,"Civil Engineering",4.60,12.00,Good
+KUPM,"CSE (Data Science)",4.60,12.00,Good
+KUPM,"Computer Science & Engineering",4.60,12.00,Good
+KUPM,"CSE (AI & ML Specialization)",4.60,12.00,Good
+KUPM,"Electronics & Communication Engineering",4.60,12.00,Good
+KUPM,"Electrical & Electronics Engineering",4.60,12.00,Good
+KUPM,"Mechanical Engineering",4.60,12.00,Good
+MITS,"CSE (Artificial Intelligence)",5.50,14.00,Good
+MITS,"Civil Engineering",5.50,14.00,Good
+MITS,"CSE (Cyber Security)",5.50,14.00,Good
+MITS,"CSE (Data Science)",5.50,14.00,Good
+MITS,"Computer Science & Engineering",5.50,14.00,Good
+MITS,"CSE (AI & ML Specialization)",5.50,14.00,Good

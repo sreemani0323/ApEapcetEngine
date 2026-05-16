@@ -1,0 +1,9 @@
+# ML Service — Pinned Dependencies
+# ================================================
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+lightgbm==4.6.0
+scikit-learn==1.6.1
+pandas==2.2.3
+numpy==2.2.5
+pydantic==2.11.3
