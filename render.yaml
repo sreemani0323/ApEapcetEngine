@@ -9,11 +9,11 @@ services:
   # ═══ Spring Boot API Gateway ═══
   - type: web
     name: eapcet-backend
-    runtime: java
+    runtime: docker
+    dockerfilePath: apps/backend/Dockerfile
+    dockerContext: apps/backend
     region: oregon
     plan: free
-    buildCommand: cd apps/backend && ./mvnw clean package -DskipTests
-    startCommand: cd apps/backend && java -jar target/backend-1.0.0.jar
     healthCheckPath: /actuator/health
     envVars:
       - key: DB_URL
@@ -27,7 +27,6 @@ services:
           name: eapcet-ml
           type: web
           property: hostport
-          envVarKey: RENDER_INTERNAL_URL
       - key: JAVA_TOOL_OPTIONS
         value: -Xmx512m
 
