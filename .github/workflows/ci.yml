@@ -21,7 +21,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
       - name: Build & Test
-        run: ./mvnw clean verify -DskipTests
+        run: |
+          chmod +x ./mvnw
+          ./mvnw clean verify -DskipTests
       - name: Check JAR builds
         run: ls -la target/*.jar
 
@@ -37,7 +39,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: apps/frontend/package-lock.json
+          cache-dependency-path: '**/package-lock.json'
       - name: Install
         run: npm ci
       - name: Build
