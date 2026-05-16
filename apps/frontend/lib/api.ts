@@ -1,33 +1,58 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 
 const api = axios.create({
   baseURL: '/api',
-  timeout: 20000,
+  timeout: 60000,  // 60s timeout to survive cold starts
   headers: { 'Content-Type': 'application/json' },
 });
 
-// ─── Response Interceptor: Typed Error Classification ───
+// ─── Automatic Retry for Cold Starts ───
+// Render free tier sleeps after 15min of inactivity.
+// First request wakes the server (~30-60s) and often times out.
+// This interceptor automatically retries failed requests up to 2 times.
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 3000;
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error: AxiosError & { config: AxiosRequestConfig & { _retryCount?: number } }) => {
+    const config = error.config;
+    if (!config) return Promise.reject(error);
+
+    config._retryCount = config._retryCount || 0;
+
+    // Retry on timeout, network error, or 502/503/504 (cold start responses)
+    const isRetryable =
+      error.code === 'ECONNABORTED' ||
+      !error.response ||
+      [502, 503, 504].includes(error.response?.status || 0);
+
+    if (isRetryable && config._retryCount < MAX_RETRIES) {
+      config._retryCount += 1;
+      console.log(`⏳ Server waking up... retrying (${config._retryCount}/${MAX_RETRIES})`);
+      await new Promise((res) => setTimeout(res, RETRY_DELAY_MS));
+      return api(config);
+    }
+
+    // ─── Error Classification (after all retries exhausted) ───
     if (error.code === 'ECONNABORTED') {
-      error.classified = 'timeout';
-      error.userMessage = 'Request timed out. The server may be under heavy load.';
+      (error as any).classified = 'timeout';
+      (error as any).userMessage = 'Request timed out. The server may be waking up — please try again.';
     } else if (!error.response) {
-      error.classified = 'network';
-      error.userMessage = 'Cannot reach the server. Check your connection.';
+      (error as any).classified = 'network';
+      (error as any).userMessage = 'Cannot reach the server. It may be starting up — please retry in a moment.';
     } else if (error.response.status === 429) {
-      error.classified = 'rate_limit';
-      error.userMessage = 'Too many requests. Please wait a moment.';
+      (error as any).classified = 'rate_limit';
+      (error as any).userMessage = 'Too many requests. Please wait a moment.';
     } else if (error.response.status === 400) {
-      error.classified = 'validation';
-      error.userMessage = error.response.data?.message || 'Invalid input parameters.';
+      (error as any).classified = 'validation';
+      (error as any).userMessage = error.response.data?.message || 'Invalid input parameters.';
     } else if (error.response.status >= 500) {
-      error.classified = 'server';
-      error.userMessage = error.response.data?.message || 'Server error. Please try again.';
+      (error as any).classified = 'server';
+      (error as any).userMessage = error.response.data?.message || 'Server error. Please try again.';
     } else {
-      error.classified = 'unknown';
-      error.userMessage = 'An unexpected error occurred.';
+      (error as any).classified = 'unknown';
+      (error as any).userMessage = 'An unexpected error occurred.';
     }
     return Promise.reject(error);
   }
