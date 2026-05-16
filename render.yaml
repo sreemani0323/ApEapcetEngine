@@ -26,7 +26,7 @@ services:
         fromService:
           name: eapcet-ml
           type: web
-          property: hostport
+          property: url
       - key: JAVA_TOOL_OPTIONS
         value: -Xmx300m
 

@@ -29,11 +29,6 @@ USER eapcet
 # Copy only the fat JAR
 COPY --from=builder /build/target/*.jar app.jar
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD wget -qO- http://localhost:8080/actuator/health || exit 1
-
-EXPOSE 8080
 
 ENTRYPOINT ["java", \
     "-XX:+UseZGC", \
