@@ -27,8 +27,8 @@ services:
           name: eapcet-ml
           type: web
           property: url
-      - key: JAVA_TOOL_OPTIONS
-        value: -Xmx300m
+      - key: SWAGGER_ENABLED
+        value: "false"
 
   # ═══ Python ML Microservice ═══
   - type: web

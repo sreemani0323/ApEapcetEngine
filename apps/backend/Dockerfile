@@ -1,6 +1,6 @@
 # ═══════════════════════════════════════════════════════
 # Multi-Stage Dockerfile — Spring Boot Backend
-# Target: JDK 21 LTS (eclipse-temurin)
+# Optimized for Render Free Tier (512MB RAM)
 # ═══════════════════════════════════════════════════════
 
 # ── Stage 1: Build ──
@@ -29,9 +29,19 @@ USER eapcet
 # Copy only the fat JAR
 COPY --from=builder /build/target/*.jar app.jar
 
-
+# Memory-optimized entrypoint for 512MB containers:
+#   SerialGC       — smallest GC footprint (ZGC uses 2-3x more native memory)
+#   Xmx200m        — leaves ~300MB for metaspace, threads, native buffers
+#   MaxMetaspace    — caps class metadata memory
+#   ReservedCodeCache — caps JIT compiler memory
+#   TieredStopAtLevel=1 — reduces JIT memory usage
 ENTRYPOINT ["java", \
-    "-XX:+UseZGC", \
-    "-XX:MaxRAMPercentage=75.0", \
+    "-XX:+UseSerialGC", \
+    "-Xmx200m", \
+    "-Xms200m", \
+    "-XX:MaxMetaspaceSize=100m", \
+    "-XX:ReservedCodeCacheSize=64m", \
+    "-XX:MaxDirectMemorySize=32m", \
+    "-XX:-TieredCompilation", \
     "-Djava.security.egd=file:/dev/./urandom", \
     "-jar", "app.jar"]
