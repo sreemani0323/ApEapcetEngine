@@ -28,7 +28,7 @@ services:
           type: web
           property: hostport
       - key: JAVA_TOOL_OPTIONS
-        value: -Xmx512m
+        value: -Xmx300m
 
   # ═══ Python ML Microservice ═══
   - type: web

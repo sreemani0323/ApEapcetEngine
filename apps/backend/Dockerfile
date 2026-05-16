@@ -11,6 +11,7 @@ WORKDIR /build
 COPY pom.xml .
 COPY .mvn .mvn
 COPY mvnw .
+ENV MAVEN_OPTS="-Xmx256m -XX:MaxMetaspaceSize=128m"
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 # Compile
