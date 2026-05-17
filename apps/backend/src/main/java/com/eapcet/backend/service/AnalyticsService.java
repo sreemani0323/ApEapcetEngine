@@ -29,10 +29,12 @@ public class AnalyticsService {
      * Parse package strings like "24.5 LPA" into Double.
      */
     private Double parsePackage(String pkg) {
-        if (pkg == null || pkg.equalsIgnoreCase("unavailable")) return null;
+        if (pkg == null || pkg.equalsIgnoreCase("unavailable"))
+            return null;
         try {
             String clean = pkg.replaceAll("[^0-9.]", "").trim();
-            if (clean.isEmpty()) return null;
+            if (clean.isEmpty())
+                return null;
             return Double.parseDouble(clean);
         } catch (Exception e) {
             return null;
@@ -40,7 +42,8 @@ public class AnalyticsService {
     }
 
     /**
-     * Compare branches by calculating their exact aggregate average LPA and Highest package drops.
+     * Compare branches by calculating their exact aggregate average LPA and Highest
+     * package drops.
      */
     @Cacheable("branchComparison")
     public List<BranchPackageDTO> compareBranchesByPackage() {
@@ -59,9 +62,10 @@ public class AnalyticsService {
         for (Map.Entry<String, List<CollegeBranch>> entry : groupedByBranch.entrySet()) {
             String branchCode = entry.getKey();
             List<CollegeBranch> branches = entry.getValue();
-            
-            if (branches.isEmpty()) continue;
-            
+
+            if (branches.isEmpty())
+                continue;
+
             String branchType = branches.get(0).getBranch().getBranchType();
 
             // Aggregate parsed package sizes
@@ -71,16 +75,19 @@ public class AnalyticsService {
             for (CollegeBranch cb : branches) {
                 if (cb.getAvgPackage() != null) {
                     Double avgParsed = parsePackage(cb.getAvgPackage());
-                    if (avgParsed != null) avgList.add(avgParsed);
+                    if (avgParsed != null)
+                        avgList.add(avgParsed);
                 }
-                
+
                 if (cb.getHighestPackage() != null) {
                     Double maxParsed = parsePackage(cb.getHighestPackage());
-                    if (maxParsed != null) maxList.add(maxParsed);
+                    if (maxParsed != null)
+                        maxList.add(maxParsed);
                 }
             }
 
-            if (avgList.isEmpty()) continue; // Ignore branches with no placement data across the board
+            if (avgList.isEmpty())
+                continue; // Ignore branches with no placement data across the board
 
             double totalAvg = avgList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
             double absoluteMax = maxList.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
@@ -101,7 +108,8 @@ public class AnalyticsService {
                     .collect(Collectors.toList());
         }
 
-        // FALLBACK: No package data loaded. Return branch density (college count per branch).
+        // FALLBACK: No package data loaded. Return branch density (college count per
+        // branch).
         log.warn("No placement package data found. Returning branch density fallback.");
         for (Map.Entry<String, List<CollegeBranch>> entry : groupedByBranch.entrySet()) {
             String branchCode = entry.getKey();
@@ -168,9 +176,12 @@ public class AnalyticsService {
             }
 
             String status = "Stable";
-            if (competitionIncrease > 3000) status = "Rising Star (Harder)";
-            if (competitionIncrease < -3000) status = "Cooling (Easier)";
-            if (competitionIncrease > 8000) status = "Extremely Competitive";
+            if (competitionIncrease > 3000)
+                status = "Rising Star (Harder)";
+            if (competitionIncrease < -3000)
+                status = "Cooling (Easier)";
+            if (competitionIncrease > 8000)
+                status = "Extremely Competitive";
 
             trends.add(TrendingBranchDTO.builder()
                     .branchCode(branch)

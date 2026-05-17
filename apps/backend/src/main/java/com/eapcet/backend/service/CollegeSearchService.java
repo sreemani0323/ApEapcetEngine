@@ -101,15 +101,36 @@ public class CollegeSearchService {
         for (CollegeBranch cb : baseResults) {
             MLPredictionResponseDTO.MLPredictionResult mlr = mlResMap.get(cb.getCollegeBranchId());
 
+            // Actual cutoffs from DB (always available)
+            Integer dbCutoff24 = cutoffIndex.get(cb.getCollegeBranchId() + "_2024");
+
+            // Use ML predicted cutoff if available, otherwise fall back to DB cutoff
+            Integer effectiveCutoff = (mlr != null && mlr.getPredictedCutoff() != null)
+                    ? mlr.getPredictedCutoff() : dbCutoff24;
+
+            // Use ML probability if available, otherwise compute simple fallback
+            Double effectiveProb = (mlr != null) ? mlr.getProbabilityPercent() : null;
+            Integer effectiveGap = (mlr != null) ? mlr.getRankGap() : null;
+
+            if (effectiveProb == null && effectiveCutoff != null && req.getRank() != null && req.getRank() > 0) {
+                // Simple fallback probability when ML is down
+                int gap = effectiveCutoff - req.getRank();
+                double relMargin = (double) gap / effectiveCutoff;
+                double z = (relMargin + 0.05) / 0.20;
+                double rawProb = 100.0 / (1.0 + Math.exp(-z * 3.0 / 3.5));
+                effectiveProb = Math.round((2.0 + (rawProb / 100.0) * 93.0) * 10.0) / 10.0;
+                effectiveGap = gap;
+            }
+
             cards.add(CollegeCardResponseDTO.builder()
                     .collegeName(cb.getCollege().getName())
                     .instcode(cb.getCollege().getInstcode())
                     .district(cb.getCollege().getDistrict())
                     .place(cb.getCollege().getPlace())
                     .branchCode(cb.getBranch().getBranchCode())
-                    .cutoffRank2024(mlr != null ? mlr.getPredictedCutoff() : null)
-                    .probabilityPercent(mlr != null ? mlr.getProbabilityPercent() : null)
-                    .rankGap(mlr != null ? mlr.getRankGap() : null)
+                    .cutoffRank2024(effectiveCutoff)
+                    .probabilityPercent(effectiveProb)
+                    .rankGap(effectiveGap)
                     .highestPackage(cb.getHighestPackage() != null ? cb.getHighestPackage() : "unavailable")
                     .avgPackage(cb.getAvgPackage() != null ? cb.getAvgPackage() : "unavailable")
                     .build());
