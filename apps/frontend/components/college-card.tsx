@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { MapPin, TrendingUp, TrendingDown, Minus, ArrowRight, ExternalLink } from 'lucide-react';
+import { MapPin, TrendingUp, TrendingDown, Minus, ArrowRight } from 'lucide-react';
 import { BRANCH_MAP, COLLEGE_TYPE_MAP, AFFILIATION_MAP } from '@/lib/constants';
 import { useCallback, memo } from 'react';
 
@@ -72,10 +72,11 @@ export const CollegeCard = memo(function CollegeCard({ college }: { college: any
               href={`https://www.google.com/maps/search/${encodeURIComponent((college.college_name || '') + ', ' + (college.place || college.district || '') + ', Andhra Pradesh')}`}
               target="_blank" rel="noopener noreferrer"
               onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-0.5 text-signal/70 hover:text-signal transition-colors"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-signal/10 text-signal hover:bg-signal/20 transition-colors text-[10px] font-bold"
               title="View on Google Maps"
             >
-              <ExternalLink size={10} />
+              <MapPin size={10} />
+              Map
             </a>
             {college.place && <>
               <span className="w-1 h-1 bg-ink-ghost rounded-full" />

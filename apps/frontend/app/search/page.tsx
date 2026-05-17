@@ -80,9 +80,14 @@ function SearchContent() {
   const [results, setResults] = useState<any[]>([]);
   const [searched, setSearched] = useState(false);
   const [filter, setFilter] = useState('all');
-  const [sortBy, setSortBy] = useState<'probability' | 'cutoff' | 'name'>('probability');
+  const [sortBy, setSortBy] = useState<'probability' | 'cutoff' | 'name' | 'rank_gap' | 'district' | 'package' | 'random'>('probability');
   const [expandedAdvanced, setExpandedAdvanced] = useState(false);
   const [visibleCount, setVisibleCount] = useState(WINDOW_SIZE);
+  // ── Result-level filters ──
+  const [filterDistrict, setFilterDistrict] = useState('');
+  const [filterBranch, setFilterBranch] = useState('');
+  const [filterPackage, setFilterPackage] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
 
   // ── FIX #1: useRef for rank input to prevent focus hijacking ──
   const rankInputRef = useRef<HTMLInputElement>(null);
@@ -141,7 +146,11 @@ function SearchContent() {
     setTaskState('processing');
     setSearched(true);
     setFilter('all');
+    setFilterDistrict('');
+    setFilterBranch('');
+    setFilterPackage('');
     setVisibleCount(WINDOW_SIZE);
+    setShuffleSeed(Date.now());
     try {
       const payload: any = {};
       if (form.rank) payload.rank = Number(form.rank);
@@ -163,18 +172,57 @@ function SearchContent() {
     }
   }, [form, setTaskState]);
 
+  // ── Unique values for result-level filter dropdowns ──
+  const resultDistricts = useMemo(() => [...new Set(results.map(c => c.district).filter(Boolean))].sort(), [results]);
+  const resultBranches = useMemo(() => [...new Set(results.map(c => c.branch_code).filter(Boolean))].sort(), [results]);
+
+  // ── Seeded shuffle for deterministic "random" per search ──
+  const [shuffleSeed, setShuffleSeed] = useState(0);
+
   // ── Filtered + sorted results ──
   const filtered = useMemo(() => {
     let arr = results;
-    if (filter === 'safe') arr = arr.filter(c => c.probability_percent >= 80);
-    else if (filter === 'borderline') arr = arr.filter(c => c.probability_percent >= 40 && c.probability_percent < 80);
-    else if (filter === 'reach') arr = arr.filter(c => c.probability_percent < 40);
+
+    // Probability tier filter
+    if (filter === 'safe') arr = arr.filter(c => (c.probability_percent ?? 0) >= 80);
+    else if (filter === 'borderline') arr = arr.filter(c => (c.probability_percent ?? 0) >= 40 && (c.probability_percent ?? 0) < 80);
+    else if (filter === 'reach') arr = arr.filter(c => (c.probability_percent ?? 0) < 40);
+
+    // Result-level filters
+    if (filterDistrict) arr = arr.filter(c => c.district === filterDistrict);
+    if (filterBranch) arr = arr.filter(c => c.branch_code === filterBranch);
+    if (filterPackage === 'available') arr = arr.filter(c => c.avg_package && c.avg_package !== 'unavailable');
+    else if (filterPackage === 'premium') arr = arr.filter(c => {
+      if (!c.avg_package || c.avg_package === 'unavailable') return false;
+      const val = parseFloat(c.avg_package.replace(/[^0-9.]/g, ''));
+      return !isNaN(val) && val >= 5;
+    });
+
+    // Sort
+    if (sortBy === 'random') {
+      // Fisher-Yates shuffle with seed for consistency
+      const shuffled = [...arr];
+      let seed = shuffleSeed || Date.now();
+      const rng = () => { seed = (seed * 16807 + 0) % 2147483647; return seed / 2147483647; };
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(rng() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
     return [...arr].sort((a, b) => {
       if (sortBy === 'probability') return (b.probability_percent ?? 0) - (a.probability_percent ?? 0);
       if (sortBy === 'cutoff') return (a.cutoff_rank_2024 ?? 999999) - (b.cutoff_rank_2024 ?? 999999);
+      if (sortBy === 'rank_gap') return (b.rank_gap ?? -999999) - (a.rank_gap ?? -999999);
+      if (sortBy === 'district') return (a.district || '').localeCompare(b.district || '');
+      if (sortBy === 'package') {
+        const parseP = (s: string | null) => { if (!s || s === 'unavailable') return 0; return parseFloat(s.replace(/[^0-9.]/g, '')) || 0; };
+        return parseP(b.avg_package) - parseP(a.avg_package);
+      }
       return (a.college_name || '').localeCompare(b.college_name || '');
     });
-  }, [results, filter, sortBy]);
+  }, [results, filter, sortBy, filterDistrict, filterBranch, filterPackage, shuffleSeed]);
 
   // ── Windowed slice ──
   const visibleResults = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
@@ -242,29 +290,88 @@ function SearchContent() {
             <div className="space-y-5">
               {results.length > 0 && (
                 <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 bg-surface rounded-2xl border border-node-border shadow-float">
-                  <div className="flex items-center gap-3">
-                    <span className="font-display font-bold text-xl text-ink">{filtered.length}</span>
-                    <span className="text-ink-3 text-sm font-medium">results</span>
-                    {rankTier && <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${tierMessages[rankTier].color}`}>{tierMessages[rankTier].label}</span>}
+                  className="bg-surface rounded-2xl border border-node-border shadow-float overflow-hidden">
+                  {/* Top row: count + sort + downloads */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4">
+                    <div className="flex items-center gap-3">
+                      <span className="font-display font-bold text-xl text-ink">{filtered.length}</span>
+                      <span className="text-ink-3 text-sm font-medium">results</span>
+                      {rankTier && <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${tierMessages[rankTier].color}`}>{tierMessages[rankTier].label}</span>}
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <FilterBar colleges={results} activeFilter={filter} onFilterChange={setFilter} />
+                      <button onClick={() => setShowFilters(f => !f)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+                          showFilters || filterDistrict || filterBranch || filterPackage
+                            ? 'bg-signal/10 text-signal border-signal/30'
+                            : 'bg-phantom text-ink-3 border-node-border hover:border-ink-ghost'
+                        }`}>
+                        <SlidersHorizontal size={12} />
+                        Filters
+                        {(filterDistrict || filterBranch || filterPackage) && (
+                          <span className="w-4 h-4 rounded-full bg-signal text-white text-[9px] flex items-center justify-center font-bold">
+                            {[filterDistrict, filterBranch, filterPackage].filter(Boolean).length}
+                          </span>
+                        )}
+                      </button>
+                      <select value={sortBy} onChange={e => { setSortBy(e.target.value as any); if (e.target.value === 'random') setShuffleSeed(Date.now()); }}
+                        className="text-xs font-semibold bg-phantom text-ink-2 px-3 py-1.5 rounded-full border border-node-border cursor-pointer outline-none">
+                        <option value="probability">Probability ↓</option>
+                        <option value="cutoff">Cutoff ↑</option>
+                        <option value="name">Name A-Z</option>
+                        <option value="rank_gap">Rank Gap ↓</option>
+                        <option value="district">District A-Z</option>
+                        <option value="package">Package ↓</option>
+                        <option value="random">🎲 Shuffle</option>
+                      </select>
+                      <button onClick={() => downloadCSV(filtered)} title="Download CSV"
+                        className="p-1.5 bg-phantom border border-node-border rounded-full text-ink-3 hover:text-validated hover:border-validated/30 transition-all cursor-pointer">
+                        <Download size={14} />
+                      </button>
+                      <button onClick={() => downloadPDF(filtered)} title="Download PDF"
+                        className="p-1.5 bg-phantom border border-node-border rounded-full text-ink-3 hover:text-signal hover:border-signal/30 transition-all cursor-pointer">
+                        <FileText size={14} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3 flex-wrap">
-                    <FilterBar colleges={results} activeFilter={filter} onFilterChange={setFilter} />
-                    <select value={sortBy} onChange={e => setSortBy(e.target.value as any)}
-                      className="text-xs font-semibold bg-phantom text-ink-2 px-3 py-1.5 rounded-full border border-node-border cursor-pointer outline-none">
-                      <option value="probability">Probability ↓</option>
-                      <option value="cutoff">Cutoff ↑</option>
-                      <option value="name">Name A-Z</option>
-                    </select>
-                    <button onClick={() => downloadCSV(filtered)} title="Download CSV"
-                      className="p-1.5 bg-phantom border border-node-border rounded-full text-ink-3 hover:text-validated hover:border-validated/30 transition-all cursor-pointer">
-                      <Download size={14} />
-                    </button>
-                    <button onClick={() => downloadPDF(filtered)} title="Download PDF"
-                      className="p-1.5 bg-phantom border border-node-border rounded-full text-ink-3 hover:text-signal hover:border-signal/30 transition-all cursor-pointer">
-                      <FileText size={14} />
-                    </button>
-                  </div>
+
+                  {/* Expandable filter row */}
+                  <AnimatePresence>
+                    {showFilters && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-4 pb-4 pt-1 border-t border-node-border/50 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                          <select value={filterDistrict} onChange={e => setFilterDistrict(e.target.value)}
+                            className="liquid-input py-2 text-xs w-full sm:w-40">
+                            <option value="">All Districts</option>
+                            {resultDistricts.map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                          <select value={filterBranch} onChange={e => setFilterBranch(e.target.value)}
+                            className="liquid-input py-2 text-xs w-full sm:w-40">
+                            <option value="">All Branches</option>
+                            {resultBranches.map(b => <option key={b} value={b}>{BRANCH_MAP[b] || b}</option>)}
+                          </select>
+                          <select value={filterPackage} onChange={e => setFilterPackage(e.target.value)}
+                            className="liquid-input py-2 text-xs w-full sm:w-40">
+                            <option value="">Any Package</option>
+                            <option value="available">Has Package Data</option>
+                            <option value="premium">₹5+ LPA Only</option>
+                          </select>
+                          {(filterDistrict || filterBranch || filterPackage) && (
+                            <button onClick={() => { setFilterDistrict(''); setFilterBranch(''); setFilterPackage(''); }}
+                              className="text-xs font-semibold text-critical hover:text-critical/80 px-3 py-2 cursor-pointer whitespace-nowrap">
+                              Clear All
+                            </button>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               )}
 
