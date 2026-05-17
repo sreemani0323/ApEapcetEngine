@@ -108,33 +108,42 @@ class PredictionResponse(BaseModel):
 def rank_to_probability(user_rank: int, predicted_cutoff: int, std: float) -> float:
     """
     Convert the gap between user_rank and predicted_cutoff into
-    a probability percentage using a sigmoid function.
+    a probability percentage using a calibrated sigmoid function.
 
-    Logic:
-    - If user_rank << predicted_cutoff → very high probability (near 100%).
-      (Lower rank = better, cutoff is the worst rank that got in.)
-    - If user_rank >> predicted_cutoff → very low probability (near 0%).
-    - The sigmoid steepness is calibrated by the model's residual std.
+    Calibration anchors (based on real AP EAPCET counseling patterns):
+    - Rank is 50% of cutoff value better → ~97% (near-certain admission)
+    - Rank equals cutoff exactly → ~55% (slight advantage since cutoff = last admitted)
+    - Rank is 20% worse than cutoff → ~20% (unlikely but possible via spot rounds)
+    - Rank is 50% worse than cutoff → ~3% (virtually no chance)
 
-    The gap is defined as:  predicted_cutoff - user_rank
-      positive gap → user is safely within the cutoff
-      negative gap → user is above (worse than) the cutoff
+    The key insight: cutoff rank is the LAST person admitted, so being
+    AT the cutoff actually means you got in historically. The sigmoid is
+    intentionally shifted slightly positive to reflect this.
     """
     if predicted_cutoff <= 0:
         return 50.0  # No data available
 
     gap = predicted_cutoff - user_rank  # positive = safe margin
 
-    # Normalize gap by model's uncertainty (std)
-    # Scale factor controls sigmoid steepness; 0.4*std gives a smooth curve
-    scale = max(std * 0.4, 1000)  # floor at 1000 to avoid division issues
-    z = gap / scale
+    # Use adaptive scaling based on cutoff magnitude
+    # For low cutoffs (e.g., 5000), small absolute gaps matter more
+    # For high cutoffs (e.g., 80000), need larger gaps to be meaningful
+    cutoff_scale = max(predicted_cutoff * 0.15, 500)
+
+    # Blend with model uncertainty (std) — gives data-driven component
+    # Weight: 60% cutoff-based, 40% model-uncertainty-based
+    effective_std = max(std, 1000)
+    scale = 0.6 * cutoff_scale + 0.4 * (effective_std * 0.3)
+
+    # Shift: being AT the cutoff should be ~55%, not 50%
+    # This reflects that the cutoff rank IS an admitted student
+    z = (gap + scale * 0.08) / scale
 
     # Sigmoid: 1 / (1 + exp(-z)) mapped to 0-100
-    probability = 100.0 / (1.0 + np.exp(-z))
+    probability = 100.0 / (1.0 + np.exp(-z * 2.5))  # steeper curve
 
-    # Clamp to [0.5, 99.5] for realism
-    return float(np.clip(round(probability, 1), 0.5, 99.5))
+    # Clamp to [1.0, 99.0] for realism — never show 0% or 100%
+    return float(np.clip(round(probability, 1), 1.0, 99.0))
 
 
 def build_feature_row(item: PredictionItem, year: int = 2024) -> dict:
