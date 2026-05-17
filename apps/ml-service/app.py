@@ -213,6 +213,12 @@ def build_feature_row(item: PredictionItem, year: int = 2024) -> dict:
 # ============================================================
 # ENDPOINTS
 # ============================================================
+@app.get("/")
+def root():
+    """Root endpoint — minimal response for cron job pings."""
+    return {"ok": True}
+
+
 @app.get("/health")
 def health():
     """Basic health check — always returns 200 if the process is running."""
