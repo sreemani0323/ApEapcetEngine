@@ -33,7 +33,7 @@ public interface CutoffRepository extends JpaRepository<Cutoff, Long> {
                COUNT(*) AS cnt
         FROM cutoffs c
         JOIN college_branches cb ON c.college_branch_id = cb.college_branch_id
-        JOIN branches b ON cb.branch_id = b.branch_id
+        JOIN branches b ON cb.branch_code = b.branch_code
         WHERE c.cutoff_rank IS NOT NULL
         GROUP BY b.branch_code, b.branch_type, c.year
         ORDER BY b.branch_code, c.year
