@@ -107,43 +107,53 @@ class PredictionResponse(BaseModel):
 # ============================================================
 def rank_to_probability(user_rank: int, predicted_cutoff: int, std: float) -> float:
     """
-    Convert the gap between user_rank and predicted_cutoff into
-    a probability percentage using a calibrated sigmoid function.
+    Convert rank vs predicted cutoff into a realistic admission probability.
 
-    Calibration anchors (based on real AP EAPCET counseling patterns):
-    - Rank is 50% of cutoff value better → ~97% (near-certain admission)
-    - Rank equals cutoff exactly → ~55% (slight advantage since cutoff = last admitted)
-    - Rank is 20% worse than cutoff → ~20% (unlikely but possible via spot rounds)
-    - Rank is 50% worse than cutoff → ~3% (virtually no chance)
+    Uses RELATIVE margin (gap as % of cutoff) instead of absolute gap.
+    This ensures probabilities feel proportional regardless of cutoff magnitude.
 
-    The key insight: cutoff rank is the LAST person admitted, so being
-    AT the cutoff actually means you got in historically. The sigmoid is
-    intentionally shifted slightly positive to reflect this.
+    Calibrated benchmarks:
+      Rank = cutoff exactly       → ~55%  (cutoff = last admitted, so slightly favorable)
+      Rank 30% better than cutoff → ~73%  (good chance but cutoffs shift year-to-year)
+      Rank 2x better than cutoff  → ~88%  (strong, but not certain — counseling rounds vary)
+      Rank 3x+ better             → ~93%  (very strong — but never 99%, uncertainty exists)
+      Rank 20% worse than cutoff  → ~35%  (reach — possible via later counseling rounds)
+      Rank 50% worse              → ~12%  (long shot)
+
+    Key insight: EAPCET cutoffs can swing 15-25% year-to-year due to
+    difficulty changes, seat additions, and category dynamics. A student
+    who is 30% "better" than last year's cutoff is NOT 95% safe.
     """
     if predicted_cutoff <= 0:
-        return 50.0  # No data available
+        return 50.0
 
     gap = predicted_cutoff - user_rank  # positive = safe margin
 
-    # Use adaptive scaling based on cutoff magnitude
-    # For low cutoffs (e.g., 5000), small absolute gaps matter more
-    # For high cutoffs (e.g., 80000), need larger gaps to be meaningful
-    cutoff_scale = max(predicted_cutoff * 0.15, 500)
+    # ── Relative margin: gap as fraction of cutoff ──
+    # This makes the probability proportional regardless of cutoff scale
+    # rank=10k, cutoff=20k → margin=0.5 (50% better)
+    # rank=50k, cutoff=100k → margin=0.5 (same relative position)
+    relative_margin = gap / predicted_cutoff
 
-    # Blend with model uncertainty (std) — gives data-driven component
-    # Weight: 60% cutoff-based, 40% model-uncertainty-based
-    effective_std = max(std, 1000)
-    scale = 0.6 * cutoff_scale + 0.4 * (effective_std * 0.3)
+    # ── Year-over-year volatility damping ──
+    # Cutoffs typically swing 15-25%. Even with a 30% margin,
+    # there's real uncertainty. This prevents overconfident predictions.
+    volatility = 0.20  # assume 20% year-over-year cutoff volatility
 
-    # Shift: being AT the cutoff should be ~55%, not 50%
-    # This reflects that the cutoff rank IS an admitted student
-    z = (gap + scale * 0.08) / scale
+    # ── Sigmoid with controlled steepness ──
+    # Steepness of 3.0 gives a gradual curve that doesn't saturate quickly
+    # The shift of +0.05 makes "at cutoff" slightly favorable (~55%)
+    z = (relative_margin + 0.05) / volatility
+    steepness = 3.0
+    probability = 100.0 / (1.0 + np.exp(-z * steepness / 3.5))
 
-    # Sigmoid: 1 / (1 + exp(-z)) mapped to 0-100
-    probability = 100.0 / (1.0 + np.exp(-z * 2.5))  # steeper curve
+    # ── Compress toward center to avoid fake extremes ──
+    # Map [0, 100] → [2, 95] — no result ever shows <2% or >95%
+    # This reflects real uncertainty: even the "safest" pick can have
+    # counseling surprises, and even a "reach" can work in spot rounds
+    probability = 2.0 + (probability / 100.0) * 93.0
 
-    # Clamp to [1.0, 99.0] for realism — never show 0% or 100%
-    return float(np.clip(round(probability, 1), 1.0, 99.0))
+    return float(round(probability, 1))
 
 
 def build_feature_row(item: PredictionItem, year: int = 2024) -> dict:

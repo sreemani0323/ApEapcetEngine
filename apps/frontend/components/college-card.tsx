@@ -10,8 +10,7 @@ import { useCallback, memo } from 'react';
 export const CollegeCard = memo(function CollegeCard({ college }: { college: any }) {
   const rawProb = college.probability_percent;
   const hasProb = rawProb != null && !isNaN(rawProb);
-  // Cap at 99.5 — never show 100% since this is a prediction
-  const prob = hasProb ? Math.min(rawProb, 99.5) : rawProb;
+  const prob = hasProb ? rawProb : rawProb;
 
   let color = '#94a3b8', label = 'Pending', bg = 'bg-phantom', ringGlow = '';
   if (hasProb) {
