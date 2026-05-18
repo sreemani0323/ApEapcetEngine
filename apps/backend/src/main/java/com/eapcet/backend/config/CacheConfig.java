@@ -20,6 +20,7 @@ public class CacheConfig {
             "dashboardStats",
             "districtSummary",
             "collegeDetail",
+            "collegeBranches",
             "exploreColleges",
             "branchComparison",
             "trendingBranches",

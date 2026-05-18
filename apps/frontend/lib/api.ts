@@ -66,6 +66,8 @@ export const getDistrictSummary = () => api.get('/stats/district-summary');
 export const exploreColleges = (params: Record<string, string>) => api.get('/colleges/explore', { params });
 export const getCollegeDetail = (instcode: string, category?: string) =>
   api.get(`/colleges/${instcode}/detail`, { params: category ? { category } : {} });
+export const getCollegeBranches = (instcode: string) =>
+  api.get(`/colleges/${instcode}/branches`);
 export const searchColleges = (params: Record<string, any>) => api.post('/search-colleges', params);
 export const reverseCalculate = (params: Record<string, any>) => api.post('/reverse-calculate', params);
 export const compareBranches = () => api.get('/analytics/compare-branches');

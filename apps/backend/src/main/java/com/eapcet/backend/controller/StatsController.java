@@ -39,6 +39,15 @@ public class StatsController {
         return ResponseEntity.ok(statsService.exploreColleges(district, type, search, affiliation));
     }
 
+    @GetMapping("/colleges/{instcode}/branches")
+    public ResponseEntity<List<CollegeBranchOptionDTO>> getCollegeBranches(@PathVariable String instcode) {
+        List<CollegeBranchOptionDTO> branches = statsService.getCollegeBranches(instcode);
+        if (branches.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(branches);
+    }
+
     @GetMapping("/colleges/{instcode}/detail")
     public ResponseEntity<?> getCollegeDetail(
             @PathVariable String instcode,

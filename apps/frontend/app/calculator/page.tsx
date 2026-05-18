@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback, useId } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { reverseCalculate } from '@/lib/api';
+import { reverseCalculate, getCollegeBranches } from '@/lib/api';
 import { BRANCH_MAP, AFFILIATION_MAP, CATEGORIES, GENDERS } from '@/lib/constants';
 import { SmartAutocomplete } from '@/components/smart-autocomplete';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -35,10 +35,48 @@ export default function CalculatorPage() {
   });
   const [results, setResults] = useState<ReverseResult[]>([]); // history stack
   const [isProcessing, setIsProcessing] = useState(false);
+  const [collegeBranches, setCollegeBranches] = useState<string[]>([]);
+  const [branchesLoading, setBranchesLoading] = useState(false);
 
   const update = useCallback((k: string, v: any) => {
     setForm(p => ({ ...p, [k]: v }));
   }, []);
+
+  useEffect(() => {
+    if (!form.instcode) {
+      setCollegeBranches([]);
+      setForm(p => (p.branch_code ? { ...p, branch_code: '' } : p));
+      return;
+    }
+
+    let cancelled = false;
+    setBranchesLoading(true);
+
+    (async () => {
+      try {
+        const { data } = await getCollegeBranches(form.instcode);
+        if (cancelled) return;
+        const codes = (data as { branch_code: string }[])
+          .map(b => b.branch_code)
+          .filter(Boolean)
+          .sort();
+        setCollegeBranches(codes);
+        setForm(p => ({
+          ...p,
+          branch_code: codes.includes(p.branch_code) ? p.branch_code : '',
+        }));
+      } catch {
+        if (cancelled) return;
+        setCollegeBranches([]);
+        setForm(p => ({ ...p, branch_code: '' }));
+        toast.error('Could not load branches for this college.');
+      } finally {
+        if (!cancelled) setBranchesLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
+  }, [form.instcode]);
 
   const currentColor = probColor(form.desired_probability);
 
@@ -101,17 +139,45 @@ export default function CalculatorPage() {
               label="College"
               value={form.collegeName}
               onChange={(instcode, name) => {
-                setForm(p => ({ ...p, instcode, collegeName: name }));
+                setForm(p => ({
+                  ...p,
+                  instcode,
+                  collegeName: name,
+                  branch_code: instcode === p.instcode ? p.branch_code : '',
+                }));
               }}
               placeholder="Start typing college name..."
             />
 
             <div>
               <label className="block text-[10px] font-bold uppercase tracking-[0.12em] text-ink-muted mb-1.5">Branch</label>
-              <select value={form.branch_code} onChange={e => update('branch_code', e.target.value)} className="liquid-input text-sm" required>
-                <option value="">Select branch...</option>
-                {Object.entries(BRANCH_MAP).map(([c, n]) => <option key={c} value={c}>{n}</option>)}
+              <select
+                value={form.branch_code}
+                onChange={e => update('branch_code', e.target.value)}
+                className="liquid-input text-sm"
+                required
+                disabled={!form.instcode || branchesLoading}
+              >
+                <option value="">
+                  {!form.instcode
+                    ? 'Select a college first...'
+                    : branchesLoading
+                      ? 'Loading branches...'
+                      : collegeBranches.length === 0
+                        ? 'No branches found'
+                        : 'Select branch...'}
+                </option>
+                {collegeBranches.map(code => (
+                  <option key={code} value={code}>
+                    {BRANCH_MAP[code] ? `${BRANCH_MAP[code]} (${code})` : code}
+                  </option>
+                ))}
               </select>
+              {form.instcode && !branchesLoading && collegeBranches.length > 0 && (
+                <p className="text-[10px] text-ink-muted mt-1.5">
+                  {collegeBranches.length} branch{collegeBranches.length !== 1 ? 'es' : ''} at this college
+                </p>
+              )}
             </div>
 
             <div className="grid grid-cols-2 gap-4">

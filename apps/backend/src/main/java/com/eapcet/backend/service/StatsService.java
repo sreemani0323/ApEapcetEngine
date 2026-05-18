@@ -159,6 +159,19 @@ public class StatsService {
                 .build();
     }
 
+    /**
+     * Branch codes offered at a college — for reverse calculator / choice filling.
+     */
+    @Cacheable(value = "collegeBranches", key = "#instcode")
+    public List<CollegeBranchOptionDTO> getCollegeBranches(String instcode) {
+        return collegeBranchRepository.findByCollegeInstcode(instcode).stream()
+                .map(cb -> CollegeBranchOptionDTO.builder()
+                        .branchCode(cb.getBranch().getBranchCode())
+                        .build())
+                .sorted(Comparator.comparing(CollegeBranchOptionDTO::getBranchCode))
+                .collect(Collectors.toList());
+    }
+
     @Cacheable("collegeNames")
     public List<CollegeNameDTO> getAllCollegeNames() {
         log.info("Building college name index for client-side Trie");
