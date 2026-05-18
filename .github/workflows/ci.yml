@@ -60,5 +60,7 @@ jobs:
           cache-dependency-path: apps/ml-service/requirements.txt
       - name: Install
         run: pip install -r requirements.txt
+      - name: Bootstrap model artifacts
+        run: python bootstrap_model.py
       - name: Syntax check
         run: python -c "import app; print('ML service module loads OK')"

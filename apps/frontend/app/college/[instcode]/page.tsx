@@ -8,7 +8,6 @@ import { getCollegeDetail } from '@/lib/api';
 import { BRANCH_MAP } from '@/lib/constants';
 import { ComposedChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
-import { DataNode } from '@/components/liquid/data-node';
 import { ArrowLeft, MapPin, Building, GraduationCap, IndianRupee, TrendingUp, TrendingDown, Minus, ExternalLink, Users } from 'lucide-react';
 
 export default function CollegeDetailPage() {
@@ -116,19 +115,25 @@ export default function CollegeDetailPage() {
           { icon: Building, label: 'Region', value: college.region || '—' },
           { icon: IndianRupee, label: 'Est.', value: college.estd || '—' },
         ].map((s, i) => (
-          <DataNode key={i} delay={0.15 + i * 0.05}>
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 + i * 0.05 }}
+            className="bg-surface border border-node-border rounded-xl p-4 shadow-float"
+          >
             <motion.div className="flex items-center gap-2 mb-1">
               <s.icon size={14} className="text-signal" />
               <span className="text-[10px] font-bold uppercase tracking-widest text-ink-muted">{s.label}</span>
             </motion.div>
             <motion.div className="font-display font-bold text-lg text-ink">{s.value}</motion.div>
-          </DataNode>
+          </motion.div>
         ))}
       </motion.div>
 
       <motion.div className="grid lg:grid-cols-2 gap-6 mb-10">
         {cutoffData.length > 0 && (
-          <DataNode delay={0.3}>
+          <motion.div className="bg-surface border border-node-border rounded-2xl p-5 shadow-float">
             <h3 className="font-display font-bold text-ink mb-4 text-sm">Cutoff Trend (2022 → 2024)</h3>
             <ResponsiveContainer width="100%" height={220}>
               <ComposedChart data={cutoffData}>
@@ -139,10 +144,10 @@ export default function CollegeDetailPage() {
                 <Line type="monotone" dataKey="c2024" stroke="#6366f1" strokeWidth={2} dot={false} name="2024" />
               </ComposedChart>
             </ResponsiveContainer>
-          </DataNode>
+          </motion.div>
         )}
         {placementData.length > 0 && (
-          <DataNode delay={0.35}>
+          <motion.div className="bg-surface border border-node-border rounded-2xl p-5 shadow-float">
             <h3 className="font-display font-bold text-ink mb-4 text-sm">Placement Overview (LPA)</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={placementData}>
@@ -153,11 +158,11 @@ export default function CollegeDetailPage() {
                 <Bar dataKey="top" fill="#10b981" name="Top" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </DataNode>
+          </motion.div>
         )}
       </motion.div>
 
-      <DataNode delay={0.4}>
+      <motion.div className="mt-2">
         <h3 className="font-display font-bold text-ink mb-4">Branch Matrix</h3>
         <motion.div className="bg-surface border border-node-border rounded-2xl overflow-hidden">
           <motion.div className="overflow-x-auto">
@@ -208,7 +213,7 @@ export default function CollegeDetailPage() {
             </table>
           </motion.div>
         </motion.div>
-      </DataNode>
+      </motion.div>
 
       <motion.div className="mt-10 p-6 bg-gradient-to-r from-signal/5 to-processing/5 border border-signal/10 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
         <motion.div>
