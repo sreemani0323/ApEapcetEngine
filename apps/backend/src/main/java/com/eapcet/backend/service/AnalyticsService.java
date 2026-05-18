@@ -111,7 +111,14 @@ public class AnalyticsService {
         // FALLBACK: No package data loaded. Return branch density (college count per
         // branch).
         log.warn("No placement package data found. Returning branch density fallback.");
-        for (Map.Entry<String, List<CollegeBranch>> entry : groupedByBranch.entrySet()) {
+        
+        // We must load all branches because allBranches was empty!
+        List<CollegeBranch> fallbackBranches = collegeBranchRepository.findAll();
+        Map<String, List<CollegeBranch>> fallbackGrouped = fallbackBranches.stream()
+                .filter(cb -> cb != null && cb.getBranch() != null && cb.getBranch().getBranchCode() != null)
+                .collect(Collectors.groupingBy(cb -> cb.getBranch().getBranchCode()));
+
+        for (Map.Entry<String, List<CollegeBranch>> entry : fallbackGrouped.entrySet()) {
             String branchCode = entry.getKey();
             List<CollegeBranch> branches = entry.getValue();
             String branchType = branches.get(0).getBranch().getBranchType();
