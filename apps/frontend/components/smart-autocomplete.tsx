@@ -18,6 +18,15 @@ interface CollegeEntry {
   typeLabel: string;
 }
 
+function normalizeCollegeEntry(raw: Record<string, string>): CollegeEntry {
+  return {
+    instcode: raw.instcode,
+    name: raw.name,
+    district: raw.district,
+    typeLabel: raw.typeLabel || raw.type_label || '',
+  };
+}
+
 function createTrieNode(): TrieNode {
   return { children: new Map(), entries: [] };
 }
@@ -59,21 +68,28 @@ async function ensureTrieLoaded(): Promise<TrieNode> {
   if (globalTrie) return globalTrie;
   if (!triePromise) {
     trieLoading = true;
-    triePromise = getCollegeNames().then(({ data }) => {
-      const root = createTrieNode();
-      for (const c of data as CollegeEntry[]) {
-        // Index by full name
-        insertTrie(root, c.name, c);
-        // Index by each word for fuzzy-ish prefix matching
-        for (const word of c.name.split(/\s+/)) {
-          if (word.length > 2) insertTrie(root, word, c);
+    triePromise = (async () => {
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const { data } = await getCollegeNames();
+          const root = createTrieNode();
+          for (const raw of data as Record<string, string>[]) {
+            const c = normalizeCollegeEntry(raw);
+            insertTrie(root, c.name, c);
+            for (const word of c.name.split(/\s+/)) {
+              if (word.length > 2) insertTrie(root, word, c);
+            }
+            insertTrie(root, c.instcode, c);
+          }
+          globalTrie = root;
+          trieLoading = false;
+          return;
+        } catch {
+          if (attempt === 2) throw new Error('Failed to load college names');
+          await new Promise(r => setTimeout(r, 2000));
         }
-        // Index by instcode
-        insertTrie(root, c.instcode, c);
       }
-      globalTrie = root;
-      trieLoading = false;
-    });
+    })();
   }
   await triePromise;
   return globalTrie!;
@@ -109,6 +125,9 @@ export function SmartAutocomplete({ value, onChange, placeholder = 'Search colle
   const handleSearch = useCallback((q: string) => {
     setQuery(q);
     setActiveIdx(-1);
+    if (q.length < 1) {
+      onChange('', '');
+    }
     if (!trie || q.length < 1) {
       setResults([]);
       setOpen(false);

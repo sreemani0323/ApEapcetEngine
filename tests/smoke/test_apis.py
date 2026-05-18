@@ -1,88 +1,74 @@
-import requests
-import json
+"""
+Smoke tests for EAPCET Intelligence Engine APIs.
+Run: pytest tests/smoke/test_apis.py -v
+Requires: backend :8080, ml-service :8000
+"""
+import os
 import time
 
-BASE_URL = "http://localhost:8080/api"
+import pytest
+import requests
 
-def print_json(data):
-    print(json.dumps(data, indent=2))
+BACKEND = os.environ.get("BACKEND_URL", "http://localhost:8080")
+ML = os.environ.get("ML_URL", "http://localhost:8000")
+TIMEOUT = 30
 
-def test_endpoints():
-    print(f"Connecting to Spring Boot Backend on {BASE_URL}...")
-    
-    # Wait for server to be up
-    max_retries = 3
-    for i in range(max_retries):
+
+def _wait(url: str, path: str, attempts: int = 5) -> requests.Response:
+    last = None
+    for _ in range(attempts):
         try:
-            requests.get("http://localhost:8080")
-            break
-        except requests.exceptions.ConnectionError:
-            if i == max_retries - 1:
-                print("Error: The Spring Boot server (port 8080) is not running!")
-                print("Please click 'Run' in IntelliJ / PyCharm first, then run this test script again.")
-                return
-            print("  Waiting for server to start...")
-            time.sleep(2)
-            
+            last = requests.get(f"{url}{path}", timeout=TIMEOUT)
+            if last.status_code < 500:
+                return last
+        except requests.RequestException as e:
+            last = e
+        time.sleep(2)
+    if isinstance(last, requests.Response):
+        return last
+    raise RuntimeError(f"Service not reachable: {url}{path} ({last})")
 
-    print("\n" + "="*50)
-    print("2. Testing: GET /api/analytics/compare-branches")
-    print("="*50)
-    try:
-        res = requests.get(f"{BASE_URL}/analytics/compare-branches")
-        data = res.json()
-        print(f"Success! Comparing all branches by package data.")
-        print("Top 2 Branches:")
-        print_json(data[:2] if len(data) > 1 else data)
-    except Exception as e:
-        print(f"Failed: {e}")
 
-    print("\n" + "="*50)
-    print("3. Testing: GET /api/analytics/trending-branches")
-    print("="*50)
-    try:
-        res = requests.get(f"{BASE_URL}/analytics/trending-branches")
-        data = res.json()
-        print(f"Success! Discovered {len(data)} distinct trends.")
-        print("Highest Trending Subject:")
-        print_json(data[0] if data else {})
-    except Exception as e:
-        print(f"Failed: {e}")
+def test_ml_readiness():
+    r = _wait(ML, "/readiness")
+    assert r.status_code == 200
+    assert r.json().get("ready") is True
 
-    print("\n" + "="*50)
-    print("4. Testing: POST /api/search-colleges")
-    print("="*50)
-    try:
-        payload = {
-            "rank": 24000,
-            "category": "OC_BOYS",
-            "branchType": "Pure_CSE"
-        }
-        res = requests.post(f"{BASE_URL}/search-colleges", json=payload)
-        data = res.json()
-        print(f"Success! Extracted {len(data)} rich college cards.")
-        print("Top Probability Result:")
-        print_json(data[0] if data else {})
-    except Exception as e:
-        print(f"Failed: {e}")
 
-    print("\n" + "="*50)
-    print("5. Testing: POST /api/reverse-calculate")
-    print("="*50)
-    try:
-        payload = {
-            "instcode": "JNTK",
-            "branch_code": "CSE",
-            "category": "OC_BOYS",
-            "desired_probability": 80.0
-        }
-        res = requests.post(f"{BASE_URL}/reverse-calculate", json=payload)
-        data = res.json()
-        print("Success! Algebraically reversed ML output.")
-        print("Rank Required for exactly 80% Chance at JNTK CSE:")
-        print_json(data)
-    except Exception as e:
-        print(f"Failed: {e}")
+def test_backend_health():
+    r = _wait(BACKEND, "/actuator/health")
+    assert r.status_code == 200
 
-if __name__ == "__main__":
-    test_endpoints()
+
+def test_dashboard_stats():
+    r = requests.get(f"{BACKEND}/api/stats/dashboard", timeout=TIMEOUT)
+    assert r.status_code == 200
+    data = r.json()
+    assert data.get("total_colleges", 0) >= 0
+
+
+def test_college_names():
+    r = requests.get(f"{BACKEND}/api/colleges/names", timeout=TIMEOUT)
+    assert r.status_code == 200
+    assert isinstance(r.json(), list)
+
+
+def test_search_requires_input():
+    r = requests.post(f"{BACKEND}/api/search-colleges", json={}, timeout=TIMEOUT)
+    assert r.status_code == 400
+
+
+def test_search_with_rank():
+    r = requests.post(
+        f"{BACKEND}/api/search-colleges",
+        json={"rank": 15000, "category": "OC_BOYS", "district": "Guntur"},
+        timeout=TIMEOUT,
+    )
+    assert r.status_code == 200
+    assert isinstance(r.json(), list)
+
+
+def test_trending_branches():
+    r = requests.get(f"{BACKEND}/api/analytics/trending-branches", timeout=TIMEOUT)
+    assert r.status_code == 200
+    assert isinstance(r.json(), list)

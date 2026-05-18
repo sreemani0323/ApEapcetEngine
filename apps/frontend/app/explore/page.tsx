@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, Suspense } from 'react';
+import { useState, useEffect, useMemo, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -18,7 +18,10 @@ function ExploreContent() {
   const [affiliation, setAffiliation] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
+  const fetchSeq = useRef(0);
+
   useEffect(() => {
+    const seq = ++fetchSeq.current;
     (async () => {
       setLoading(true);
       try {
@@ -27,11 +30,15 @@ function ExploreContent() {
         if (type) params.type = type;
         if (affiliation) params.affiliation = affiliation;
         const { data } = await exploreColleges(params);
+        if (seq !== fetchSeq.current) return;
         setColleges(data);
       } catch {
+        if (seq !== fetchSeq.current) return;
         toast.error('Failed to load institutions');
         setColleges([]);
-      } finally { setLoading(false); }
+      } finally {
+        if (seq === fetchSeq.current) setLoading(false);
+      }
     })();
   }, [district, type, affiliation]);
 
@@ -92,16 +99,18 @@ function ExploreContent() {
                   <h3 className="font-display font-bold text-ink text-sm leading-tight mb-1.5 group-hover:text-signal transition-colors">{c.name}</h3>
                   <p className="text-xs text-ink-3 flex items-center gap-1.5 mb-4">
                     <MapPin size={11} className="text-ink-muted" /> {c.district}
-                    <a
-                      href={`https://www.google.com/maps/search/${encodeURIComponent((c.name || '') + ', ' + (c.district || '') + ', Andhra Pradesh')}`}
-                      target="_blank" rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-signal/10 text-signal hover:bg-signal/20 transition-colors text-[10px] font-bold"
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(`https://www.google.com/maps/search/${encodeURIComponent((c.name || '') + ', ' + (c.district || '') + ', Andhra Pradesh')}`, '_blank');
+                      }}
+                      className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-signal/10 text-signal hover:bg-signal/20 transition-colors text-[10px] font-bold cursor-pointer"
                       title="View on Google Maps"
                     >
-                      <MapPin size={10} />
-                      Map
-                    </a>
+                      <MapPin size={10} /> Map
+                    </button>
                   </p>
                   <div className="flex flex-wrap gap-3 text-xs pt-3 border-t border-node-border/50">
                     {c.type && <Stat label="Type" value={COLLEGE_TYPE_MAP[c.type] || c.type} />}

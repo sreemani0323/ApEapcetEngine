@@ -8,8 +8,10 @@ import com.eapcet.backend.model.CollegeBranch;
 import com.eapcet.backend.model.Cutoff;
 import com.eapcet.backend.repository.CollegeBranchRepository;
 import com.eapcet.backend.repository.CutoffRepository;
+import com.eapcet.backend.util.AdmissionProbability;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -20,58 +22,71 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CollegeSearchService {
 
+    public static final int MAX_SEARCH_RESULTS = 2000;
+
     private final CollegeBranchRepository collegeBranchRepository;
     private final CutoffRepository cutoffRepository;
     private final MLServiceClient mlServiceClient;
 
-    /**
-     * Search colleges with ML probability prediction.
-     * OPTIMIZED: Batch cutoff fetch replaces N+1 individual queries.
-     * Before: 200 branches × 2 queries = 400 DB round-trips.
-     * After: 1 batch query for all cutoffs.
-     */
     public List<CollegeCardResponseDTO> searchColleges(SearchRequestDTO req) {
         log.info("Performing flexible search: {}", req);
+
+        boolean hasFilter = req.getDistrict() != null || req.getBranchCode() != null
+                || req.getRegion() != null || req.getCollegeType() != null
+                || req.getCollegeName() != null;
+        boolean hasRank = req.getRank() != null && req.getRank() > 0;
+
+        if (!hasFilter && !hasRank) {
+            throw new IllegalArgumentException(
+                    "Provide your EAPCET rank and/or at least one filter (district, branch, region, type, or college name).");
+        }
 
         List<CollegeBranch> baseResults = collegeBranchRepository.searchFlexible(
                 req.getDistrict(),
                 req.getBranchCode(),
                 req.getRegion(),
                 req.getCollegeType(),
-                req.getCollegeName()
+                req.getCollegeName(),
+                PageRequest.of(0, MAX_SEARCH_RESULTS)
         );
 
         if (baseResults.isEmpty()) {
             return Collections.emptyList();
         }
 
-        String safeCategory = req.getCategory() != null && !req.getCategory().isEmpty()
-            ? req.getCategory()
-            : "OC_BOYS";
+        String safeCategory = (req.getCategory() != null && !req.getCategory().isBlank())
+                ? req.getCategory().trim().toUpperCase()
+                : "OC_BOYS";
 
-        // 2. BATCH fetch cutoffs for ALL matched branches in ONE query (was N+1)
         List<Long> cbIds = baseResults.stream()
                 .map(CollegeBranch::getCollegeBranchId)
                 .collect(Collectors.toList());
 
         List<Cutoff> batchCutoffs = cutoffRepository.findBatchByCbIdsAndCategoryAndYears(
                 cbIds, safeCategory, List.of(2022, 2024));
+        List<Cutoff> ocCutoffs = cutoffRepository.findBatchByCbIdsAndCategoryAndYears(
+                cbIds, "OC_BOYS", List.of(2024));
 
-        // Index by (cbId, year) for O(1) lookup
         Map<String, Integer> cutoffIndex = new HashMap<>();
         for (Cutoff c : batchCutoffs) {
-            cutoffIndex.put(c.getCollegeBranch().getCollegeBranchId() + "_" + c.getYear(), c.getCutoffRank());
+            cutoffIndex.put(
+                    c.getCollegeBranch().getCollegeBranchId() + "_" + c.getYear(),
+                    c.getCutoffRank());
         }
 
-        // 3. Prepare Batch Request for ML Service
+        Map<Long, Integer> ocBoys2024 = new HashMap<>();
+        for (Cutoff c : ocCutoffs) {
+            if (c.getYear() == 2024) {
+                ocBoys2024.put(c.getCollegeBranch().getCollegeBranchId(), c.getCutoffRank());
+            }
+        }
+
         List<MLPredictionRequestDTO.MLPredictionItem> mlItems = new ArrayList<>();
-
         for (CollegeBranch cb : baseResults) {
-            Integer rank24 = cutoffIndex.get(cb.getCollegeBranchId() + "_2024");
-            Integer rank22 = cutoffIndex.get(cb.getCollegeBranchId() + "_2022");
-
+            Long cbId = cb.getCollegeBranchId();
             mlItems.add(MLPredictionRequestDTO.MLPredictionItem.builder()
-                    .collegeBranchId(cb.getCollegeBranchId())
+                    .collegeBranchId(cbId)
+                    .collegeId(cb.getCollege().getCollegeId())
                     .userRank(req.getRank())
                     .category(safeCategory)
                     .branchCode(cb.getBranch().getBranchCode())
@@ -81,45 +96,40 @@ public class CollegeSearchService {
                     .affl(cb.getCollege().getAffl())
                     .aReg(cb.getCollege().getAReg())
                     .estd(cb.getCollege().getEstd())
-                    .cutoffRank2024(rank24)
-                    .cutoffRank2022(rank22)
+                    .cutoffRank2024(cutoffIndex.get(cbId + "_2024"))
+                    .cutoffRank2022(cutoffIndex.get(cbId + "_2022"))
+                    .ocBoysCutoff2024(ocBoys2024.get(cbId))
                     .build());
         }
 
-        // 4. Send bulk POST to Python ML microservice
-        MLPredictionRequestDTO mlReq = MLPredictionRequestDTO.builder().items(mlItems).build();
-        MLPredictionResponseDTO mlRes = mlServiceClient.getPredictions(mlReq);
-
-        // 5. Merge probability with entity data
-        Map<Long, MLPredictionResponseDTO.MLPredictionResult> mlResMap = mlRes.getResults().stream()
-                .collect(Collectors.toMap(
-                        MLPredictionResponseDTO.MLPredictionResult::getCollegeBranchId,
-                        r -> r
-                ));
+        Map<Long, MLPredictionResponseDTO.MLPredictionResult> mlResMap = new HashMap<>();
+        if (!mlItems.isEmpty()) {
+            MLPredictionRequestDTO mlReq = MLPredictionRequestDTO.builder().items(mlItems).build();
+            MLPredictionResponseDTO mlRes = mlServiceClient.getPredictions(mlReq);
+            if (mlRes != null && mlRes.getResults() != null) {
+                for (MLPredictionResponseDTO.MLPredictionResult r : mlRes.getResults()) {
+                    if (r != null && r.getCollegeBranchId() != null) {
+                        mlResMap.putIfAbsent(r.getCollegeBranchId(), r);
+                    }
+                }
+            }
+        }
 
         List<CollegeCardResponseDTO> cards = new ArrayList<>();
         for (CollegeBranch cb : baseResults) {
-            MLPredictionResponseDTO.MLPredictionResult mlr = mlResMap.get(cb.getCollegeBranchId());
+            Long cbId = cb.getCollegeBranchId();
+            MLPredictionResponseDTO.MLPredictionResult mlr = mlResMap.get(cbId);
 
-            // Actual cutoffs from DB (always available)
-            Integer dbCutoff24 = cutoffIndex.get(cb.getCollegeBranchId() + "_2024");
-
-            // Use ML predicted cutoff if available, otherwise fall back to DB cutoff
+            Integer dbCutoff24 = cutoffIndex.get(cbId + "_2024");
             Integer effectiveCutoff = (mlr != null && mlr.getPredictedCutoff() != null)
                     ? mlr.getPredictedCutoff() : dbCutoff24;
 
-            // Use ML probability if available, otherwise compute simple fallback
             Double effectiveProb = (mlr != null) ? mlr.getProbabilityPercent() : null;
             Integer effectiveGap = (mlr != null) ? mlr.getRankGap() : null;
 
-            if (effectiveProb == null && effectiveCutoff != null && req.getRank() != null && req.getRank() > 0) {
-                // Simple fallback probability when ML is down
-                int gap = effectiveCutoff - req.getRank();
-                double relMargin = (double) gap / effectiveCutoff;
-                double z = (relMargin + 0.05) / 0.20;
-                double rawProb = 100.0 / (1.0 + Math.exp(-z * 3.0 / 3.5));
-                effectiveProb = Math.round((2.0 + (rawProb / 100.0) * 93.0) * 10.0) / 10.0;
-                effectiveGap = gap;
+            if (effectiveProb == null && effectiveCutoff != null && hasRank) {
+                effectiveProb = AdmissionProbability.rankToProbability(req.getRank(), effectiveCutoff);
+                effectiveGap = effectiveCutoff - req.getRank();
             }
 
             cards.add(CollegeCardResponseDTO.builder()
@@ -136,9 +146,9 @@ public class CollegeSearchService {
                     .build());
         }
 
-        // 6. Sort by probability descending
         return cards.stream()
-                .sorted(Comparator.comparing(CollegeCardResponseDTO::getProbabilityPercent,
+                .sorted(Comparator.comparing(
+                        CollegeCardResponseDTO::getProbabilityPercent,
                         Comparator.nullsLast(Comparator.reverseOrder())))
                 .collect(Collectors.toList());
     }

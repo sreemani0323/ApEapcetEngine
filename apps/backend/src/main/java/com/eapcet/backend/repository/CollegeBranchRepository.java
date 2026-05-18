@@ -1,6 +1,7 @@
 package com.eapcet.backend.repository;
 
 import com.eapcet.backend.model.CollegeBranch;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CollegeBranchRepository extends JpaRepository<CollegeBranch, Long>,
@@ -32,8 +34,28 @@ public interface CollegeBranchRepository extends JpaRepository<CollegeBranch, Lo
             @Param("branchCode") String branchCode,
             @Param("region") String region,
             @Param("collegeType") String collegeType,
-            @Param("collegeName") String collegeName
+            @Param("collegeName") String collegeName,
+            Pageable pageable
     );
+
+    @Query("""
+        SELECT cb FROM CollegeBranch cb
+        JOIN FETCH cb.college c
+        JOIN FETCH cb.branch b
+        WHERE LOWER(c.instcode) = LOWER(:instcode)
+          AND b.branchCode = :branchCode
+    """)
+    Optional<CollegeBranch> findByInstcodeAndBranchCode(
+            @Param("instcode") String instcode,
+            @Param("branchCode") String branchCode
+    );
+
+    @Query("""
+        SELECT cb FROM CollegeBranch cb
+        JOIN FETCH cb.branch b
+        WHERE cb.avgPackage IS NOT NULL OR cb.highestPackage IS NOT NULL
+    """)
+    List<CollegeBranch> findAllWithPackageData();
 
     /** Direct instcode lookup — O(log N) via index */
     @Query("""

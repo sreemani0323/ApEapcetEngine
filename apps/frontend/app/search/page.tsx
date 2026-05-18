@@ -89,21 +89,23 @@ function SearchContent() {
   const [filterPackage, setFilterPackage] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  // ── FIX #1: useRef for rank input to prevent focus hijacking ──
   const rankInputRef = useRef<HTMLInputElement>(null);
+  const searchAbortRef = useRef<AbortController | null>(null);
+  const searchSeqRef = useRef(0);
 
   const update = useCallback((k: string, v: string) => {
     setForm(p => ({ ...p, [k]: v }));
   }, []);
 
-  // Auto-trigger search if rank param present
+  useEffect(() => () => { setTaskState('idle'); }, [setTaskState]);
+
+  // Deep-link: /search?rank=15000 auto-runs search
   useEffect(() => {
     const r = searchParams.get('rank');
     if (r && r !== form.rank) {
       setForm(f => ({ ...f, rank: r }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  }, [searchParams, form.rank]);
 
   // ── Rank tier detection (memoized, non-blocking) ──
   const rankTier = useMemo(() => {
@@ -132,17 +134,21 @@ function SearchContent() {
 
   const handleSearch = useCallback(async () => {
     if (!form.rank && !form.district && !form.branchCode) {
-      toast.error('Configure at least one parameter.');
+      toast.error('Enter your EAPCET rank and/or at least one filter.');
       return;
     }
-    // Rank validation
     if (form.rank) {
       const r = Number(form.rank);
-      if (r < 1 || r > 250000) {
-        toast.error('Enter a valid rank between 1 and 2,50,000.', { duration: 4000, icon: '⚠️' });
+      if (r < 1 || r > 500000) {
+        toast.error('Enter a valid rank between 1 and 5,00,000.', { duration: 4000, icon: '⚠️' });
         return;
       }
     }
+    searchAbortRef.current?.abort();
+    const controller = new AbortController();
+    searchAbortRef.current = controller;
+    const seq = ++searchSeqRef.current;
+
     setTaskState('processing');
     setSearched(true);
     setFilter('all');
@@ -152,7 +158,7 @@ function SearchContent() {
     setVisibleCount(WINDOW_SIZE);
     setShuffleSeed(Date.now());
     try {
-      const payload: any = {};
+      const payload: Record<string, unknown> = {};
       if (form.rank) payload.rank = Number(form.rank);
       if (form.caste && form.gender) payload.category = `${form.caste}_${form.gender}`;
       if (form.district) payload.district = form.district;
@@ -160,17 +166,29 @@ function SearchContent() {
       if (form.branchCode) payload.branchCode = form.branchCode;
 
       const { data } = await searchColleges(payload);
+      if (controller.signal.aborted || seq !== searchSeqRef.current) return;
+
       setResults(data);
       setTaskState(data.length > 0 ? 'complete' : 'idle');
       if (!data.length) toast('No pathways matched.', { icon: '🔍' });
       else toast.success(`${data.length} projections computed`);
     } catch (err: any) {
+      if (controller.signal.aborted || seq !== searchSeqRef.current) return;
       const msg = err?.userMessage || 'Engine disconnected.';
       toast.error(msg);
       setResults([]);
       setTaskState('error');
     }
   }, [form, setTaskState]);
+
+  useEffect(() => {
+    const r = searchParams.get('rank');
+    if (r && /^\d+$/.test(r)) {
+      const timer = setTimeout(() => { handleSearch(); }, 100);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.get('rank')]);
 
   // ── Unique values for result-level filter dropdowns ──
   const resultDistricts = useMemo(() => [...new Set(results.map(c => c.district).filter(Boolean))].sort(), [results]);
@@ -299,7 +317,7 @@ function SearchContent() {
                       {rankTier && <span className={`text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${tierMessages[rankTier].color}`}>{tierMessages[rankTier].label}</span>}
                     </div>
                     <div className="flex items-center gap-2 flex-wrap">
-                      <FilterBar colleges={results} activeFilter={filter} onFilterChange={setFilter} />
+                      <FilterBar colleges={filtered} activeFilter={filter} onFilterChange={setFilter} />
                       <button onClick={() => setShowFilters(f => !f)}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-all cursor-pointer ${
                           showFilters || filterDistrict || filterBranch || filterPackage

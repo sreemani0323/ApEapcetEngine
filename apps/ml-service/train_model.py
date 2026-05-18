@@ -227,13 +227,20 @@ def train_model(df):
         "n_jobs": -1,
     }
 
-    # ---- 5-Fold CV ----
-    print("Running 5-fold Cross-Validation...")
-    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    # ---- 5-Fold CV (group by college_branch to reduce leakage) ----
+    print("Running 5-fold Cross-Validation (grouped by college_branch_id)...")
+    groups = train_df["college_branch_id"].values
+    unique_groups = np.unique(groups)
+    rng = np.random.default_rng(42)
+    rng.shuffle(unique_groups)
+    fold_groups = np.array_split(unique_groups, 5)
     cv_scores = []
-    for fold, (tr_idx, vl_idx) in enumerate(kf.split(X)):
-        X_tr, X_vl = X.iloc[tr_idx], X.iloc[vl_idx]
-        y_tr, y_vl = y.iloc[tr_idx], y.iloc[vl_idx]
+    for fold, held_out in enumerate(fold_groups):
+        held_set = set(held_out)
+        vl_mask = np.isin(groups, list(held_set))
+        tr_mask = ~vl_mask
+        X_tr, X_vl = X[tr_mask], X[vl_mask]
+        y_tr, y_vl = y[tr_mask], y[vl_mask]
 
         d_tr = lgb.Dataset(X_tr, label=y_tr)
         d_vl = lgb.Dataset(X_vl, label=y_vl, reference=d_tr)
@@ -250,10 +257,16 @@ def train_model(df):
 
     print(f"  Mean CV MAE: {np.mean(cv_scores):,.0f} ± {np.std(cv_scores):,.0f}")
 
-    # ---- Train final model on full data ----
+    # ---- Train final model on full data (with holdout early stopping) ----
     print("\nTraining final model on full dataset...")
-    d_full = lgb.Dataset(X, label=y)
-    final_model = lgb.train(params, d_full, num_boost_round=2000)
+    split = int(len(X) * 0.9)
+    d_tr = lgb.Dataset(X.iloc[:split], label=y.iloc[:split])
+    d_vl = lgb.Dataset(X.iloc[split:], label=y.iloc[split:], reference=d_tr)
+    final_model = lgb.train(
+        params, d_tr, num_boost_round=2000,
+        valid_sets=[d_vl], valid_names=["valid"],
+        callbacks=[lgb.early_stopping(50), lgb.log_evaluation(0)],
+    )
 
     # ---- Feature importance ----
     importance = pd.DataFrame({
@@ -266,22 +279,48 @@ def train_model(df):
     return final_model, label_encoders, feature_cols
 
 
-def save_artifacts(model, label_encoders, feature_cols):
+def build_group_lookups(df: pd.DataFrame) -> dict:
+    """Median lookup tables for inference — keys joined with '|'."""
+    year = 2024
+    d = df[df["year"] == year].copy()
+
+    def pack(series):
+        out = {}
+        for key, val in series.items():
+            parts = [str(x) for x in (key if isinstance(key, tuple) else (key,))]
+            out["|".join(parts)] = float(val)
+        return out
+
+    return {
+        "grp_med_dist_branch_cat": pack(
+            d.groupby(["district", "branch_code", "category", "year"])["cutoff_rank"].median()
+        ),
+        "grp_med_branch_cat": pack(
+            d.groupby(["branch_code", "category", "year"])["cutoff_rank"].median()
+        ),
+        "grp_med_dist_cat": pack(
+            d.groupby(["district", "category", "year"])["cutoff_rank"].median()
+        ),
+        "college_median": pack(
+            d.groupby(["college_id", "year"])["cutoff_rank"].median()
+        ),
+        "median_estd": float(pd.to_numeric(df["estd"], errors="coerce").median()),
+    }
+
+
+def save_artifacts(model, label_encoders, feature_cols, group_stats):
     """Save the trained model and metadata for FastAPI to load."""
-    model_path = os.path.join(MODEL_DIR, "probability_model.pkl")
-    le_path    = os.path.join(MODEL_DIR, "label_encoders.pkl")
-    fc_path    = os.path.join(MODEL_DIR, "feature_cols.pkl")
-
-    with open(model_path, "wb") as f:
-        pickle.dump(model, f)
-    with open(le_path, "wb") as f:
-        pickle.dump(label_encoders, f)
-    with open(fc_path, "wb") as f:
-        pickle.dump(feature_cols, f)
-
-    print(f"\nSaved: {model_path}")
-    print(f"Saved: {le_path}")
-    print(f"Saved: {fc_path}")
+    artifacts = {
+        "probability_model.pkl": model,
+        "label_encoders.pkl": label_encoders,
+        "feature_cols.pkl": feature_cols,
+        "group_stats.pkl": group_stats,
+    }
+    for name, obj in artifacts.items():
+        path = os.path.join(MODEL_DIR, name)
+        with open(path, "wb") as f:
+            pickle.dump(obj, f)
+        print(f"Saved: {path}")
 
 
 def compute_model_std(model, df, feature_cols):
@@ -323,7 +362,8 @@ def main():
     model, label_encoders, feature_cols = train_model(df)
 
     print("\n[4/4] Saving artifacts...")
-    save_artifacts(model, label_encoders, feature_cols)
+    group_stats = build_group_lookups(df)
+    save_artifacts(model, label_encoders, feature_cols, group_stats)
     model_std = compute_model_std(model, df, feature_cols)
 
     print(f"\n{'='*60}")

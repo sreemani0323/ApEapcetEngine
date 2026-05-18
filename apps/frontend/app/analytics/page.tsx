@@ -98,7 +98,7 @@ export default function AnalyticsPage() {
                       <XAxis dataKey="branch_code" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11, fontWeight: 600 }} dy={8} />
                       <YAxis hide reversed domain={['auto', 'auto']} />
                       <Tooltip cursor={{ fill: '#f8fafc', radius: 8 }} labelFormatter={(l: any) => BRANCH_MAP[l] || l}
-                        formatter={(v: any, n: any) => [v.toLocaleString('en-IN'), n.includes('2022') ? '2022' : '2024']}
+                        formatter={(v: any, n: any) => [v != null && !isNaN(v) ? Number(v).toLocaleString('en-IN') : '—', String(n).includes('2022') ? '2022' : '2024']}
                         contentStyle={ttStyle} />
                       <Bar dataKey="median_cutoff_2022" fill="#e2e8f0" barSize={10} radius={[6, 6, 6, 6]} />
                       <Bar dataKey="median_cutoff_2024" fill="#94a3b8" barSize={10} radius={[6, 6, 6, 6]} />

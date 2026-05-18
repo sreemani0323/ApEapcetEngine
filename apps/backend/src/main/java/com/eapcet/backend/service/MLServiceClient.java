@@ -26,13 +26,17 @@ public class MLServiceClient {
     private final RestClient restClient;
 
     public MLServiceClient(@Value("${ml.service.url}") String mlServiceUrl) {
+        java.net.http.HttpClient httpClient = java.net.http.HttpClient.newBuilder()
+                .version(java.net.http.HttpClient.Version.HTTP_1_1)
+                .connectTimeout(java.time.Duration.ofSeconds(10))
+                .build();
+        org.springframework.http.client.JdkClientHttpRequestFactory factory =
+                new org.springframework.http.client.JdkClientHttpRequestFactory(httpClient);
+        factory.setReadTimeout(java.time.Duration.ofSeconds(60));
+
         this.restClient = RestClient.builder()
                 .baseUrl(mlServiceUrl)
-                .requestFactory(new org.springframework.http.client.JdkClientHttpRequestFactory(
-                        java.net.http.HttpClient.newBuilder()
-                                .version(java.net.http.HttpClient.Version.HTTP_1_1)
-                                .build()
-                ))
+                .requestFactory(factory)
                 .build();
     }
 
@@ -61,6 +65,8 @@ public class MLServiceClient {
     @SuppressWarnings("unused")
     private MLPredictionResponseDTO fallbackPredictions(MLPredictionRequestDTO request, Throwable t) {
         log.warn("ML service circuit breaker activated. Returning empty predictions. Cause: {}", t.getMessage());
-        return new MLPredictionResponseDTO();
+        MLPredictionResponseDTO empty = new MLPredictionResponseDTO();
+        empty.setResults(java.util.Collections.emptyList());
+        return empty;
     }
 }

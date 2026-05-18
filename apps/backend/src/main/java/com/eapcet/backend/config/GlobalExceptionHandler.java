@@ -54,24 +54,6 @@ public class GlobalExceptionHandler {
         return pd;
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ProblemDetail handleRuntime(RuntimeException ex) {
-        log.error("Runtime error: {}", ex.getMessage(), ex);
-
-        // Detect ML service failures specifically
-        boolean isMlFailure = ex.getMessage() != null && ex.getMessage().contains("ML Service");
-        ProblemDetail pd = ProblemDetail.forStatusAndDetail(
-                isMlFailure ? HttpStatus.SERVICE_UNAVAILABLE : HttpStatus.INTERNAL_SERVER_ERROR,
-                isMlFailure
-                        ? "The prediction engine is temporarily unavailable. Please retry."
-                        : "An internal error occurred. Please try again."
-        );
-        pd.setType(isMlFailure ? TYPE_ML_SERVICE : TYPE_INTERNAL);
-        pd.setTitle(isMlFailure ? "Prediction Service Unavailable" : "Internal Server Error");
-        pd.setProperty("timestamp", Instant.now().toString());
-        return pd;
-    }
-
     @ExceptionHandler(io.github.resilience4j.circuitbreaker.CallNotPermittedException.class)
     public ProblemDetail handleCircuitBreakerOpen(io.github.resilience4j.circuitbreaker.CallNotPermittedException ex) {
         log.warn("Circuit breaker is OPEN for ML service: {}", ex.getMessage());

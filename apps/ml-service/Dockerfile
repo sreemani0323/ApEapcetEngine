@@ -6,6 +6,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Ensure model artifacts exist for cold-start deploys
+RUN python bootstrap_model.py
+
 RUN addgroup --system ml && adduser --system --group ml
 USER ml
 

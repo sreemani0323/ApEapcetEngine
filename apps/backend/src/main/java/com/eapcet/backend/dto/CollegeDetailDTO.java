@@ -36,6 +36,10 @@ public class CollegeDetailDTO {
     @JsonProperty("region")
     private String region;
 
+    /** Reservation category used for cutoff matrix (e.g. OC_BOYS, SC_GIRLS). */
+    @JsonProperty("category")
+    private String category;
+
     @JsonProperty("branches")
     private List<BranchDetail> branches;
 

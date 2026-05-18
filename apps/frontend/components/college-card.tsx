@@ -68,16 +68,23 @@ export const CollegeCard = memo(function CollegeCard({ college }: { college: any
           </div>
           <div className="flex flex-wrap items-center gap-2 text-xs text-ink-3 font-medium mb-4">
             <span className="flex items-center gap-1"><MapPin size={11} className="text-signal" /> {college.district}</span>
-            <a
-              href={`https://www.google.com/maps/search/${encodeURIComponent((college.college_name || '') + ', ' + (college.place || college.district || '') + ', Andhra Pradesh')}`}
-              target="_blank" rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-signal/10 text-signal hover:bg-signal/20 transition-colors text-[10px] font-bold"
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window.open(
+                  `https://www.google.com/maps/search/${encodeURIComponent((college.college_name || '') + ', ' + (college.place || college.district || '') + ', Andhra Pradesh')}`,
+                  '_blank',
+                  'noopener,noreferrer'
+                );
+              }}
+              className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-signal/10 text-signal hover:bg-signal/20 transition-colors text-[10px] font-bold cursor-pointer"
               title="View on Google Maps"
             >
               <MapPin size={10} />
               Map
-            </a>
+            </button>
             {college.place && <>
               <span className="w-1 h-1 bg-ink-ghost rounded-full" />
               <span>{college.place}</span>

@@ -83,6 +83,12 @@
             <version>2.2.0</version>
         </dependency>
 
+        <!-- AOP for @CircuitBreaker weaving -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
         <!-- ═══ Lombok ═══ -->
         <dependency>
             <groupId>org.projectlombok</groupId>

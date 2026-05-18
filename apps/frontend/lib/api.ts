@@ -34,6 +34,9 @@ api.interceptors.response.use(
       return api(config);
     }
 
+    const problem = error.response?.data as { detail?: string; message?: string; title?: string } | undefined;
+    const problemDetail = problem?.detail || problem?.message;
+
     // ─── Error Classification (after all retries exhausted) ───
     if (error.code === 'ECONNABORTED') {
       (error as any).classified = 'timeout';
@@ -46,10 +49,10 @@ api.interceptors.response.use(
       (error as any).userMessage = 'Too many requests. Please wait a moment.';
     } else if (error.response.status === 400) {
       (error as any).classified = 'validation';
-      (error as any).userMessage = (error.response.data as any)?.message || 'Invalid input parameters.';
+      (error as any).userMessage = problemDetail || 'Invalid input parameters.';
     } else if (error.response.status >= 500) {
       (error as any).classified = 'server';
-      (error as any).userMessage = (error.response.data as any)?.message || 'Server error. Please try again.';
+      (error as any).userMessage = problemDetail || 'Server error. Please try again.';
     } else {
       (error as any).classified = 'unknown';
       (error as any).userMessage = 'An unexpected error occurred.';
@@ -61,7 +64,8 @@ api.interceptors.response.use(
 export const getDashboardStats = () => api.get('/stats/dashboard');
 export const getDistrictSummary = () => api.get('/stats/district-summary');
 export const exploreColleges = (params: Record<string, string>) => api.get('/colleges/explore', { params });
-export const getCollegeDetail = (instcode: string) => api.get(`/colleges/${instcode}/detail`);
+export const getCollegeDetail = (instcode: string, category?: string) =>
+  api.get(`/colleges/${instcode}/detail`, { params: category ? { category } : {} });
 export const searchColleges = (params: Record<string, any>) => api.post('/search-colleges', params);
 export const reverseCalculate = (params: Record<string, any>) => api.post('/reverse-calculate', params);
 export const compareBranches = () => api.get('/analytics/compare-branches');

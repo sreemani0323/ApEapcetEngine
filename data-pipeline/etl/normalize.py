@@ -140,11 +140,9 @@ DIST_MAP = {
 }
 
 # ============================================================
-# BRANCH TYPE CLASSIFICATION (Removed per user request)
+# BRANCH TYPE CLASSIFICATION
 # ============================================================
-def classify_branch(code: str) -> str:
-    """Branch classifications have been removed. Defaults to Other."""
-    return "Other"
+from shared.branch_constants import classify_branch
 
 
 # ============================================================
@@ -256,7 +254,16 @@ def insert_colleges(engine, df_all: pd.DataFrame) -> dict:
                 conn.execute(text("""
                     INSERT INTO colleges (instcode, name, type, inst_reg, district, place, coed, affl, estd, a_reg)
                     VALUES (:instcode, :name, :type, :inst_reg, :district, :place, :coed, :affl, :estd, :a_reg)
-                    ON CONFLICT (instcode) DO UPDATE SET name = EXCLUDED.name
+                    ON CONFLICT (instcode) DO UPDATE SET
+                        name = EXCLUDED.name,
+                        type = EXCLUDED.type,
+                        inst_reg = EXCLUDED.inst_reg,
+                        district = EXCLUDED.district,
+                        place = EXCLUDED.place,
+                        coed = EXCLUDED.coed,
+                        affl = EXCLUDED.affl,
+                        estd = EXCLUDED.estd,
+                        a_reg = EXCLUDED.a_reg
                 """), {
                     "instcode": row["instcode"],
                     "name": row["name"],
@@ -337,29 +344,29 @@ def insert_college_branches(engine, df_all: pd.DataFrame, instcode_to_id: dict) 
     inserted = 0
     skipped = 0
 
-    with engine.connect() as conn:
-        values_str = []
-        for _, row in pairs.iterrows():
-            instcode = row["INSTCODE"]
-            branch = row["branch_code"]
-            cid = instcode_to_id.get(instcode)
-            if cid is None:
-                skipped += 1
-                continue
-            values_str.append(f"({cid}, '{branch}')")
+    batch_params = []
+    for _, row in pairs.iterrows():
+        cid = instcode_to_id.get(row["INSTCODE"])
+        if cid is None:
+            skipped += 1
+            continue
+        batch_params.append({"college_id": int(cid), "branch_code": row["branch_code"]})
 
-        for i in range(0, len(values_str), 500):
-            chunk = values_str[i:i + 500]
-            sql = f"INSERT INTO college_branches (college_id, branch_code) VALUES {','.join(chunk)} ON CONFLICT DO NOTHING"
+    with engine.connect() as conn:
+        sql = text("""
+            INSERT INTO college_branches (college_id, branch_code)
+            VALUES (:college_id, :branch_code)
+            ON CONFLICT DO NOTHING
+        """)
+        for i in range(0, len(batch_params), 500):
+            chunk = batch_params[i:i + 500]
             try:
-                conn.execute(text(sql))
+                conn.execute(sql, chunk)
                 conn.commit()
                 inserted += len(chunk)
             except Exception as e:
                 conn.rollback()
-                print(f"  Warning inserting batch: {e}")
-
-        conn.commit()
+                print(f"  Warning inserting college_branches batch: {e}")
 
         # Build the map
         result = conn.execute(text("""
@@ -415,24 +422,26 @@ def insert_cutoffs(engine, df_all: pd.DataFrame, cb_map: dict):
         df_cutoffs = pd.DataFrame(rows).drop_duplicates(subset=["college_branch_id", "year", "category"], keep="last")
         dedup_rows = df_cutoffs.to_dict(orient="records")
 
-        values_str = []
-        for r in dedup_rows:
-            cr = str(r["cutoff_rank"]) if r["cutoff_rank"] is not None else "NULL"
-            values_str.append(f"({r['college_branch_id']}, {r['year']}, '{r['category']}', {cr})")
-
+        year_inserted = 0
+        sql = text("""
+            INSERT INTO cutoffs (college_branch_id, year, category, cutoff_rank)
+            VALUES (:college_branch_id, :year, :category, :cutoff_rank)
+            ON CONFLICT (college_branch_id, year, category)
+            DO UPDATE SET cutoff_rank = EXCLUDED.cutoff_rank
+        """)
         with engine.connect() as conn:
-            for i in range(0, len(values_str), 500):
-                chunk = values_str[i:i + 500]
-                sql = f"INSERT INTO cutoffs (college_branch_id, year, category, cutoff_rank) VALUES {','.join(chunk)} ON CONFLICT (college_branch_id, year, category) DO UPDATE SET cutoff_rank = EXCLUDED.cutoff_rank"
+            for i in range(0, len(dedup_rows), 500):
+                chunk = dedup_rows[i:i + 500]
                 try:
-                    conn.execute(text(sql))
-                    conn.commit()  # commit each batch
+                    conn.execute(sql, chunk)
+                    conn.commit()
+                    year_inserted += len(chunk)
                 except Exception as e:
-                    conn.rollback()  # rollback on failure to save transaction
+                    conn.rollback()
                     print(f"    Warning at batch {i}: {e}")
                     total_skipped += len(chunk)
 
-        total_inserted += len(dedup_rows)
+        total_inserted += year_inserted
 
     print(f"  ✓ {total_inserted:,} cutoff records inserted/updated. ({total_skipped} skipped)")
     return total_inserted

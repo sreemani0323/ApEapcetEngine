@@ -5,6 +5,7 @@ import com.eapcet.backend.model.CollegeBranch;
 import com.eapcet.backend.model.Cutoff;
 import com.eapcet.backend.repository.CollegeBranchRepository;
 import com.eapcet.backend.repository.CutoffRepository;
+import com.eapcet.backend.util.AdmissionProbability;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,43 +26,45 @@ public class ReverseCalculatorService {
     public ReverseCalculatorResponseDTO reverseCalculate(ReverseCalculatorRequestDTO req) {
         log.info("Reverse calculating required rank for: {}", req);
 
-        // 1. Fetch exact College + Branch matching instcode
-        List<CollegeBranch> baseResults = collegeBranchRepository.searchFlexible(
-                null, req.getBranchCode(), null, null, null
-        );
-
-        Optional<CollegeBranch> targetCb = baseResults.stream()
-                .filter(cb -> cb.getCollege().getInstcode().equalsIgnoreCase(req.getInstcode()))
-                .findFirst();
+        Optional<CollegeBranch> targetCb = collegeBranchRepository.findByInstcodeAndBranchCode(
+                req.getInstcode(), req.getBranchCode());
 
         if (targetCb.isEmpty()) {
-            throw new IllegalArgumentException("College or Branch not found for instcode: " + req.getInstcode() + " branch: " + req.getBranchCode());
+            throw new IllegalArgumentException(
+                    "College or branch not found for instcode: " + req.getInstcode()
+                            + " branch: " + req.getBranchCode());
         }
 
         CollegeBranch cb = targetCb.get();
+        String category = req.getCategory() != null ? req.getCategory() : "OC_BOYS";
 
-        // 2. Fetch cutoffs
-        Integer rank24 = null;
-        Integer rank22 = null;
+        Integer rank24 = cutoffRepository
+                .findByCollegeBranch_CollegeBranchIdAndCategoryAndYear(
+                        cb.getCollegeBranchId(), category, 2024)
+                .map(Cutoff::getCutoffRank)
+                .orElse(null);
+        Integer rank22 = cutoffRepository
+                .findByCollegeBranch_CollegeBranchIdAndCategoryAndYear(
+                        cb.getCollegeBranchId(), category, 2022)
+                .map(Cutoff::getCutoffRank)
+                .orElse(null);
 
-        Optional<Cutoff> c24 = cutoffRepository.findByCollegeBranch_CollegeBranchIdAndCategoryAndYear(
-                cb.getCollegeBranchId(), req.getCategory(), 2024);
-        Optional<Cutoff> c22 = cutoffRepository.findByCollegeBranch_CollegeBranchIdAndCategoryAndYear(
-                cb.getCollegeBranchId(), req.getCategory(), 2022);
-
-        if (c24.isPresent()) rank24 = c24.get().getCutoffRank();
-        if (c22.isPresent()) rank22 = c22.get().getCutoffRank();
+        Integer ocBoys24 = cutoffRepository
+                .findByCollegeBranch_CollegeBranchIdAndCategoryAndYear(
+                        cb.getCollegeBranchId(), "OC_BOYS", 2024)
+                .map(Cutoff::getCutoffRank)
+                .orElse(null);
 
         int predictedCutoff;
 
-        // 3. Try ML service, fall back to direct cutoff if unavailable
         try {
             MLPredictionRequestDTO mlReq = MLPredictionRequestDTO.builder()
                     .items(Collections.singletonList(
                             MLPredictionRequestDTO.MLPredictionItem.builder()
                                     .collegeBranchId(cb.getCollegeBranchId())
+                                    .collegeId(cb.getCollege().getCollegeId())
                                     .userRank(10000)
-                                    .category(req.getCategory())
+                                    .category(category)
                                     .branchCode(cb.getBranch().getBranchCode())
                                     .district(cb.getCollege().getDistrict())
                                     .collegeType(cb.getCollege().getType())
@@ -71,39 +74,43 @@ public class ReverseCalculatorService {
                                     .estd(cb.getCollege().getEstd())
                                     .cutoffRank2024(rank24)
                                     .cutoffRank2022(rank22)
+                                    .ocBoysCutoff2024(ocBoys24)
                                     .build()
                     )).build();
 
             MLPredictionResponseDTO mlRes = mlServiceClient.getPredictions(mlReq);
-            predictedCutoff = mlRes.getResults().get(0).getPredictedCutoff();
+            List<MLPredictionResponseDTO.MLPredictionResult> results = mlRes.getResults();
+            if (results == null || results.isEmpty()
+                    || results.get(0).getPredictedCutoff() == null) {
+                throw new IllegalStateException("ML returned no cutoff prediction");
+            }
+            predictedCutoff = results.get(0).getPredictedCutoff();
         } catch (Exception e) {
-            log.warn("ML service unavailable, using 2024 cutoff as fallback: {}", e.getMessage());
-            // Fallback: use 2024 cutoff directly, or 2022 if 2024 unavailable
+            log.warn("ML service unavailable, using historical cutoff: {}", e.getMessage());
             if (rank24 != null) {
                 predictedCutoff = rank24;
             } else if (rank22 != null) {
                 predictedCutoff = rank22;
             } else {
-                throw new IllegalArgumentException("No cutoff data available for this college-branch-category combination.");
+                throw new IllegalArgumentException(
+                        "No cutoff data for this college, branch, and category combination.");
             }
         }
 
-        // 4. Reverse sigmoid math
-        double prob = req.getDesiredProbability();
-        prob = Math.max(0.001, Math.min(prob, 99.999));
-        
-        double z = -Math.log((100.0 / prob) - 1.0);
-        double scale = 1000.0;
-        
-        double gap = z * scale;
-        int requiredRank = (int) Math.round(predictedCutoff - gap);
+        Integer requiredRank = AdmissionProbability.probabilityToRequiredRank(
+                req.getDesiredProbability(), predictedCutoff);
+
+        if (requiredRank == null) {
+            throw new IllegalArgumentException(
+                    "Target probability is not achievable — try a lower percentage or a different branch.");
+        }
 
         return ReverseCalculatorResponseDTO.builder()
                 .collegeName(cb.getCollege().getName())
                 .branchCode(req.getBranchCode())
                 .predictedCutoff(predictedCutoff)
                 .desiredProbability(req.getDesiredProbability())
-                .requiredRank(requiredRank > 0 ? requiredRank : 1)
+                .requiredRank(requiredRank)
                 .build();
     }
 }

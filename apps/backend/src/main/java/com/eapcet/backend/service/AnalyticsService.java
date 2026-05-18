@@ -49,7 +49,7 @@ public class AnalyticsService {
     public List<BranchPackageDTO> compareBranchesByPackage() {
         log.info("Aggregating package data grouped by branch types");
 
-        List<CollegeBranch> allBranches = collegeBranchRepository.findAll();
+        List<CollegeBranch> allBranches = collegeBranchRepository.findAllWithPackageData();
 
         // Group everything by branchCode
         // Group everything by branchCode with null-safety
@@ -165,30 +165,31 @@ public class AnalyticsService {
             String branch = entry.getKey();
             Map<Integer, Double> yearData = entry.getValue();
 
-            // Primary: 2024, fallback to any available year
-            double med24 = yearData.getOrDefault(2024, yearData.values().iterator().next());
-            double med22 = yearData.getOrDefault(2022, med24);
-            double competitionIncrease = med22 - med24;
+            boolean has22 = yearData.containsKey(2022);
+            boolean has24 = yearData.containsKey(2024);
+            Double med22 = has22 ? yearData.get(2022) : null;
+            Double med24 = has24 ? yearData.get(2024) : null;
 
-            // If we only have one year, mark as stable
-            if (!yearData.containsKey(2022) || !yearData.containsKey(2024)) {
-                competitionIncrease = 0;
-            }
-
+            // Positive delta = 2024 closing rank lower than 2022 = harder to get in
+            double competitionIncrease = 0;
             String status = "Stable";
-            if (competitionIncrease > 3000)
-                status = "Rising Star (Harder)";
-            if (competitionIncrease < -3000)
-                status = "Cooling (Easier)";
-            if (competitionIncrease > 8000)
-                status = "Extremely Competitive";
+            if (has22 && has24) {
+                competitionIncrease = med22 - med24;
+                if (competitionIncrease > 8000) {
+                    status = "Extremely Competitive";
+                } else if (competitionIncrease > 3000) {
+                    status = "Heating (Harder)";
+                } else if (competitionIncrease < -3000) {
+                    status = "Cooling (Easier)";
+                }
+            }
 
             trends.add(TrendingBranchDTO.builder()
                     .branchCode(branch)
                     .branchType(branchTypeMap.getOrDefault(branch, "Other"))
                     .medianCutoff2022(med22)
                     .medianCutoff2024(med24)
-                    .competitionIncrease(competitionIncrease)
+                    .competitionIncrease(has22 && has24 ? competitionIncrease : 0.0)
                     .trendStatus(status)
                     .build());
         }

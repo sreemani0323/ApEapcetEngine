@@ -44,6 +44,7 @@ export default function CalculatorPage() {
 
   const handleCalc = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isProcessing) return;
     if (!form.instcode || !form.branch_code) {
       toast.error('Select a college and branch.');
       return;

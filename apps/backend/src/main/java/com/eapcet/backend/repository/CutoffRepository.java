@@ -20,7 +20,11 @@ public interface CutoffRepository extends JpaRepository<Cutoff, Long> {
     long countDistinctCategories();
 
     /** Batch fetch cutoffs for multiple college_branch_ids — eliminates N+1 */
-    @Query("SELECT c FROM Cutoff c WHERE c.collegeBranch.collegeBranchId IN :cbIds AND c.category = :category AND c.year IN :years")
+    @Query("""
+        SELECT c FROM Cutoff c
+        JOIN FETCH c.collegeBranch cb
+        WHERE cb.collegeBranchId IN :cbIds AND c.category = :category AND c.year IN :years
+        """)
     List<Cutoff> findBatchByCbIdsAndCategoryAndYears(
             @Param("cbIds") List<Long> cbIds,
             @Param("category") String category,

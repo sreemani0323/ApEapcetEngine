@@ -40,9 +40,11 @@ public class StatsController {
     }
 
     @GetMapping("/colleges/{instcode}/detail")
-    public ResponseEntity<?> getCollegeDetail(@PathVariable String instcode) {
-        log.info("College detail requested for: {}", instcode);
-        CollegeDetailDTO detail = statsService.getCollegeDetail(instcode);
+    public ResponseEntity<?> getCollegeDetail(
+            @PathVariable String instcode,
+            @RequestParam(required = false, defaultValue = "OC_BOYS") String category) {
+        log.info("College detail requested for: {} category={}", instcode, category);
+        CollegeDetailDTO detail = statsService.getCollegeDetail(instcode, category);
         if (detail == null) {
             return ResponseEntity.notFound().build();
         }

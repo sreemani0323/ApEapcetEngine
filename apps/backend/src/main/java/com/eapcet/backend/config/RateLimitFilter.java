@@ -7,24 +7,28 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.Instant;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * IP-based rate limiter using Bucket4j.
- * SECURITY FIX: Uses remoteAddr as primary — X-Forwarded-For is untrusted
- * unless behind a verified reverse proxy.
+ * IP-based rate limiter. Uses X-Forwarded-For when behind a trusted reverse proxy (Render).
  */
 @Component
 @Order(1)
 public class RateLimitFilter implements Filter {
 
+    private static final int MAX_TRACKED_IPS = 10_000;
+
     private final Map<String, Bucket> searchBuckets = new ConcurrentHashMap<>();
     private final Map<String, Bucket> readBuckets = new ConcurrentHashMap<>();
+    private final Map<String, Instant> bucketLastSeen = new ConcurrentHashMap<>();
 
     private Bucket createSearchBucket() {
         return Bucket.builder()
@@ -38,6 +42,27 @@ public class RateLimitFilter implements Filter {
             .build();
     }
 
+    private String resolveClientIp(HttpServletRequest req) {
+        String xff = req.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isBlank()) {
+            return xff.split(",")[0].trim();
+        }
+        return req.getRemoteAddr();
+    }
+
+    private void evictStaleBuckets() {
+        if (bucketLastSeen.size() <= MAX_TRACKED_IPS) {
+            return;
+        }
+        Instant cutoff = Instant.now().minus(Duration.ofHours(2));
+        Iterator<Map.Entry<String, Instant>> it = bucketLastSeen.entrySet().iterator();
+        while (it.hasNext() && bucketLastSeen.size() > MAX_TRACKED_IPS / 2) {
+            if (it.next().getValue().isBefore(cutoff)) {
+                it.remove();
+            }
+        }
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -46,30 +71,35 @@ public class RateLimitFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
         String path = req.getRequestURI();
 
-        // Only rate-limit API endpoints
         if (!path.startsWith("/api/")) {
             chain.doFilter(request, response);
             return;
         }
 
-        // SECURITY: Use remoteAddr — XFF is client-controlled and trivially spoofable
-        String clientIp = req.getRemoteAddr();
+        String clientIp = resolveClientIp(req);
+        bucketLastSeen.put(clientIp, Instant.now());
+        evictStaleBuckets();
 
         boolean isHeavy = path.contains("search") || path.contains("reverse") || path.contains("calculate");
 
-        Bucket bucket;
-        if (isHeavy) {
-            bucket = searchBuckets.computeIfAbsent(clientIp, k -> createSearchBucket());
-        } else {
-            bucket = readBuckets.computeIfAbsent(clientIp, k -> createReadBucket());
-        }
+        Bucket bucket = isHeavy
+                ? searchBuckets.computeIfAbsent(clientIp, k -> createSearchBucket())
+                : readBuckets.computeIfAbsent(clientIp, k -> createReadBucket());
 
         if (bucket.tryConsume(1)) {
             chain.doFilter(request, response);
         } else {
             res.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
-            res.setContentType("application/json");
-            res.getWriter().write("{\"error\":\"Rate limit exceeded. Try again shortly.\",\"status\":429}");
+            res.setContentType("application/problem+json");
+            ProblemDetail pd = ProblemDetail.forStatusAndDetail(
+                    HttpStatus.TOO_MANY_REQUESTS,
+                    "Rate limit exceeded. Try again shortly."
+            );
+            pd.setTitle("Too Many Requests");
+            res.getWriter().write(
+                    "{\"type\":\"about:blank\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\""
+                            + pd.getDetail() + "\"}"
+            );
         }
     }
 }

@@ -18,6 +18,9 @@ public class MLPredictionRequestDTO {
     public static class MLPredictionItem {
         @JsonProperty("college_branch_id")
         private Long collegeBranchId;
+
+        @JsonProperty("college_id")
+        private Long collegeId;
         
         @JsonProperty("user_rank")
         private Integer userRank;
@@ -51,5 +54,8 @@ public class MLPredictionRequestDTO {
         
         @JsonProperty("cutoff_rank_2022")
         private Integer cutoffRank2022;
+
+        @JsonProperty("oc_boys_cutoff_2024")
+        private Integer ocBoysCutoff2024;
     }
 }
