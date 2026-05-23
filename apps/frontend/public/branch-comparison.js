@@ -364,7 +364,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const branchNames = Object.keys(branchData);
         const collegeCounts = branchNames.map(b => branchData[b].totalColleges);
 
-        // Chart 1: Number of Colleges
+        // Chart 1: Number of Colleges (Horizontal Bar)
         const collegesCtx = document.getElementById("collegesChart");
         if (collegesCtx.chart) collegesCtx.chart.destroy();
         
@@ -378,26 +378,31 @@ document.addEventListener("DOMContentLoaded", async function () {
                     backgroundColor: '#4361EE',
                     borderColor: '#1A1A2E',
                     borderWidth: 2,
-                    borderRadius: 6
+                    borderRadius: 6,
+                    minBarLength: 10 // Ensures small counts like 1 are clearly visible!
                 }]
             },
             options: {
+                indexAxis: 'y', // Horizontal bars for perfect legibility!
                 responsive: true,
                 maintainAspectRatio: true,
                 scales: {
-                    y: {
+                    x: {
                         beginAtZero: true,
                         ticks: { 
                             precision: 0,
                             font: {
                                 size: window.innerWidth < 768 ? 10 : 12
                             }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Number of Colleges offering this Program',
+                            font: { weight: 'bold' }
                         }
                     },
-                    x: {
+                    y: {
                         ticks: {
-                            maxRotation: window.innerWidth < 480 ? 60 : 45,
-                            minRotation: window.innerWidth < 480 ? 60 : 45,
                             font: {
                                 size: window.innerWidth < 768 ? 10 : 12
                             }
@@ -410,7 +415,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
 
-        // Chart 2: Median Cutoff Comparison
+        // Chart 2: Median Cutoff Comparison (Horizontal Bar)
         const cutoffCtx = document.getElementById("cutoffChart");
         if (cutoffCtx.chart) cutoffCtx.chart.destroy();
         
@@ -441,10 +446,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                 ]
             },
             options: {
+                indexAxis: 'y', // Horizontal bars for perfect legibility!
                 responsive: true,
                 maintainAspectRatio: true,
                 scales: {
-                    y: {
+                    x: {
                         beginAtZero: true,
                         ticks: { 
                             font: {
@@ -459,10 +465,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                             }
                         }
                     },
-                    x: {
+                    y: {
                         ticks: {
-                            maxRotation: window.innerWidth < 480 ? 60 : 45,
-                            minRotation: window.innerWidth < 480 ? 60 : 45,
                             font: {
                                 size: window.innerWidth < 768 ? 10 : 12
                             }
