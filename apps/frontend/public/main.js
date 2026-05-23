@@ -17,19 +17,54 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     /**
-     * Toggles the mobile navigation menu visibility.
+     * Mobile Navigation Drawer — slide-in with backdrop.
      */
     const navToggle = document.querySelector('.nav-toggle');
     const mainNav = document.querySelector('.main-nav');
     
     if (navToggle && mainNav) {
-        navToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
+        // Create backdrop element
+        let backdrop = document.querySelector('.nav-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.className = 'nav-backdrop';
+            document.body.appendChild(backdrop);
+        }
+
+        function openNav() {
+            mainNav.classList.add('active');
+            navToggle.classList.add('is-open');
+            backdrop.classList.add('visible');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNav() {
+            mainNav.classList.remove('active');
+            navToggle.classList.remove('is-open');
+            backdrop.classList.remove('visible');
+            document.body.style.overflow = '';
+        }
+
+        navToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (mainNav.classList.contains('active')) {
+                closeNav();
+            } else {
+                openNav();
+            }
         });
 
-        document.addEventListener('click', function(event) {
-            if (!mainNav.contains(event.target) && !navToggle.contains(event.target)) {
-                mainNav.classList.remove('active');
+        backdrop.addEventListener('click', closeNav);
+
+        // Close nav when a link is clicked
+        mainNav.querySelectorAll('.nav-link').forEach(function(link) {
+            link.addEventListener('click', closeNav);
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && mainNav.classList.contains('active')) {
+                closeNav();
             }
         });
     }
