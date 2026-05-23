@@ -18,14 +18,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     let onThemeChange = null;
 
-    // Mobile nav toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    if (navToggle && mainNav) {
-        navToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('nav-open');
-        });
-    }
+
+
 
     // ── Get instcode from URL ──
     const params = new URLSearchParams(window.location.search);

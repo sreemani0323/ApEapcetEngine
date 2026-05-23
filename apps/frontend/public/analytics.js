@@ -17,14 +17,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Mobile nav toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    if (navToggle && mainNav) {
-        navToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('nav-open');
-        });
-    }
+
+
     
     const cachedData = sessionStorage.getItem('analyticsData');
     if (cachedData) {
