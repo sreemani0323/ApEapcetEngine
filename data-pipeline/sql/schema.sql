@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS branches (
 -- 3. COLLEGE_BRANCHES (Junction / Association table)
 -- ============================================================
 -- Links a college to the branches it offers.
--- Placement data (avg_package, highest_package) lives here.
 -- ============================================================
 CREATE TABLE IF NOT EXISTS college_branches (
     college_branch_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

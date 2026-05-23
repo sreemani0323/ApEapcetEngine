@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /**
      * Configuration data for various form options and selections.
-     * Contains predefined lists for branches, quotas, genders, districts, regions, and placement qualities.
+     * Contains predefined lists for branches, quotas, genders, districts, and regions.
      */
     const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
     const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
