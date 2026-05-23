@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://eapcet-backend.onrender.com/api/:path*"
+      "destination": "https://eapcet-backend-vvq3.onrender.com/api/:path*"
     }
   ],
   "headers": [
