@@ -256,15 +256,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         branchData = {};
         
         try {
-            console.log('Fetching branch comparison data from backend...');
-            const response = await fetch(`/api/analytics/compare-branches?_=${new Date().getTime()}`);
+            console.log('Fetching branch comparison and trend data from backend...');
+            const [compareRes, trendRes] = await Promise.all([
+                fetch(`/api/analytics/compare-branches?_=${new Date().getTime()}`),
+                fetch(`/api/analytics/trending-branches?all=true&_=${new Date().getTime()}`)
+            ]);
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (!compareRes.ok || !trendRes.ok) {
+                throw new Error(`HTTP error! statuses: ${compareRes.status} / ${trendRes.status}`);
             }
             
-            const compareList = await response.json();
-            console.log('Fetched comparison list from backend:', compareList);
+            const compareList = await compareRes.json();
+            const trendList = await trendRes.json();
+            
+            console.log('Fetched comparison list:', compareList);
+            console.log('Fetched trend list:', trendList);
 
             const BRANCH_NAME_TO_CODE = {};
             Object.entries(BRANCH_CODE_TO_NAME).forEach(([code, name]) => {
@@ -275,18 +281,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                 console.log(`Matching stats for branch: ${branch}`);
                 const code = BRANCH_NAME_TO_CODE[branch] || branch;
                 const item = compareList.find(i => i.branch_code === code);
+                const trendItem = trendList.find(i => i.branch_code === code);
                 
-                if (item) {
-                    branchData[branch] = {
-                        totalColleges: item.college_count
-                    };
-                    console.log(`Stats for ${branch}:`, branchData[branch]);
-                } else {
-                    branchData[branch] = {
-                        totalColleges: 0
-                    };
-                    console.warn(`No stats found for branch: ${branch}`);
-                }
+                branchData[branch] = {
+                    totalColleges: item ? item.college_count : 0,
+                    medianCutoff2022: trendItem && trendItem.median_cutoff_2022 ? Math.round(trendItem.median_cutoff_2022) : null,
+                    medianCutoff2024: trendItem && trendItem.median_cutoff_2024 ? Math.round(trendItem.median_cutoff_2024) : null,
+                    competitionIncrease: trendItem ? Math.round(trendItem.competition_increase) : 0,
+                    trendStatus: trendItem ? trendItem.trend_status : 'Stable'
+                };
+                console.log(`Stats for ${branch}:`, branchData[branch]);
             }
             
             if (Object.keys(branchData).length === 0) {
@@ -317,24 +321,35 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
     
     function renderComparison() {
-
         summaryCards.innerHTML = "";
         Object.entries(branchData).forEach(([branch, data]) => {
             const card = document.createElement("div");
             card.className = "chart-container";
-            card.style.cssText = "text-align: center;";
             card.innerHTML = `
-                <h4 style="color: var(--color-accent); margin-bottom: 1rem;">${branch}</h4>
-                <div style="font-size: 2rem; font-weight: 700; color: var(--color-primary); margin: 0.5rem 0;">
-                    ${data.totalColleges}
+                <h4 style="color: var(--color-accent); margin-bottom: 0.75rem; border-bottom: 2px solid var(--border-light); padding-bottom: 0.5rem; font-family: var(--font-heading); font-weight: 700;">${branch}</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; text-align: left; font-size: 0.85rem;">
+                    <div>
+                        <span style="color: var(--color-text-secondary); font-size: 0.75rem; display: block;">Colleges</span>
+                        <strong style="font-size: 1.1rem; color: var(--color-primary); font-family: var(--font-heading);">${data.totalColleges}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--color-text-secondary); font-size: 0.75rem; display: block;">Trend</span>
+                        <strong style="font-size: 0.85rem; color: ${data.trendStatus.includes('Competitive') || data.trendStatus.includes('Harder') ? '#EF476F' : '#2DC653'}; font-family: var(--font-heading);">${data.trendStatus}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--color-text-secondary); font-size: 0.75rem; display: block;">2024 Median Cutoff</span>
+                        <strong style="font-size: 1.1rem; color: var(--color-primary); font-family: var(--font-heading);">${data.medianCutoff2024 ? data.medianCutoff2024.toLocaleString() : 'N/A'}</strong>
+                    </div>
+                    <div>
+                        <span style="color: var(--color-text-secondary); font-size: 0.75rem; display: block;">2022 Median Cutoff</span>
+                        <strong style="font-size: 1.1rem; color: var(--color-primary); font-family: var(--font-heading);">${data.medianCutoff2022 ? data.medianCutoff2022.toLocaleString() : 'N/A'}</strong>
+                    </div>
                 </div>
-                <p style="color: var(--color-text-secondary); margin: 0;">Colleges</p>
             `;
             summaryCards.appendChild(card);
         });
 
         renderCharts();
-
         renderTable();
     }
     
@@ -349,6 +364,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const branchNames = Object.keys(branchData);
         const collegeCounts = branchNames.map(b => branchData[b].totalColleges);
 
+        // Chart 1: Number of Colleges
         const collegesCtx = document.getElementById("collegesChart");
         if (collegesCtx.chart) collegesCtx.chart.destroy();
         
@@ -359,9 +375,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 datasets: [{
                     label: 'Number of Colleges',
                     data: collegeCounts,
-                    backgroundColor: '#3498db',
-                    borderColor: '#2980b9',
-                    borderWidth: 1
+                    backgroundColor: '#4361EE',
+                    borderColor: '#1A1A2E',
+                    borderWidth: 2,
+                    borderRadius: 6
                 }]
             },
             options: {
@@ -388,8 +405,73 @@ document.addEventListener("DOMContentLoaded", async function () {
                     }
                 },
                 plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Chart 2: Median Cutoff Comparison
+        const cutoffCtx = document.getElementById("cutoffChart");
+        if (cutoffCtx.chart) cutoffCtx.chart.destroy();
+        
+        const m22 = branchNames.map(b => branchData[b].medianCutoff2022);
+        const m24 = branchNames.map(b => branchData[b].medianCutoff2024);
+        
+        cutoffCtx.chart = new Chart(cutoffCtx, {
+            type: 'bar',
+            data: {
+                labels: branchNames,
+                datasets: [
+                    {
+                        label: 'Median Cutoff 2022',
+                        data: m22,
+                        backgroundColor: '#FFB703',
+                        borderColor: '#1A1A2E',
+                        borderWidth: 2,
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'Median Cutoff 2024',
+                        data: m24,
+                        backgroundColor: '#4361EE',
+                        borderColor: '#1A1A2E',
+                        borderWidth: 2,
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { 
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Closing Rank (Lower = Higher Demand)',
+                            font: {
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            maxRotation: window.innerWidth < 480 ? 60 : 45,
+                            minRotation: window.innerWidth < 480 ? 60 : 45,
+                            font: {
+                                size: window.innerWidth < 768 ? 10 : 12
+                            }
+                        }
+                    }
+                },
+                plugins: {
                     legend: { 
-                        display: false,
+                        position: 'top',
                         labels: {
                             font: {
                                 size: window.innerWidth < 768 ? 10 : 12
@@ -406,7 +488,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         table.innerHTML = "";
 
         const features = [
-            { key: 'totalColleges', label: 'Total Colleges' }
+            { key: 'totalColleges', label: 'Total Colleges' },
+            { key: 'medianCutoff2024', label: '2024 Median Cutoff', isRank: true },
+            { key: 'medianCutoff2022', label: '2022 Median Cutoff', isRank: true },
+            { key: 'competitionIncrease', label: 'Competition Shift (+ is Harder)', isShift: true },
+            { key: 'trendStatus', label: 'Trend Status' }
         ];
 
         const thead = document.createElement("thead");
@@ -441,12 +527,21 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const cell = document.createElement("td");
                 let value = data[feature.key];
                 
-                if (feature.isCurrency && typeof value === 'number') {
-                    cell.textContent = value.toFixed(2);
+                if (feature.isRank && typeof value === 'number') {
+                    cell.textContent = value.toLocaleString();
+                } else if (feature.isShift && typeof value === 'number') {
+                    const absVal = Math.abs(value).toLocaleString();
+                    cell.textContent = value > 0 ? `+${absVal} (Harder)` : value < 0 ? `-${absVal} (Easier)` : '0 (Stable)';
+                    cell.style.color = value > 0 ? '#EF476F' : value < 0 ? '#2DC653' : 'inherit';
+                    cell.style.fontWeight = '700';
                 } else if (typeof value === 'number') {
                     cell.textContent = Math.round(value);
                 } else {
                     cell.textContent = value;
+                    if (feature.key === 'trendStatus') {
+                        cell.style.color = value.includes('Competitive') || value.includes('Harder') ? '#EF476F' : value.includes('Easier') ? '#2DC653' : 'inherit';
+                        cell.style.fontWeight = '700';
+                    }
                 }
                 
                 row.appendChild(cell);
@@ -459,10 +554,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function reloadBranchData() {
-
         sessionStorage.removeItem('branchComparisonBranchesData');
         sessionStorage.removeItem('branchComparisonCollegesData');
-
         location.reload();
     }
 

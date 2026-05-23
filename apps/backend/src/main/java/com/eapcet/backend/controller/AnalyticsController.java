@@ -32,11 +32,16 @@ public class AnalyticsController {
      * Trending branches calculating historic cutoff velocity.
      */
     @GetMapping("/trending-branches")
-    public ResponseEntity<List<TrendingBranchDTO>> trendingBranches() {
-        log.info("Received request for trending branches.");
+    public ResponseEntity<List<TrendingBranchDTO>> trendingBranches(
+            @RequestParam(value = "all", required = false, defaultValue = "false") boolean all) {
+        log.info("Received request for trending branches. all={}", all);
         List<TrendingBranchDTO> dtos = analyticsService.getTrendingBranches();
         
-        // Return only top 10 trends to the frontend to keep rendering crisp
+        if (all) {
+            return ResponseEntity.ok(dtos);
+        }
+        
+        // Return only top 10 trends to the frontend by default
         int limit = Math.min(dtos.size(), 10);
         return ResponseEntity.ok(dtos.subList(0, limit));
     }
