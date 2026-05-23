@@ -31,6 +31,63 @@ document.addEventListener("DOMContentLoaded", function () {
             document.body.appendChild(backdrop);
         }
 
+        // Move header controls into nav drawer on mobile
+        (function relocateControls() {
+            var headerControls = document.querySelector('.header-controls');
+            if (!headerControls) return;
+            var mql = window.matchMedia('(max-width: 968px)');
+            var drawerControls = null;
+
+            function moveIn() {
+                if (drawerControls) return; // already moved
+                drawerControls = document.createElement('div');
+                drawerControls.className = 'nav-drawer-controls';
+                // Clone refresh button
+                var refreshBtn = headerControls.querySelector('#refreshBtn');
+                if (refreshBtn) {
+                    var cloned = refreshBtn.cloneNode(true);
+                    cloned.id = 'refreshBtn'; // keep ID for styling
+                    cloned.addEventListener('click', function() { location.reload(); });
+                    drawerControls.appendChild(cloned);
+                }
+                // Clone dark mode toggle
+                var darkToggle = headerControls.querySelector('.dark-mode-toggle');
+                if (darkToggle) {
+                    var clonedToggle = darkToggle.cloneNode(true);
+                    // Sync the checkbox with the original
+                    var origCheckbox = darkToggle.querySelector('input');
+                    var clonedCheckbox = clonedToggle.querySelector('input');
+                    if (origCheckbox && clonedCheckbox) {
+                        clonedCheckbox.checked = origCheckbox.checked;
+                        clonedCheckbox.addEventListener('change', function() {
+                            origCheckbox.checked = clonedCheckbox.checked;
+                            origCheckbox.dispatchEvent(new Event('change'));
+                        });
+                        origCheckbox.addEventListener('change', function() {
+                            clonedCheckbox.checked = origCheckbox.checked;
+                        });
+                    }
+                    drawerControls.appendChild(clonedToggle);
+                }
+                mainNav.appendChild(drawerControls);
+            }
+
+            function moveOut() {
+                if (drawerControls) {
+                    drawerControls.remove();
+                    drawerControls = null;
+                }
+            }
+
+            function handleChange(e) {
+                if (e.matches) { moveIn(); } else { moveOut(); }
+            }
+
+            // Initial check
+            if (mql.matches) moveIn();
+            mql.addEventListener('change', handleChange);
+        })();
+
         function openNav() {
             mainNav.classList.add('active');
             navToggle.classList.add('is-open');

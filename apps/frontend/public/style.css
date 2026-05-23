@@ -1376,6 +1376,9 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
     opacity: 1;
 }
 
+/* --- Nav Drawer Controls (hidden on desktop, shown inside drawer on mobile) --- */
+.nav-drawer-controls { display: none; }
+
 /* ── Tablet: ≤ 968px ── */
 @media (max-width: 968px) {
     .header-container {
@@ -1388,7 +1391,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
         position: relative;
     }
 
-    /* Top row: logo + toggle + controls */
+    /* Top row: logo + toggle only — clean minimal bar */
     .header-container > div:first-child {
         width: 100%;
         display: flex;
@@ -1417,16 +1420,42 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
     .nav-toggle:hover { border-color: var(--accent-yellow); color: var(--accent-yellow); }
     .nav-toggle:active { transform: scale(0.93); }
 
-    /* Header controls */
+    /* Header controls — HIDDEN from header bar, moved into nav drawer via JS */
     .header-controls {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+        display: none !important;
     }
 
-    /* Hide refresh text */
-    #refreshBtn span { display: none; }
-    #refreshBtn { padding: 0.45rem 0.65rem; min-width: 44px; min-height: 44px; margin-right: 0 !important; }
+    /* Nav drawer footer — refresh & dark mode inside drawer */
+    .nav-drawer-controls {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: auto;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    .nav-drawer-controls #refreshBtn {
+        flex: 1;
+        background: rgba(255,255,255,0.08);
+        border: 2px solid rgba(255,255,255,0.15);
+        color: rgba(255,255,255,0.8);
+        padding: 0.6rem 1rem;
+        margin-right: 0 !important;
+        box-shadow: none;
+        font-size: 0.85rem;
+        min-height: 44px;
+    }
+    .nav-drawer-controls #refreshBtn span { display: inline; }
+    .nav-drawer-controls #refreshBtn:hover {
+        background: rgba(255,255,255,0.12);
+        color: white;
+        transform: none;
+        box-shadow: none;
+    }
+    .nav-drawer-controls .dark-mode-toggle {
+        color: rgba(255,255,255,0.8);
+    }
 
     /* Nav drawer — slides in from left */
     .main-nav {
@@ -1564,7 +1593,8 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
         box-shadow: 4px 4px 0px rgba(254, 228, 64, 0.3);
         border-width: 2px;
     }
-    .hero-rank-input input { font-size: 1rem; padding: 0.9rem 0.9rem 0.9rem 3rem; }
+    .hero-rank-input input { font-size: 1rem; padding: 0.9rem 0.9rem 0.9rem 2.75rem; }
+    .hero-rank-input .fa-ranking-star { left: 12px; font-size: 1.1rem; }
     .hero-rank-input .btn-primary { padding: 0.9rem 1.25rem; font-size: 0.9rem; }
 
     /* Splash */
@@ -1671,9 +1701,13 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
         flex-direction: column;
         border-radius: var(--radius);
     }
+    /* Hide the ranking star icon when stacked — it overlaps the button */
+    .hero-rank-input .fa-ranking-star {
+        display: none;
+    }
     .hero-rank-input input {
         border-radius: var(--radius) var(--radius) 0 0;
-        padding: 0.85rem 0.85rem 0.85rem 3rem;
+        padding: 0.85rem 1rem;
     }
     .hero-rank-input .btn-primary {
         border-radius: 0 0 var(--radius) var(--radius);
