@@ -55,10 +55,5 @@ public class CollegeDetailDTO {
         @JsonProperty("cutoff_2024")
         private Integer cutoff2024;
 
-        @JsonProperty("avg_package")
-        private String avgPackage;
-
-        @JsonProperty("highest_package")
-        private String highestPackage;
     }
 }

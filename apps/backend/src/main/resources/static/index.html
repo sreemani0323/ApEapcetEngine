@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>ApEapcetEngine — College Predictor</title>
+    <meta name="description" content="ApEapcetEngine: Predict your EAMCET college admissions based on rank, branch, quota, and gender. Data-driven insights for smart counselling decisions.">
+    <link rel="stylesheet" href="style.css?v=2.0.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+</head>
+<body>
+    <!-- ═══ SPLASH INTRO ═══ -->
+    <div id="splashOverlay" class="splash-overlay">
+        <div class="splash-icon"><i class="fas fa-graduation-cap"></i></div>
+        <h1 class="splash-title" id="splashTitle"></h1>
+        <p class="splash-tagline">Your rank. Your future. Mapped.</p>
+        <div class="splash-bar"><div class="splash-bar-fill"></div></div>
+    </div>
+
+    <header class="page-header">
+        <div class="header-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <a href="index.html" class="site-title-link">
+                    <h1 id="siteTitle"><i class="fas fa-graduation-cap"></i> ApEapcetEngine</h1>
+                </a>
+                <button class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Home</a>
+                <a href="analytics.html" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a>
+                <a href="map.html" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
+                <a href="calculator.html" class="nav-link"><i class="fas fa-calculator"></i> Calculator</a>
+                <a href="branch-comparison.html" class="nav-link"><i class="fas fa-code-branch"></i> Compare Branches</a>
+            </nav>
+            <div class="header-controls">
+                <button id="refreshBtn" class="btn-secondary" style="margin-right: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <label class="dark-mode-toggle" for="darkModeSwitch" title="Toggle Dark/Light Mode">
+                    <input type="checkbox" id="darkModeSwitch" />
+                    <div class="toggle-slider"></div>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2><i class="fa-solid fa-compass-drafting"></i> ApEapcetEngine</h2>
+                <p>Enter your EAMCET rank — get instant, data-driven college predictions.</p>
+                <div class="hero-rank-input">
+                    <i class="fas fa-ranking-star"></i>
+                    <input type="number" id="rank" name="rank" placeholder="Enter your EAMCET rank..." min="1" />
+                    <button type="button" id="predictButton" class="btn-primary" data-lang-key="btnPredict">
+                        Predict Now <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat"><div class="hero-stat-number" id="heroCollegeCount">0</div><div class="hero-stat-label">Colleges</div></div>
+                    <div class="hero-stat"><div class="hero-stat-number" id="heroBranchCount">0</div><div class="hero-stat-label">Branches</div></div>
+                    <div class="hero-stat"><div class="hero-stat-number" id="heroCutoffCount">0</div><div class="hero-stat-label">Cutoff Records</div></div>
+                </div>
+                <!-- What If Rank Simulator -->
+                <div id="whatIfSimulator" class="what-if-simulator" style="display:none;">
+                    <div class="what-if-header">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>What If My Rank Were...</span>
+                    </div>
+                    <div class="what-if-body">
+                        <input type="range" id="whatIfSlider" class="what-if-slider" min="1" max="200000" step="100" />
+                        <div class="what-if-display">
+                            <span class="what-if-rank" id="whatIfRankDisplay">—</span>
+                            <span class="what-if-result" id="whatIfResultDisplay"></span>
+                        </div>
+                        <button type="button" id="whatIfApplyBtn" class="btn-secondary what-if-apply">Apply This Rank <i class="fa-solid fa-check"></i></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Rank Range Helper (shown before prediction) -->
+        <section id="rankRangeHelper" class="rank-range-section">
+            <div class="container">
+                <h2 class="rank-range-title"><i class="fa-solid fa-layer-group"></i> Quick Rank Overview</h2>
+                <p class="rank-range-subtitle">Click a rank range to see what colleges you might qualify for</p>
+                <div class="rank-range-grid">
+                    <div class="rank-range-card" data-rank-mid="500" data-rank-label="1 – 1,000">
+                        <div class="rank-range-badge">🏆</div>
+                        <div class="rank-range-label">Rank 1 – 1,000</div>
+                        <div class="rank-range-desc">Top-tier colleges, all branches open</div>
+                    </div>
+                    <div class="rank-range-card" data-rank-mid="3000" data-rank-label="1,001 – 5,000">
+                        <div class="rank-range-badge">🎯</div>
+                        <div class="rank-range-label">Rank 1,001 – 5,000</div>
+                        <div class="rank-range-desc">Excellent colleges, most CSE seats</div>
+                    </div>
+                    <div class="rank-range-card" data-rank-mid="10000" data-rank-label="5,001 – 15,000">
+                        <div class="rank-range-badge">📊</div>
+                        <div class="rank-range-label">Rank 5,001 – 15,000</div>
+                        <div class="rank-range-desc">Strong options across branches</div>
+                    </div>
+                    <div class="rank-range-card" data-rank-mid="30000" data-rank-label="15,001 – 50,000">
+                        <div class="rank-range-badge">🔍</div>
+                        <div class="rank-range-label">Rank 15,001 – 50,000</div>
+                        <div class="rank-range-desc">Many choices, explore all options</div>
+                    </div>
+                    <div class="rank-range-card" data-rank-mid="75000" data-rank-label="50,000+">
+                        <div class="rank-range-badge">🌱</div>
+                        <div class="rank-range-label">Rank 50,000+</div>
+                        <div class="rank-range-desc">Growing colleges with great potential</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="container main-views-container">
+            
+            <div id="predictor-view" class="view-content active">
+                <form id="predictForm" class="predict-form" autocomplete="off" novalidate>
+                    <h3 class="form-title">
+                        <span><i class="fa-solid fa-sliders"></i> Refine Your Search</span>
+                    </h3>
+                    
+                    <div id="filtersContainer" class="filters-container is-open"> 
+                        <div class="filters-content-wrapper">
+                            
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="desiredBranch" data-lang-key="labelBranch">Branch Preference</label>
+                                    <div class="multiselect-dropdown" data-id="desiredBranch" data-placeholder-key="selectBranch">
+                                        <div class="multiselect-input"><span class="selected-items" data-original-text="Select Branch">Select Branch</span><i class="fas fa-chevron-down dropdown-arrow"></i></div>
+                                        <div class="multiselect-options-container">
+                                            <label class="select-all-label"><input type="checkbox" class="select-all-checkbox" /> <span data-lang-key="selectAll">Select All</span></label>
+                                            <div class="options-list" data-source="branches"></div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="desiredBranch" name="desiredBranch" />
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="quota" data-lang-key="labelQuota">Reservation Quota</label>
+                                    <div class="multiselect-dropdown" data-id="quota" data-placeholder-key="selectQuota" data-single-select="true" data-style="list">
+                                        <div class="multiselect-input"><span class="selected-items" data-original-text="Select Quota">Select Quota</span><i class="fas fa-chevron-down dropdown-arrow"></i></div>
+                                        <div class="multiselect-options-container"><div class="options-list" data-source="quotas"></div></div>
+                                    </div>
+                                    <input type="hidden" id="quota" name="quota" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="gender" data-lang-key="labelGender">Gender</label>
+                                    <div class="multiselect-dropdown" data-id="gender" data-placeholder-key="selectGender" data-single-select="true" data-style="list">
+                                        <div class="multiselect-input"><span class="selected-items" data-original-text="Select Gender">Select Gender</span><i class="fas fa-chevron-down dropdown-arrow"></i></div>
+                                        <div class="multiselect-options-container"><div class="options-list" data-source="genders"></div></div>
+                                    </div>
+                                    <input type="hidden" id="gender" name="gender" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="district" data-lang-key="labelDistrict"><i class="fa-solid fa-map-pin"></i> District</label>
+                                    <div class="multiselect-dropdown" data-id="district" data-placeholder-key="selectDistrict">
+                                         <div class="multiselect-input"><span class="selected-items" data-original-text="Select District">Select District</span><i class="fas fa-chevron-down dropdown-arrow"></i></div>
+                                        <div class="multiselect-options-container">
+                                            <label class="select-all-label"><input type="checkbox" class="select-all-checkbox" /> <span data-lang-key="selectAll">Select All</span></label>
+                                            <div class="options-list" data-source="districts"></div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" id="district" name="district" />
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="coed"><i class="fa-solid fa-venus-mars"></i> College Type</label>
+                                    <div class="multiselect-dropdown" data-id="coed" data-placeholder-key="selectCoed" data-single-select="true" data-style="list">
+                                        <div class="multiselect-input"><span class="selected-items" data-original-text="Co-Ed / Girls Only">Co-Ed / Girls Only</span><i class="fas fa-chevron-down dropdown-arrow"></i></div>
+                                        <div class="multiselect-options-container"><div class="options-list" data-source="coedOptions"></div></div>
+                                    </div>
+                                    <input type="hidden" id="coed" name="coed" />
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <input type="hidden" id="category" name="category" /> 
+
+                    <div class="form-actions">
+                        <button type="button" id="clearButton" class="btn-secondary" data-lang-key="btnClear">
+                            <i class="fa-solid fa-xmark"></i> Clear All Filters
+                        </button>
+                        
+                        <button type="button" id="predictButtonBottom" class="btn-primary" data-lang-key="btnPredict">
+                            Predict Now <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="disclaimer">
+                    <p><strong data-lang-key="disclaimerStrong">Disclaimer:</strong> <span data-lang-key="disclaimerText">Predictions are based on previous years' cutoff data and trends. Actual cutoffs may vary due to factors such as applicants and seat availability.</span></p>
+                </div>
+
+                <!-- Bento Summary Dashboard (populated by JS after prediction) -->
+                <div id="bentoSummary" class="bento-grid" style="display:none;"></div>
+
+                <!-- Branch Summary Panel (populated by JS after prediction) -->
+                <div id="branchSummary" class="branch-summary" style="display:none;">
+                    <div class="branch-summary-header">
+                        <h3><i class="fa-solid fa-code-branch"></i> What Can I Get?</h3>
+                        <button type="button" id="branchSummaryToggle" class="btn-secondary" style="padding:0.3rem 0.8rem;font-size:0.8rem;">Collapse <i class="fa-solid fa-chevron-up"></i></button>
+                    </div>
+                    <div id="branchSummaryGrid" class="branch-summary-grid"></div>
+                </div>
+
+                <!-- District Summary Banner (populated by JS after prediction) -->
+                <div id="districtSummary" style="display:none;"></div>
+
+                <div id="results" class="results-section">
+                    <div id="resultsHeader" class="results-header" style="display: none;">
+                        <h2><i class="fa-solid fa-list-check"></i> Predicted Colleges</h2>
+                        <div class="results-actions">
+                            <div class="sort-control">
+                                <label for="sortBy" data-lang-key="sortLabel">Sort By:</label>
+                                <select id="sortBy">
+                                    <option value="probability-desc" data-lang-key="sortProbabilityDesc" selected>Probability (High to Low)</option>
+                                    <option value="probability-asc" data-lang-key="sortProbabilityAsc">Probability (Low to High)</option>
+                                    <option value="cutoff-asc" data-lang-key="sortCutoffAsc">Cutoff Rank (Low to High)</option>
+                                    <option value="cutoff-desc" data-lang-key="sortCutoffDesc">Cutoff Rank (High to Low)</option>
+                                    <option value="estd-asc">Established (Oldest First)</option>
+                                    <option value="estd-desc">Established (Newest First)</option>
+                                </select>
+                            </div>
+                            <div class="download-control">
+                                <button type="button" id="downloadBtn" class="btn-secondary">
+                                    <i class="fa-solid fa-download"></i> Download
+                                </button>
+                                <div id="downloadMenu" class="download-menu">
+                                    <button type="button" id="downloadPdfBtn" data-lang-key="btnSavePdf">Save as PDF</button>
+                                    <button type="button" id="downloadCsvBtn" data-lang-key="btnSaveCsv">Save as CSV</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Tabs: All / Safe / Target / Reach -->
+                    <div id="filterTabs" class="filter-tabs" style="display:none;">
+                        <button class="filter-tab active" data-filter="all">All <span class="filter-tab-count" id="filterCountAll"></span></button>
+                        <button class="filter-tab filter-tab-safe" data-filter="safe"><i class="fa-solid fa-shield-halved"></i> Safe <span class="filter-tab-count" id="filterCountSafe"></span></button>
+                        <button class="filter-tab filter-tab-target" data-filter="target"><i class="fa-solid fa-gauge-high"></i> Target <span class="filter-tab-count" id="filterCountTarget"></span></button>
+                        <button class="filter-tab filter-tab-reach" data-filter="reach"><i class="fa-solid fa-mountain"></i> Reach <span class="filter-tab-count" id="filterCountReach"></span></button>
+                    </div>
+
+                    <div id="collegeList" class="college-list">
+                    
+                    </div>
+                </div>
+            </div> 
+
+        </div> 
+
+        <div id="loadingSpinner" class="loading-spinner" style="display:none;">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="scroll-buttons" id="scrollButtons">
+            <button id="scrollTopBtn" title="Scroll to Top"><i class="fa-solid fa-arrow-up"></i></button>
+            <button id="scrollBottomBtn" title="Scroll to Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+        </div>
+    </main>
+
+    
+    <div id="comparison-tray" class="comparison-tray hidden">
+        <div class="tray-content">
+            <p><span id="compare-count">0</span> Colleges Selected for Comparison</p>
+            <button id="compare-now-btn" class="btn-primary" disabled>
+                Compare Now <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            </button>
+            <button id="clear-compare-btn" class="clear-btn">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    
+    <div id="comparison-modal" class="modal" style="display: none;">
+        <div class="modal-content-large">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fa-solid fa-scale-balanced"></i> Side-by-Side College Comparison</h3>
+                <button class="modal-close-btn" id="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body-wrapper">
+                <div id="comparison-table-container" class="comparison-table-container">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div id="custom-warning-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="warning-modal-title" class="modal-title"><i class="fa-solid fa-triangle-exclamation"></i> Input Required</h3>
+                <button class="modal-close-btn" id="warning-modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="warning-modal-text">To get predictions, please enter your EAMCET rank or select at least one filter option.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="page-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 ApEapcetEngine by Nallimilli Mani. All rights reserved.</p>
+        </div>
+    </footer>
+
+    
+    <script src="validation-popups.js"></script>
+    <script src="main.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const refreshBtn = document.getElementById('refreshBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+
+                    localStorage.removeItem('collegeResults');
+                    localStorage.removeItem('sortedResults');
+                    localStorage.removeItem('analyticsData');
+                    localStorage.removeItem('analyticsDataTimestamp');
+                    localStorage.removeItem('mapCollegesData');
+                    localStorage.removeItem('mapCollegesDataTimestamp');
+                    localStorage.removeItem('calculatorCollegesData');
+                    localStorage.removeItem('calculatorCollegesDataTimestamp');
+                    localStorage.removeItem('branchComparisonBranchesData');
+                    localStorage.removeItem('branchComparisonBranchesDataTimestamp');
+                    localStorage.removeItem('branchComparisonCollegesData');
+                    localStorage.removeItem('branchComparisonCollegesDataTimestamp');
+                    localStorage.removeItem('allCollegesCache');
+                    localStorage.removeItem('allCollegesCacheTimestamp');
+
+                    location.reload();
+                });
+            }
+
+            sessionStorage.setItem('isNavigation', 'true');
+        });
+
+        window.addEventListener('beforeunload', function() {
+
+            const isNavigation = sessionStorage.getItem('isNavigation');
+
+            if (!isNavigation) {
+
+                localStorage.removeItem('collegeResults');
+                localStorage.removeItem('sortedResults');
+                localStorage.removeItem('analyticsData');
+                localStorage.removeItem('analyticsDataTimestamp');
+                localStorage.removeItem('mapCollegesData');
+                localStorage.removeItem('mapCollegesDataTimestamp');
+                localStorage.removeItem('calculatorCollegesData');
+                localStorage.removeItem('calculatorCollegesDataTimestamp');
+                localStorage.removeItem('branchComparisonBranchesData');
+                localStorage.removeItem('branchComparisonBranchesDataTimestamp');
+                localStorage.removeItem('branchComparisonCollegesData');
+                localStorage.removeItem('branchComparisonCollegesDataTimestamp');
+                localStorage.removeItem('allCollegesCache');
+                localStorage.removeItem('allCollegesCacheTimestamp');
+            }
+        });
+
+        window.addEventListener('load', function() {
+            sessionStorage.removeItem('isNavigation');
+        });
+    </script>
+</body>
+</html>

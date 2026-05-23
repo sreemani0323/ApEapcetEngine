@@ -4,8 +4,6 @@ branches,branch_type,"enum('Pure_CSE','AI_Specialized','Core','ECE','Other')",NO
 college_branches,college_branch_id,bigint,NO,PRI,auto_increment
 college_branches,college_id,bigint,NO,MUL,
 college_branches,branch_code,varchar(20),NO,MUL,
-college_branches,highest_package,varchar(50),YES,,
-college_branches,avg_package,varchar(50),YES,,
 college_metadata,college_id,bigint,NO,PRI,
 college_metadata,placement_percent,"decimal(5,2)",YES,,
 college_metadata,hostel_available,tinyint(1),YES,,

@@ -51,8 +51,6 @@ CREATE TABLE IF NOT EXISTS college_branches (
     college_branch_id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     college_id         BIGINT       NOT NULL REFERENCES colleges(college_id) ON DELETE CASCADE,
     branch_code        VARCHAR(20)  NOT NULL REFERENCES branches(branch_code) ON DELETE RESTRICT,
-    avg_package        VARCHAR(50),
-    highest_package    VARCHAR(50),
 
     UNIQUE (college_id, branch_code)
 );

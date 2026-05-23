@@ -1,39 +1,24 @@
 # ═══════════════════════════════════════════════════════
-# Multi-Stage Dockerfile — Next.js Frontend
+# Dockerfile — Express Frontend Static Server
 # Target: Node 22 Alpine (LTS)
 # ═══════════════════════════════════════════════════════
 
-# ── Stage 1: Dependencies ──
-FROM node:22-alpine AS deps
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci --production=false
-
-# ── Stage 2: Build ──
-FROM node:22-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
-
-# ── Stage 3: Runtime ──
-FROM node:22-alpine AS runner
+FROM node:22-alpine
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
 
-# Security: Non-root user
-RUN addgroup -S nextjs && adduser -S nextjs -G nextjs
-USER nextjs
+# Copy package configurations
+COPY package.json ./
 
-# Copy standalone output
-COPY --from=builder --chown=nextjs:nextjs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nextjs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nextjs /app/public ./public
+# Install production dependencies
+RUN npm install --omit=dev
 
+# Copy application files
+COPY server.js ./
+COPY public ./public
+
+# Healthcheck to verify the server is running on port 5173
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
     CMD wget -qO- http://localhost:5173/ || exit 1
 

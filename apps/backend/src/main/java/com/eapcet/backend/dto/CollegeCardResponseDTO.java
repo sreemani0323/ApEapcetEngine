@@ -32,9 +32,21 @@ public class CollegeCardResponseDTO {
     @JsonProperty("rank_gap")
     private Integer rankGap;
     
-    @JsonProperty("highest_package")
-    private String highestPackage;
-    
-    @JsonProperty("avg_package")
-    private String avgPackage;
+    @JsonProperty("affl")
+    private String affl;
+
+    @JsonProperty("category")
+    private String category;
+
+    @JsonProperty("cutoff_rank_2022")
+    private Integer cutoffRank2022;
+
+    @JsonProperty("college_type")
+    private String collegeType;
+
+    @JsonProperty("estd")
+    private Integer estd;
+
+    @JsonProperty("coed")
+    private String coed;
 }

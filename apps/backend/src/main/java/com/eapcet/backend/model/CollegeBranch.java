@@ -23,9 +23,4 @@ public class CollegeBranch {
     @JoinColumn(name = "branch_code", nullable = false)
     private Branch branch;
 
-    @Column(name = "highest_package", length = 50)
-    private String highestPackage;
-
-    @Column(name = "avg_package", length = 50)
-    private String avgPackage;
 }

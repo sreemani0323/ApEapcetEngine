@@ -1,4 +1,4 @@
-# Contributing to EAPCET Intelligence Engine
+# Contributing to ApEapcetEngine
 
 First off, thank you for considering contributing! 🎉 Every contribution makes this platform more useful for students navigating AP EAPCET admissions.
 
@@ -21,10 +21,10 @@ This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDU
 ## How Can I Contribute?
 
 ### 🐛 Fix Bugs
-Look for issues labeled [`bug`](https://github.com/sreemani0323/eapcet-intelligence-engine/labels/bug) or [`good first issue`](https://github.com/sreemani0323/eapcet-intelligence-engine/labels/good%20first%20issue).
+Look for issues labeled [`bug`](https://github.com/sreemani0323/ApEapcetEngine/labels/bug) or [`good first issue`](https://github.com/sreemani0323/ApEapcetEngine/labels/good%20first%20issue).
 
 ### ✨ Add Features
-Check the [`enhancement`](https://github.com/sreemani0323/eapcet-intelligence-engine/labels/enhancement) label for planned features.
+Check the [`enhancement`](https://github.com/sreemani0323/ApEapcetEngine/labels/enhancement) label for planned features.
 
 ### 📊 Add Data
 When APSCHE releases new cutoff data (e.g., 2025), you can contribute by:
@@ -42,7 +42,7 @@ Typo fixes, better explanations, architecture diagrams — all welcome.
 | Tool | Version | Purpose |
 |------|---------|---------|
 | Java | 21+ | Spring Boot backend |
-| Node.js | 18+ | Next.js frontend |
+| Node.js | 18+ | Express static frontend |
 | Python | 3.12+ | ML service & data pipeline |
 | PostgreSQL | 14+ | Database (or use Docker) |
 | Docker | Latest | Optional, for local DB |
@@ -51,8 +51,8 @@ Typo fixes, better explanations, architecture diagrams — all welcome.
 
 ```bash
 # 1. Fork and clone
-git clone https://github.com/<your-username>/eapcet-intelligence-engine.git
-cd eapcet-intelligence-engine
+git clone https://github.com/<your-username>/ApEapcetEngine.git
+cd ApEapcetEngine
 
 # 2. Copy environment template
 cp infra/.env.example .env
@@ -65,7 +65,6 @@ docker compose -f infra/docker-compose.yml up db -d
 cd data-pipeline/etl
 pip install -r ../requirements.txt
 python normalize.py
-python load_placements_branch.py
 cd ../..
 
 # 5. Start ML Service (Terminal 1)
@@ -85,7 +84,7 @@ npm run dev
 
 ### Verify Everything Works
 
-- **Frontend:** http://localhost:3000
+- **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:8080/swagger-ui.html
 - **ML Service:** http://localhost:8000/health
 
@@ -139,7 +138,7 @@ perf(etl): batch insert cutoffs for 10x speedup
 
 1. **Fork** the repository and create your branch from `main`.
 2. **Follow** the style guides below.
-3. **Test** your changes locally — ensure the backend compiles (`./mvnw clean compile`) and the frontend builds (`npm run build`).
+3. **Test** your changes locally — ensure the backend compiles (`./mvnw clean compile`) and the frontend starts (`npm run dev`).
 4. **Update documentation** if you changed any public APIs or setup steps.
 5. **Fill out** the PR template completely.
 6. **Request review** from at least one maintainer.
@@ -163,13 +162,13 @@ perf(etl): batch insert cutoffs for 10x speedup
 - All REST endpoints must return proper HTTP status codes
 - Use `ProblemDetail` (RFC 7807) for error responses
 
-### TypeScript (Frontend)
+### JavaScript (Frontend)
 
-- Use TypeScript strict mode
-- Components use PascalCase filenames
-- Use Zustand for state management
-- Prefer `async/await` over `.then()` chains
-- All API calls go through `lib/api.ts`
+- Use vanilla JavaScript (ES6+) — no build step required
+- Keep API calls centralized with `fetch()` and proper error handling
+- Use `const`/`let` (never `var`)
+- DOM elements should have unique, descriptive IDs
+- Chart.js for all data visualizations
 
 ### Python (ML Service & ETL)
 
@@ -181,7 +180,7 @@ perf(etl): batch insert cutoffs for 10x speedup
 
 ## Reporting Bugs
 
-Use the [Bug Report](https://github.com/sreemani0323/eapcet-intelligence-engine/issues/new?template=bug_report.md) issue template. Include:
+Use the [Bug Report](https://github.com/sreemani0323/ApEapcetEngine/issues/new?template=bug_report.yml) issue template. Include:
 
 1. **Steps to reproduce** — What did you do?
 2. **Expected behavior** — What should have happened?
@@ -191,7 +190,7 @@ Use the [Bug Report](https://github.com/sreemani0323/eapcet-intelligence-engine/
 
 ## Suggesting Features
 
-Use the [Feature Request](https://github.com/sreemani0323/eapcet-intelligence-engine/issues/new?template=feature_request.md) issue template. Include:
+Use the [Feature Request](https://github.com/sreemani0323/ApEapcetEngine/issues/new?template=feature_request.yml) issue template. Include:
 
 1. **Problem statement** — What problem does this solve?
 2. **Proposed solution** — How should it work?

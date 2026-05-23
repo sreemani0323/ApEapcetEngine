@@ -7,7 +7,6 @@ import com.eapcet.backend.model.Cutoff;
 import com.eapcet.backend.repository.CollegeBranchRepository;
 import com.eapcet.backend.repository.CollegeRepository;
 import com.eapcet.backend.repository.CutoffRepository;
-import com.eapcet.backend.util.PackageParser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -72,22 +71,6 @@ public class StatsService {
                     List<CollegeBranch> branches = entry.getValue();
                     College college = branches.get(0).getCollege();
 
-                    String bestAvg = branches.stream()
-                            .map(CollegeBranch::getAvgPackage)
-                            .map(PackageParser::parseLpa)
-                            .filter(Objects::nonNull)
-                            .max(Double::compareTo)
-                            .map(v -> String.format("%.1f LPA", v))
-                            .orElse(null);
-
-                    String bestHighest = branches.stream()
-                            .map(CollegeBranch::getHighestPackage)
-                            .map(PackageParser::parseLpa)
-                            .filter(Objects::nonNull)
-                            .max(Double::compareTo)
-                            .map(v -> String.format("%.1f LPA", v))
-                            .orElse(null);
-
                     return CollegeExploreDTO.builder()
                             .collegeId(college.getCollegeId())
                             .instcode(college.getInstcode())
@@ -98,8 +81,6 @@ public class StatsService {
                             .coed(college.getCoed())
                             .estd(college.getEstd())
                             .branchCount(branches.size())
-                            .avgPackage(bestAvg)
-                            .highestPackage(bestHighest)
                             .build();
                 })
                 .sorted(Comparator.comparing(CollegeExploreDTO::getName))
@@ -138,8 +119,6 @@ public class StatsService {
                         .branchCode(cb.getBranch().getBranchCode())
                         .cutoff2022(cutoffIndex.get(cb.getCollegeBranchId() + "_2022"))
                         .cutoff2024(cutoffIndex.get(cb.getCollegeBranchId() + "_2024"))
-                        .avgPackage(cb.getAvgPackage())
-                        .highestPackage(cb.getHighestPackage())
                         .build())
                 .sorted(Comparator.comparing(CollegeDetailDTO.BranchDetail::getBranchCode))
                 .collect(Collectors.toList());

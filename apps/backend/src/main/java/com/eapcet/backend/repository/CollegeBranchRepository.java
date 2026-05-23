@@ -50,12 +50,6 @@ public interface CollegeBranchRepository extends JpaRepository<CollegeBranch, Lo
             @Param("branchCode") String branchCode
     );
 
-    @Query("""
-        SELECT cb FROM CollegeBranch cb
-        JOIN FETCH cb.branch b
-        WHERE cb.avgPackage IS NOT NULL OR cb.highestPackage IS NOT NULL
-    """)
-    List<CollegeBranch> findAllWithPackageData();
 
     /** Direct instcode lookup — O(log N) via index */
     @Query("""

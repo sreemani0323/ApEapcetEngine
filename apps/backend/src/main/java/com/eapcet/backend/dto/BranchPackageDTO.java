@@ -14,12 +14,6 @@ public class BranchPackageDTO {
     @JsonProperty("branch_type")
     private String branchType;
     
-    @JsonProperty("avg_lpa_aggregate")
-    private Double avgLpaAggregate;
-    
-    @JsonProperty("max_lpa_recorded")
-    private Double maxLpaRecorded;
-    
     @JsonProperty("college_count")
     private Integer collegeCount;
 }

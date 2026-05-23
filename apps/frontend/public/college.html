@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Detail — ApEapcetEngine</title>
+    <meta name="description" content="Detailed branch-wise cutoff data and trends for EAPCET colleges.">
+    <link rel="stylesheet" href="style.css?v=2.0.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <a href="index.html" class="site-title-link">
+                    <h1 id="siteTitle"><i class="fas fa-graduation-cap"></i> ApEapcetEngine</h1>
+                </a>
+                <button class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav" id="mainNav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="analytics.html" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a>
+                <a href="map.html" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
+                <a href="calculator.html" class="nav-link"><i class="fas fa-calculator"></i> Calculator</a>
+                <a href="branch-comparison.html" class="nav-link"><i class="fas fa-code-branch"></i> Compare</a>
+            </nav>
+            <div class="header-controls">
+                <label class="dark-mode-toggle" for="darkModeSwitch">
+                    <input type="checkbox" id="darkModeSwitch" />
+                    <div class="toggle-slider"></div>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" style="padding:3rem 1rem;">
+            <div class="hero-content">
+                <h2 id="collegeHeroTitle" style="font-size:clamp(1.4rem,3.5vw,2.2rem);"><i class="fa-solid fa-building-columns"></i> Loading...</h2>
+                <p id="collegeHeroSub" style="font-size:1rem;opacity:0.7;">Branch-wise cutoff analysis with 2022 vs 2024 comparison</p>
+            </div>
+        </section>
+
+        <div class="container" style="max-width:1100px;margin:0 auto;padding:2rem 1rem;">
+
+            <!-- Error state -->
+            <div id="errorState" style="display:none;text-align:center;padding:4rem 2rem;">
+                <i class="fa-solid fa-circle-exclamation" style="font-size:4rem;color:var(--accent-danger);margin-bottom:1rem;"></i>
+                <h3 style="font-family:var(--font-heading);margin-bottom:0.5rem;" id="errorTitle">College Not Found</h3>
+                <p style="color:var(--text-secondary);margin-bottom:2rem;" id="errorMsg">No institution code provided in the URL.</p>
+                <a href="map.html" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:0.5rem;">
+                    <i class="fa-solid fa-map"></i> Back to Map
+                </a>
+            </div>
+
+            <!-- Loading spinner -->
+            <div id="loadingSpinner" style="display:flex;justify-content:center;padding:4rem;">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- College Detail Content -->
+            <div id="collegeInfo" style="display:none;">
+
+                <!-- Info Bento Grid -->
+                <div class="bento-grid" id="infoGrid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;"></div>
+
+                <!-- Category Selector -->
+                <div style="margin-top:2rem;padding:1.25rem;background:var(--surface);border:var(--border);border-radius:var(--radius);box-shadow:var(--shadow-brutal);display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                    <label style="font-family:var(--font-heading);font-weight:700;font-size:0.95rem;white-space:nowrap;">
+                        <i class="fa-solid fa-filter"></i> View cutoffs for:
+                    </label>
+                    <select id="categorySelect" style="flex:1;min-width:200px;padding:0.6rem 1rem;border:2.5px solid var(--border-color);border-radius:var(--radius-sm);font-family:var(--font-body);font-weight:600;font-size:0.9rem;background:var(--bg);color:var(--text);box-shadow:3px 3px 0px rgba(26,26,46,0.15);cursor:pointer;"></select>
+                </div>
+
+                <!-- Cutoff Comparison Chart -->
+                <div style="margin-top:2rem;">
+                    <h3 style="font-family:var(--font-heading);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fa-solid fa-chart-column" style="color:var(--primary);"></i> Cutoff Rank Comparison — 2022 vs 2024
+                    </h3>
+                    <div style="background:var(--surface);border:var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-brutal);">
+                        <canvas id="cutoffChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Change % Chart -->
+                <div style="margin-top:2rem;">
+                    <h3 style="font-family:var(--font-heading);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fa-solid fa-arrow-trend-up" style="color:var(--accent-safe);"></i> Cutoff Trend (% Change)
+                    </h3>
+                    <div style="background:var(--surface);border:var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-brutal);">
+                        <canvas id="changeChart"></canvas>
+                    </div>
+                    <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;text-align:center;">
+                        <span style="color:#2DC653;">■</span> Green = Cutoff rank went up (easier to get in) &nbsp;
+                        <span style="color:#EF476F;">■</span> Red = Cutoff rank went down (harder to get in)
+                    </p>
+                </div>
+
+                <!-- Category Comparison Chart -->
+                <div id="categoryChartContainer" style="margin-top:2rem;">
+                    <h3 style="font-family:var(--font-heading);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fa-solid fa-layer-group" style="color:var(--primary);"></i> Cutoffs by Category (2024)
+                    </h3>
+                    <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem;">Compare cutoff ranks across reservation categories for the selected branch.</p>
+                    <div style="background:var(--surface);border:var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow-brutal);">
+                        <div style="margin-bottom:1rem;">
+                            <label style="font-family:var(--font-heading);font-weight:600;margin-right:0.5rem;">Select Branch:</label>
+                            <select id="categoryChartBranchSelect" style="padding:0.5rem 1rem;border:2.5px solid var(--border-color);border-radius:var(--radius-sm);font-family:var(--font-body);font-weight:600;font-size:0.9rem;background:var(--bg);color:var(--text);box-shadow:3px 3px 0px rgba(26,26,46,0.15);cursor:pointer;"></select>
+                        </div>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Branch Table -->
+                <div style="margin-top:2rem;">
+                    <h3 style="font-family:var(--font-heading);margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+                        <i class="fa-solid fa-table" style="color:var(--accent-warn);"></i> Branch-wise Cutoff Data
+                    </h3>
+                    <div style="background:var(--surface);border:var(--border);border-radius:var(--radius);overflow-x:auto;box-shadow:var(--shadow-brutal);">
+                        <table id="branchTable" style="width:100%;border-collapse:collapse;min-width:600px;">
+                            <thead><tr id="branchTableHead"></tr></thead>
+                            <tbody id="branchTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 ApEapcetEngine by Nallimilli Mani. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="college.js"></script>
+
+    <style>
+        /* Dark mode overrides for college detail page */
+        body.dark-mode #branchTable th {
+            background: #222240 !important;
+            color: #818CF8 !important;
+            border-bottom-color: #818CF8 !important;
+        }
+        body.dark-mode #branchTable td {
+            border-bottom-color: rgba(255,255,255,0.06) !important;
+            color: #E5E7EB !important;
+        }
+        body.dark-mode #branchTable tr:hover td {
+            background: rgba(129,140,248,0.05) !important;
+        }
+        body.dark-mode #categorySelect {
+            background: #1A1A2E;
+            color: #E5E7EB;
+            border-color: #3A3A5C;
+        }
+        body.dark-mode #categoryChartBranchSelect {
+            background: #1A1A2E;
+            color: #E5E7EB;
+            border-color: #3A3A5C;
+        }
+    </style>
+</body>
+</html>

@@ -30,6 +30,17 @@ public interface CutoffRepository extends JpaRepository<Cutoff, Long> {
             @Param("category") String category,
             @Param("years") List<Integer> years);
 
+    /** Batch fetch cutoffs for multiple categories and college_branch_ids — eliminates N+1 */
+    @Query("""
+        SELECT c FROM Cutoff c
+        JOIN FETCH c.collegeBranch cb
+        WHERE cb.collegeBranchId IN :cbIds AND c.category IN :categories AND c.year IN :years
+        """)
+    List<Cutoff> findBatchByCbIdsAndCategoriesAndYears(
+            @Param("cbIds") List<Long> cbIds,
+            @Param("categories") List<String> categories,
+            @Param("years") List<Integer> years);
+
     /** Efficient aggregation: median cutoff per branch per year (computed in SQL) */
     @Query(value = """
         SELECT b.branch_code, b.branch_type, c.year,

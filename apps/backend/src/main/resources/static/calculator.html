@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Reverse Calculator - ApEapcetEngine</title>
+    <link rel="stylesheet" href="style.css?v=1.0.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    
+
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <a href="index.html" class="site-title-link">
+                    <h1 id="siteTitle"><i class="fas fa-graduation-cap"></i> ApEapcetEngine</h1>
+                </a>
+                <button class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="analytics.html" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a>
+                <a href="map.html" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
+                <a href="calculator.html" class="nav-link active"><i class="fas fa-calculator"></i> Calculator</a>
+                <a href="branch-comparison.html" class="nav-link"><i class="fas fa-code-branch"></i> Compare Branches</a>
+            </nav>
+            <div class="header-controls">
+                <button id="refreshBtn" class="btn-secondary" style="margin-right: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh Page
+                </button>
+                <label class="dark-mode-toggle" for="darkModeSwitch" title="Toggle Dark/Light Mode">
+                    <input type="checkbox" id="darkModeSwitch" />
+                    <div class="toggle-slider"></div>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2><i class="fas fa-calculator"></i> Reverse Rank Calculator</h2>
+                <p>Find out what rank you need for your dream college</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <form id="calculatorForm" class="predict-form" style="max-width: 700px; margin: 2rem auto;">
+                <div class="form-grid" style="grid-template-columns: 1fr;">
+                    <div class="form-group">
+                        <label for="collegeName">College Name</label>
+                        <input type="text" id="collegeName" placeholder="Search college..." 
+                               autocomplete="off" style="width: 100%;" />
+                        <div id="collegeDropdown" class="college-dropdown"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="branch">Branch</label>
+                        <select id="branch" required style="width: 100%;">
+                            <option value="">First select a college</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required style="width: 100%;">
+                            <option value="oc">OC (Open Category)</option>
+                            <option value="sc">SC</option>
+                            <option value="st">ST</option>
+                            <option value="bca">BC-A</option>
+                            <option value="bcb">BC-B</option>
+                            <option value="bcc">BC-C</option>
+                            <option value="bcd">BC-D</option>
+                            <option value="bce">BC-E</option>
+                            <option value="oc_ews">OC (EWS)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select id="gender" required style="width: 100%;">
+                            <option value="boys">Boys</option>
+                            <option value="girls">Girls</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="probability">Desired Admission Chance</label>
+                        <select id="probability" required style="width: 100%;">
+                            <option value="95">95% - Almost Certain</option>
+                            <option value="85">85% - Very High</option>
+                            <option value="70">70% - High</option>
+                            <option value="50" selected>50% - Moderate</option>
+                            <option value="40">40% - Reachable</option>
+                            <option value="25">25% - Ambitious</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 1rem;">
+                    <i class="fas fa-calculator"></i> Calculate Required Rank
+                </button>
+            </form>
+            
+            <div id="result" style="display: none; max-width: 700px; margin: 2rem auto;"></div>
+            <div id="loading" class="loading-spinner" style="display: none;"><div class="spinner"></div></div>
+        </div>
+    </main>
+
+    <div class="scroll-buttons" id="scrollButtons">
+        <button id="scrollTopBtn" title="Scroll to Top"><i class="fa-solid fa-arrow-up"></i></button>
+        <button id="scrollBottomBtn" title="Scroll to Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+
+    <footer class="page-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 ApEapcetEngine by Nallimilli Mani. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="validation-popups.js"></script>
+    <script src="calculator.js"></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollButtons = document.getElementById('scrollButtons');
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            const scrollBottomBtn = document.getElementById('scrollBottomBtn');
+
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    scrollButtons.classList.add('visible');
+                } else {
+                    scrollButtons.classList.remove('visible');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollBottomBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', function() {
+
+                localStorage.removeItem('calculatorCollegesData');
+                localStorage.removeItem('calculatorCollegesDataTimestamp');
+
+                document.getElementById('result').style.display = 'none';
+                document.getElementById('collegeName').value = '';
+                document.getElementById('collegeDropdown').innerHTML = '';
+
+                const branchSelect = document.getElementById('branch');
+                branchSelect.innerHTML = '<option value="">First select a college</option>';
+
+                document.getElementById('loading').style.display = 'flex';
+
+                loadColleges();
+            });
+        });
+
+        window.addEventListener('beforeunload', function() {
+
+            const isNavigation = sessionStorage.getItem('isNavigation');
+
+            if (!isNavigation) {
+
+                localStorage.removeItem('calculatorCollegesData');
+                localStorage.removeItem('calculatorCollegesDataTimestamp');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            sessionStorage.setItem('isNavigation', 'true');
+        });
+
+        window.addEventListener('load', function() {
+            sessionStorage.removeItem('isNavigation');
+        });
+    </script>
+    
+    <style>
+        /* Input and Select Styling */
+        #calculatorForm input[type="text"],
+        #calculatorForm select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius);
+            background: var(--card-light);
+            color: var(--color-text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        #calculatorForm input[type="text"]:focus,
+        #calculatorForm select:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        #calculatorForm label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        
+        .college-dropdown {
+            position: absolute;
+            background: var(--card-light);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius);
+            max-height: 200px;
+            overflow-y: auto;
+            width: 100%;
+            z-index: 100;
+            display: none;
+            box-shadow: var(--shadow);
+        }
+        .college-dropdown.show {
+            display: block;
+        }
+        .college-dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .college-dropdown-item:hover {
+            background: var(--color-accent-light);
+        }
+        .result-card {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            color: white;
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+        .result-card h2 {
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .result-card .rank-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        .result-details {
+            background: var(--card-light);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-top: 1rem;
+        }
+        body.dark-mode .college-dropdown {
+            background: var(--card-dark);
+            border-color: var(--border-dark);
+            color: var(--color-text-light);
+        }
+        body.dark-mode .college-dropdown-item {
+            border-color: var(--border-dark);
+            color: var(--color-text-light);
+        }
+        body.dark-mode .college-dropdown-item:hover {
+            background: #30363d;
+        }
+        body.dark-mode .result-details {
+            background: var(--card-dark);
+            color: var(--color-text-light);
+            border-color: var(--border-dark);
+        }
+    </style>
+</body>
+</html>

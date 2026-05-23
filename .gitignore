@@ -16,15 +16,20 @@ build/
 .env.staging
 .env.development
 
-# ===== IDE =====
+# ===== IDE / Editor =====
 .idea/
 .vscode/
+.cursor/
 *.iml
 .DS_Store
 Thumbs.db
 *.swp
 *.swo
 *~
+
+# ===== Virtual Environments =====
+.venv/
+venv/
 
 # ===== Logs =====
 logs/

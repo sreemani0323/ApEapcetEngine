@@ -34,9 +34,4 @@ public class CollegeExploreDTO {
     @JsonProperty("branch_count")
     private Integer branchCount;
 
-    @JsonProperty("avg_package")
-    private String avgPackage;
-
-    @JsonProperty("highest_package")
-    private String highestPackage;
 }

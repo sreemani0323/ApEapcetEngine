@@ -12,7 +12,7 @@ public class SearchRequestDTO {
     @Max(value = 500000, message = "Rank cannot exceed 500000")
     private Integer rank;
 
-    @Pattern(regexp = "^[A-Z_]+$", message = "Category must be uppercase with underscores (e.g., OC_BOYS)")
+    @Pattern(regexp = "^[A-Z_]+(\\s*,\\s*[A-Z_]+)*$", message = "Category must be uppercase with underscores (e.g., OC_BOYS or OC_BOYS,SC_BOYS)")
     private String category;
 
     @Size(max = 100, message = "District name too long")

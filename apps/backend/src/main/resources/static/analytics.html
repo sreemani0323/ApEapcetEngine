@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Analytics - ApEapcetEngine</title>
+    <link rel="stylesheet" href="style.css?v=1.0.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <a href="index.html" class="site-title-link">
+                    <h1 id="siteTitle"><i class="fas fa-graduation-cap"></i> ApEapcetEngine</h1>
+                </a>
+                <button class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="analytics.html" class="nav-link active"><i class="fas fa-chart-bar"></i> Analytics</a>
+                <a href="map.html" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
+                <a href="calculator.html" class="nav-link"><i class="fas fa-calculator"></i> Calculator</a>
+                <a href="branch-comparison.html" class="nav-link"><i class="fas fa-code-branch"></i> Compare Branches</a>
+            </nav>
+            <div class="header-controls">
+                <button id="refreshBtn" class="btn-secondary" style="margin-right: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh Page
+                </button>
+                <label class="dark-mode-toggle" for="darkModeSwitch" title="Toggle Dark/Light Mode">
+                    <input type="checkbox" id="darkModeSwitch" />
+                    <div class="toggle-slider"></div>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section" style="margin-bottom: 2rem;">
+            <div class="hero-content">
+                <h2><i class="fas fa-chart-line"></i> Analytics Dashboard</h2>
+                <p>Comprehensive insights into EAMCET college data</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div id="loadingSpinner" class="loading-spinner" style="display:flex; position:relative;">
+                <div class="spinner"></div>
+            </div>
+
+            <div id="analyticsContent" style="display:none;">
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="stat-card">
+                        <i class="fas fa-university"></i>
+                        <h3 id="totalColleges">0</h3>
+                        <p>Total Colleges</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-code-branch"></i>
+                        <h3 id="totalBranches">0</h3>
+                        <p>Branches Offered</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-map"></i>
+                        <h3 id="totalRegions">3</h3>
+                        <p>Regions</p>
+                    </div>
+                </div>
+
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem;">
+                    <div class="chart-container">
+                        <h3><i class="fas fa-chart-pie"></i> Colleges by Region</h3>
+                        <canvas id="regionChart"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <h3><i class="fas fa-chart-bar"></i> Top 10 Branches</h3>
+                        <canvas id="branchChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="scroll-buttons" id="scrollButtons">
+        <button id="scrollTopBtn" title="Scroll to Top"><i class="fa-solid fa-arrow-up"></i></button>
+        <button id="scrollBottomBtn" title="Scroll to Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+
+    <footer class="page-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 ApEapcetEngine by Nallimilli Mani. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="analytics.js"></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollButtons = document.getElementById('scrollButtons');
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            const scrollBottomBtn = document.getElementById('scrollBottomBtn');
+
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    scrollButtons.classList.add('visible');
+                } else {
+                    scrollButtons.classList.remove('visible');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollBottomBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', function() {
+
+                localStorage.removeItem('analyticsData');
+                localStorage.removeItem('analyticsDataTimestamp');
+
+                document.getElementById('analyticsContent').style.display = 'none';
+                document.getElementById('loadingSpinner').style.display = 'flex';
+
+                loadAnalytics();
+            });
+        });
+
+        window.addEventListener('beforeunload', function() {
+
+            const isNavigation = sessionStorage.getItem('isNavigation');
+
+            if (!isNavigation) {
+
+                localStorage.removeItem('analyticsData');
+                localStorage.removeItem('analyticsDataTimestamp');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            sessionStorage.setItem('isNavigation', 'true');
+        });
+
+        window.addEventListener('load', function() {
+            sessionStorage.removeItem('isNavigation');
+        });
+    </script>
+    
+    <style>
+        .stat-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: var(--border);
+            box-shadow: var(--shadow-brutal);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+        .stat-card:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: var(--shadow-brutal-lg);
+        }
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .stat-card h3 {
+            font-family: var(--font-heading);
+            font-size: 2.2rem;
+            margin: 0.5rem 0;
+            color: var(--text);
+        }
+        .stat-card p {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .chart-container {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: var(--border);
+            box-shadow: var(--shadow-brutal);
+        }
+        .chart-container h3 {
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-family: var(--font-heading);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        body.dark-mode .stat-card,
+        body.dark-mode .chart-container {
+            background: var(--surface);
+            color: var(--text);
+            border-color: var(--border-color);
+        }
+        body.dark-mode .stat-card h3 {
+            color: var(--text);
+        }
+    </style>
+</body>
+</html>

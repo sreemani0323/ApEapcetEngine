@@ -1,17 +1,17 @@
 <div align="center">
-  <h1>🎓 EAPCET Intelligence Engine</h1>
+  <h1>🎓 ApEapcetEngine</h1>
   <p>Data-driven college admission predictor for AP EAPCET, powered by LightGBM machine learning.</p>
 
   <p>
-    <a href="https://github.com/sreemani0323/eapcet-intelligence-engine/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
-    <a href="https://github.com/sreemani0323/eapcet-intelligence-engine/issues"><img src="https://img.shields.io/github/issues/sreemani0323/eapcet-intelligence-engine" alt="Issues"></a>
-    <a href="https://github.com/sreemani0323/eapcet-intelligence-engine/pulls"><img src="https://img.shields.io/github/issues-pr/sreemani0323/eapcet-intelligence-engine" alt="Pull Requests"></a>
+    <a href="https://github.com/sreemani0323/ApEapcetEngine/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+    <a href="https://github.com/sreemani0323/ApEapcetEngine/issues"><img src="https://img.shields.io/github/issues/sreemani0323/ApEapcetEngine" alt="Issues"></a>
+    <a href="https://github.com/sreemani0323/ApEapcetEngine/pulls"><img src="https://img.shields.io/github/issues-pr/sreemani0323/ApEapcetEngine" alt="Pull Requests"></a>
   </p>
 
   <p>
     <img src="https://img.shields.io/badge/Java-21-ED8B00?style=flat&logo=openjdk" alt="Java">
     <img src="https://img.shields.io/badge/Spring%20Boot-3.4-6DB33F?style=flat&logo=springboot" alt="Spring Boot">
-    <img src="https://img.shields.io/badge/Next.js-15-000000?style=flat&logo=nextdotjs" alt="Next.js">
+    <img src="https://img.shields.io/badge/Express-4.x-000000?style=flat&logo=express" alt="Express">
     <img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat&logo=python" alt="Python">
     <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=flat&logo=postgresql" alt="PostgreSQL">
     <img src="https://img.shields.io/badge/LightGBM-4.6-green?style=flat" alt="LightGBM">
@@ -22,7 +22,7 @@
 
 ## 📖 Overview
 
-The **EAPCET Intelligence Engine** analyzes **44,000+ historical cutoff records** across **200+ engineering institutions** in Andhra Pradesh. It leverages a LightGBM machine learning model to predict admission probabilities for students based on their EAPCET rank, category, and preferred branch.
+**ApEapcetEngine** analyzes **44,000+ historical cutoff records** across **200+ engineering institutions** in Andhra Pradesh. It leverages a LightGBM machine learning model to predict admission probabilities for students based on their EAPCET rank, category, and preferred branch.
 
 This project is built to bring transparency and data-driven decision-making to the college counseling process.
 
@@ -34,7 +34,9 @@ This project is built to bring transparency and data-driven decision-making to t
 | **Reverse Calculator** | Target a probability % → engine solves backward for the rank needed. |
 | **Institution Explorer** | Browse all 200+ colleges with filters (25 districts, 5 types, 20 affiliations). |
 | **Analytics Dashboard** | Branch comparison trends, district summaries, and trending programs. |
-| **College Detail Pages** | Branch-wise cutoff matrix (2022 vs 2024) and placement data. |
+| **College Detail Pages** | Branch-wise cutoff matrix (2022 vs 2024) with trend analysis. |
+| **Interactive Map** | Explore colleges geographically with district-wise filtering. |
+| **Branch Comparison** | Compare cutoff trends across branches with visual charts. |
 
 ---
 
@@ -42,15 +44,15 @@ This project is built to bring transparency and data-driven decision-making to t
 
 ```mermaid
 graph LR
-    A[Next.js 15 Frontend<br/>Vercel] --> B[Spring Boot 3.4 Backend<br/>Render]
+    A[Express Static Frontend<br/>Vercel] --> B[Spring Boot 3.4 Backend<br/>Render]
     B --> C[FastAPI + LightGBM<br/>Render]
     B --> D[(PostgreSQL 16<br/>Supabase)]
 ```
 
-- **Frontend:** Next.js 15, React 19, Framer Motion, Zustand
+- **Frontend:** Express.js serving static HTML/JS/CSS, Chart.js for visualizations, deployed on Vercel
 - **Backend:** Spring Boot 3.4, Java 21, Virtual Threads, Caffeine Cache, Resilience4j Circuit Breaker
 - **ML Service:** Python FastAPI, LightGBM, scikit-learn
-- **Database:** PostgreSQL (3NF normalized cutoff storage)
+- **Database:** PostgreSQL 16 on Supabase (3NF normalized cutoff storage)
 
 ---
 
@@ -62,14 +64,14 @@ We welcome contributors! Here is how to run the full stack locally.
 - [Java 21+](https://adoptium.net/temurin/releases/)
 - [Node.js 18+](https://nodejs.org/)
 - [Python 3.12+](https://www.python.org/downloads/)
-- [Docker & Docker Compose](https://www.docker.com/) (Optional, for database)
+- [Docker & Docker Compose](https://www.docker.com/) (Optional, for local database)
 
 ### Quick Start
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/sreemani0323/eapcet-intelligence-engine.git
-   cd eapcet-intelligence-engine
+   git clone https://github.com/sreemani0323/ApEapcetEngine.git
+   cd ApEapcetEngine
    ```
 
 2. **Setup Environment Variables:**
@@ -104,19 +106,22 @@ We welcome contributors! Here is how to run the full stack locally.
    npm run dev
    ```
 
-You can now view the app at [http://localhost:3000](http://localhost:3000) and the backend Swagger API Docs at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
+You can now view the app at [http://localhost:5173](http://localhost:5173) and the backend Swagger API Docs at [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html).
 
 ---
 
 ## 🧠 Machine Learning Model
 
-The core of the Intelligence Engine is a **LightGBM Regressor** trained on 44,000+ official APSCHE cutoff records. 
+The core of ApEapcetEngine is a **LightGBM Regressor** trained on 44,000+ official APSCHE cutoff records.
 
 ### Probability Calculation
-After the model predicts the cutoff rank, a sigmoid function converts the rank gap `(predicted_cutoff - user_rank)` into a probability percentage:
+After the model predicts the closing cutoff rank, a sigmoid function converts the relative margin into an admission probability:
 ```
-P(admission) = 100 / (1 + exp(-(gap / (0.4 × model_std))))
+relative_margin = (predicted_cutoff - user_rank) / predicted_cutoff
+z = (relative_margin + 0.05) / VOLATILITY
+P(admission) = FLOOR + (sigmoid(z) / 100) × (CEILING - FLOOR)
 ```
+Where `VOLATILITY = 0.20`, `FLOOR = 2%`, `CEILING = 95%`.
 
 ### Retraining Pipeline
 When new data is released (e.g., 2025 Cutoffs):
@@ -129,12 +134,12 @@ When new data is released (e.g., 2025 Cutoffs):
 
 ## 🤝 Contributing
 
-We would love your help making this platform better! 
+We would love your help making this platform better!
 
 Whether it is adding new features, fixing bugs, or improving documentation, please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before getting started.
 
-- [Report a Bug](https://github.com/sreemani0323/eapcet-intelligence-engine/issues/new?template=bug_report.yml)
-- [Request a Feature](https://github.com/sreemani0323/eapcet-intelligence-engine/issues/new?template=feature_request.yml)
+- [Report a Bug](https://github.com/sreemani0323/ApEapcetEngine/issues/new?template=bug_report.yml)
+- [Request a Feature](https://github.com/sreemani0323/ApEapcetEngine/issues/new?template=feature_request.yml)
 
 ### Security Vulnerabilities
 If you discover a security vulnerability, please refer to our [Security Policy](SECURITY.md) for reporting guidelines. **Do not create public issues for security vulnerabilities.**

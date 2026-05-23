@@ -26,32 +26,14 @@ public class AnalyticsService {
     private final CutoffRepository cutoffRepository;
 
     /**
-     * Parse package strings like "24.5 LPA" into Double.
-     */
-    private Double parsePackage(String pkg) {
-        if (pkg == null || pkg.equalsIgnoreCase("unavailable"))
-            return null;
-        try {
-            String clean = pkg.replaceAll("[^0-9.]", "").trim();
-            if (clean.isEmpty())
-                return null;
-            return Double.parseDouble(clean);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Compare branches by calculating their exact aggregate average LPA and Highest
-     * package drops.
+     * Compare branches grouped by college counts (branch densities).
      */
     @Cacheable("branchComparison")
     public List<BranchPackageDTO> compareBranchesByPackage() {
-        log.info("Aggregating package data grouped by branch types");
+        log.info("Aggregating branch comparison data (college counts)");
 
-        List<CollegeBranch> allBranches = collegeBranchRepository.findAllWithPackageData();
+        List<CollegeBranch> allBranches = collegeBranchRepository.findAll();
 
-        // Group everything by branchCode
         // Group everything by branchCode with null-safety
         Map<String, List<CollegeBranch>> groupedByBranch = allBranches.stream()
                 .filter(cb -> cb != null && cb.getBranch() != null && cb.getBranch().getBranchCode() != null)
@@ -68,72 +50,21 @@ public class AnalyticsService {
 
             String branchType = branches.get(0).getBranch().getBranchType();
 
-            // Aggregate parsed package sizes
-            List<Double> avgList = new ArrayList<>();
-            List<Double> maxList = new ArrayList<>();
-
-            for (CollegeBranch cb : branches) {
-                if (cb.getAvgPackage() != null) {
-                    Double avgParsed = parsePackage(cb.getAvgPackage());
-                    if (avgParsed != null)
-                        avgList.add(avgParsed);
-                }
-
-                if (cb.getHighestPackage() != null) {
-                    Double maxParsed = parsePackage(cb.getHighestPackage());
-                    if (maxParsed != null)
-                        maxList.add(maxParsed);
-                }
-            }
-
-            if (avgList.isEmpty())
-                continue; // Ignore branches with no placement data across the board
-
-            double totalAvg = avgList.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
-            double absoluteMax = maxList.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
-
             result.add(BranchPackageDTO.builder()
                     .branchCode(branchCode)
                     .branchType(branchType)
-                    .avgLpaAggregate(Math.round(totalAvg * 100.0) / 100.0) // 2 decimal precision
-                    .maxLpaRecorded(absoluteMax)
                     .collegeCount(branches.size())
                     .build());
         }
 
-        // Return sorted by Average LPA
+        // Return sorted by College Count
         if (!result.isEmpty()) {
             return result.stream()
-                    .sorted(Comparator.comparing(BranchPackageDTO::getAvgLpaAggregate).reversed())
+                    .sorted(Comparator.comparing(BranchPackageDTO::getCollegeCount).reversed())
                     .collect(Collectors.toList());
         }
 
-        // FALLBACK: No package data loaded. Return branch density (college count per
-        // branch).
-        log.warn("No placement package data found. Returning branch density fallback.");
-        
-        // We must load all branches because allBranches was empty!
-        List<CollegeBranch> fallbackBranches = collegeBranchRepository.findAll();
-        Map<String, List<CollegeBranch>> fallbackGrouped = fallbackBranches.stream()
-                .filter(cb -> cb != null && cb.getBranch() != null && cb.getBranch().getBranchCode() != null)
-                .collect(Collectors.groupingBy(cb -> cb.getBranch().getBranchCode()));
-
-        for (Map.Entry<String, List<CollegeBranch>> entry : fallbackGrouped.entrySet()) {
-            String branchCode = entry.getKey();
-            List<CollegeBranch> branches = entry.getValue();
-            String branchType = branches.get(0).getBranch().getBranchType();
-            result.add(BranchPackageDTO.builder()
-                    .branchCode(branchCode)
-                    .branchType(branchType)
-                    .avgLpaAggregate(0.0)
-                    .maxLpaRecorded(0.0)
-                    .collegeCount(branches.size())
-                    .build());
-        }
-        return result.stream()
-                .sorted(Comparator.comparing(BranchPackageDTO::getCollegeCount).reversed())
-                .limit(15)
-                .collect(Collectors.toList());
+        return result;
     }
 
     /**

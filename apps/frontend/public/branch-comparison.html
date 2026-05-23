@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Branch Comparison - ApEapcetEngine</title>
+    <link rel="stylesheet" href="style.css?v=1.0.0" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+
+</head>
+<body>
+    <header class="page-header">
+        <div class="header-container">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <a href="index.html" class="site-title-link">
+                    <h1 id="siteTitle"><i class="fas fa-graduation-cap"></i> ApEapcetEngine</h1>
+                </a>
+                <button class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav class="main-nav">
+                <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+                <a href="analytics.html" class="nav-link"><i class="fas fa-chart-bar"></i> Analytics</a>
+                <a href="map.html" class="nav-link"><i class="fas fa-map-marked-alt"></i> Map View</a>
+                <a href="calculator.html" class="nav-link"><i class="fas fa-calculator"></i> Calculator</a>
+                <a href="branch-comparison.html" class="nav-link active"><i class="fas fa-code-branch"></i> Compare Branches</a>
+            </nav>
+            <div class="header-controls">
+                <button id="refreshBtn" class="btn-secondary" style="margin-right: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-sync-alt"></i> Refresh Page
+                </button>
+                <label class="dark-mode-toggle" for="darkModeSwitch">
+                    <input type="checkbox" id="darkModeSwitch" />
+                    <div class="toggle-slider"></div>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h2><i class="fas fa-code-branch"></i> Branch Comparison Tool</h2>
+                <p>Compare different engineering branches side-by-side</p>
+            </div>
+        </section>
+
+        <div class="container">
+            
+            <div style="background: var(--card-light); padding: 2rem; border-radius: var(--radius); margin-bottom: 2rem; box-shadow: var(--shadow);">
+                <h3 style="margin-bottom: 1.5rem; color: var(--color-primary);"><i class="fas fa-code-branch"></i> Select Branches to Compare</h3>
+                <div id="branchSelection" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;"></div>
+                <button id="compareBtn" class="btn-primary" style="width: 100%;">
+                    <i class="fas fa-chart-bar"></i> Compare Selected Branches
+                </button>
+            </div>
+
+            <div id="loadingSpinner" class="loading-spinner" style="display: flex;"><div class="spinner"></div></div>
+
+            
+            <div id="comparisonResults" style="display: none;">
+                
+                <div id="summaryCards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;"></div>
+
+                
+                <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="chart-container">
+                        <h3><i class="fas fa-university"></i> Number of Colleges</h3>
+                        <canvas id="collegesChart"></canvas>
+                    </div>
+                </div>
+
+                
+                <div class="chart-container">
+                    <h3><i class="fas fa-table"></i> Detailed Comparison</h3>
+                    <div style="overflow-x: auto;">
+                        <table id="comparisonTable" class="comparison-table" style="width: 100%; border-collapse: collapse;"></table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="scroll-buttons" id="scrollButtons">
+        <button id="scrollTopBtn" title="Scroll to Top"><i class="fa-solid fa-arrow-up"></i></button>
+        <button id="scrollBottomBtn" title="Scroll to Bottom"><i class="fa-solid fa-arrow-down"></i></button>
+    </div>
+
+    <footer class="page-footer">
+        <div class="footer-container">
+            <p>&copy; 2025 ApEapcetEngine by Nallimilli Mani. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="branch-comparison.js"></script>
+    
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const scrollButtons = document.getElementById('scrollButtons');
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            const scrollBottomBtn = document.getElementById('scrollBottomBtn');
+
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    scrollButtons.classList.add('visible');
+                } else {
+                    scrollButtons.classList.remove('visible');
+                }
+            });
+
+            scrollTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollBottomBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            const refreshBtn = document.getElementById('refreshBtn');
+            refreshBtn.addEventListener('click', function() {
+
+                localStorage.removeItem('branchComparisonBranchesData');
+                localStorage.removeItem('branchComparisonBranchesDataTimestamp');
+                localStorage.removeItem('branchComparisonCollegesData');
+                localStorage.removeItem('branchComparisonCollegesDataTimestamp');
+
+                location.reload();
+            });
+        });
+
+        window.addEventListener('beforeunload', function() {
+
+            const isNavigation = sessionStorage.getItem('isNavigation');
+
+            if (!isNavigation) {
+
+                localStorage.removeItem('branchComparisonBranchesData');
+                localStorage.removeItem('branchComparisonBranchesDataTimestamp');
+                localStorage.removeItem('branchComparisonCollegesData');
+                localStorage.removeItem('branchComparisonCollegesDataTimestamp');
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            sessionStorage.setItem('isNavigation', 'true');
+        });
+
+        window.addEventListener('load', function() {
+            sessionStorage.removeItem('isNavigation');
+        });
+    </script>
+    
+    <style>
+        .chart-container {
+            background: var(--card-light);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+        .chart-container h3 {
+            margin-bottom: 1rem;
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .branch-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--card-light);
+            border: 2px solid var(--border-light);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .branch-checkbox:hover {
+            border-color: var(--color-accent);
+            transform: translateY(-2px);
+        }
+        .branch-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #dc3545; /* Red color */
+        }
+        
+        
+        /* Dark mode branch checkbox styles */
+        body.dark-mode .branch-checkbox {
+            background: var(--card-dark);
+            border: 2px solid var(--border-dark);
+            color: var(--color-text-light);
+        }
+        body.dark-mode .branch-checkbox input[type="checkbox"] {
+            accent-color: #dc3545; /* Red color */
+        }
+        
+        #comparisonTable th,
+        #comparisonTable td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid var(--border-light);
+        }
+        #comparisonTable th {
+            background: var(--color-primary);
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* Light mode even row styling */
+        #comparisonTable tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        #comparisonTable tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+        #comparisonTable tr:nth-child(even) {
+            background: var(--color-accent-light);
+        }
+        body.dark-mode .chart-container {
+            background: var(--card-dark);
+            color: var(--color-text-light);
+            border-color: var(--border-dark);
+        }
+        /* Dark mode table styles */
+        body.dark-mode #comparisonTable th {
+            background: #30363d;
+            color: var(--color-text-light);
+            border: 1px solid var(--border-dark);
+        }
+        body.dark-mode #comparisonTable .college-name-row {
+            color: white;
+        }
+        body.dark-mode #comparisonTable th,
+        body.dark-mode #comparisonTable td {
+            border: 1px solid var(--border-dark);
+            color: var(--color-text-light);
+            background: var(--card-dark);
+        }
+        body.dark-mode #comparisonTable th.text-center {
+            background: #14a2b8; /* Cyan color only for college/branch name headers */
+            color: white;
+        }
+        body.dark-mode #comparisonTable tr:nth-child(even) {
+            background: #161b22;
+        }
+        body.dark-mode #comparisonTable tr:nth-child(even) td {
+            background: #161b22;
+        }
+    </style>
+</body>
+</html>
