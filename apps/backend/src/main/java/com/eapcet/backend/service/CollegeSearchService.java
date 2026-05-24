@@ -120,21 +120,30 @@ public class CollegeSearchService {
             }
         }
 
+        // ── ML predictions: send in batches of ML_BATCH_SIZE to avoid exceeding the
+        //    FastAPI max_length=2000 limit. Results from all chunks are merged. ──
+        final int ML_BATCH_SIZE = 1500;
         Map<String, MLPredictionResponseDTO.MLPredictionResult> mlResMap = new HashMap<>();
         if (!mlItems.isEmpty()) {
-            MLPredictionRequestDTO mlReq = MLPredictionRequestDTO.builder().items(mlItems).build();
-            MLPredictionResponseDTO mlRes = mlServiceClient.getPredictions(mlReq);
-            if (mlRes != null && mlRes.getResults() != null) {
-                List<MLPredictionResponseDTO.MLPredictionResult> results = mlRes.getResults();
-                for (int i = 0; i < mlItems.size() && i < results.size(); i++) {
-                    MLPredictionRequestDTO.MLPredictionItem item = mlItems.get(i);
-                    MLPredictionResponseDTO.MLPredictionResult r = results.get(i);
-                    if (r != null) {
-                        String key = item.getCollegeBranchId() + "_" + item.getCategory();
-                        mlResMap.put(key, r);
+            for (int batchStart = 0; batchStart < mlItems.size(); batchStart += ML_BATCH_SIZE) {
+                List<MLPredictionRequestDTO.MLPredictionItem> chunk =
+                        mlItems.subList(batchStart, Math.min(batchStart + ML_BATCH_SIZE, mlItems.size()));
+                MLPredictionRequestDTO mlReq = MLPredictionRequestDTO.builder().items(chunk).build();
+                MLPredictionResponseDTO mlRes = mlServiceClient.getPredictions(mlReq);
+                if (mlRes != null && mlRes.getResults() != null) {
+                    List<MLPredictionResponseDTO.MLPredictionResult> results = mlRes.getResults();
+                    for (int i = 0; i < chunk.size() && i < results.size(); i++) {
+                        MLPredictionRequestDTO.MLPredictionItem item = chunk.get(i);
+                        MLPredictionResponseDTO.MLPredictionResult r = results.get(i);
+                        if (r != null) {
+                            String key = item.getCollegeBranchId() + "_" + item.getCategory();
+                            mlResMap.put(key, r);
+                        }
                     }
                 }
             }
+            log.info("ML predictions: {} items sent in {} batch(es)",
+                    mlItems.size(), (int) Math.ceil((double) mlItems.size() / ML_BATCH_SIZE));
         }
 
         List<CollegeCardResponseDTO> cards = new ArrayList<>();

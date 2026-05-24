@@ -53,14 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("theme", newTheme);
     });
 
-    // Mobile nav toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    if (navToggle && mainNav) {
-        navToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('nav-open');
-        });
-    }
+
+
 
     const cachedData = localStorage.getItem('calculatorCollegesData');
     const cacheTimestamp = localStorage.getItem('calculatorCollegesDataTimestamp');
@@ -162,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const trimmedQuery = query.toLowerCase().trim();
         
-        if (trimmedQuery.length < 2) {
+        if (trimmedQuery.length < 1) {
             collegeDropdown.classList.remove("show");
             return;
         }
@@ -173,8 +167,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const name = c.name.toLowerCase();
 
                 const nameNoSpaces = name.replace(/\s+/g, '');
-                const queryNoSpaces = query.replace(/\s+/g, '');
-                if (name.includes(query) || nameNoSpaces.includes(queryNoSpaces)) {
+                const queryNoSpaces = trimmedQuery.replace(/\s+/g, '');
+                if (name.includes(trimmedQuery) || nameNoSpaces.includes(queryNoSpaces)) {
                     uniqueColleges.set(c.instcode, c);
                 }
             }

@@ -16,23 +16,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    /**
-     * Toggles the mobile navigation menu visibility.
-     */
-    const navToggle = document.querySelector('.nav-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    
-    if (navToggle && mainNav) {
-        navToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-        });
 
-        document.addEventListener('click', function(event) {
-            if (!mainNav.contains(event.target) && !navToggle.contains(event.target)) {
-                mainNav.classList.remove('active');
-            }
-        });
-    }
 
     // ═══════════════════════════════════════════════════
     // SPLASH INTRO — Letter-by-letter reveal, auto-dismiss

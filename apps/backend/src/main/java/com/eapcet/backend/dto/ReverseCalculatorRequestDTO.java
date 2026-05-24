@@ -23,7 +23,7 @@ public class ReverseCalculatorRequestDTO {
     
     @JsonProperty("desired_probability")
     @NotNull(message = "Desired probability is required")
-    @Min(value = 1, message = "Probability must be at least 1%")
-    @Max(value = 99, message = "Probability cannot exceed 99%")
+    @Min(value = 5, message = "Probability must be at least 5%")
+    @Max(value = 90, message = "Probability cannot exceed 90%")
     private Double desiredProbability;
 }

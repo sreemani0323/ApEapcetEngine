@@ -194,14 +194,8 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("theme", newTheme);
     });
 
-    // Mobile nav toggle
-    const navToggle = document.querySelector('.nav-toggle');
-    const mainNav = document.querySelector('.main-nav');
-    if (navToggle && mainNav) {
-        navToggle.addEventListener('click', () => {
-            mainNav.classList.toggle('nav-open');
-        });
-    }
+
+
     
     console.log("Theme initialized");
 

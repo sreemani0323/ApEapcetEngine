@@ -57,8 +57,12 @@ public class RateLimitFilter implements Filter {
         Instant cutoff = Instant.now().minus(Duration.ofHours(2));
         Iterator<Map.Entry<String, Instant>> it = bucketLastSeen.entrySet().iterator();
         while (it.hasNext() && bucketLastSeen.size() > MAX_TRACKED_IPS / 2) {
-            if (it.next().getValue().isBefore(cutoff)) {
+            Map.Entry<String, Instant> entry = it.next();
+            if (entry.getValue().isBefore(cutoff)) {
+                String ip = entry.getKey();
                 it.remove();
+                searchBuckets.remove(ip);
+                readBuckets.remove(ip);
             }
         }
     }
