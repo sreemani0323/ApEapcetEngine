@@ -1264,6 +1264,21 @@ body.dark-mode .hero-section {
     border-bottom-color: var(--accent-yellow);
 }
 
+body.dark-mode .hero-rank-input {
+    border-color: rgba(255,255,255,0.25);
+    box-shadow: 6px 6px 0px rgba(254, 228, 64, 0.2);
+}
+body.dark-mode .hero-rank-input input {
+    background: #1A1A2E;
+    color: #F3F4F6;
+}
+body.dark-mode .hero-rank-input input::placeholder {
+    color: #6B7280;
+}
+body.dark-mode .hero-rank-input .fa-ranking-star {
+    color: var(--accent-yellow);
+}
+
 body.dark-mode h1, body.dark-mode h2, body.dark-mode h3,
 body.dark-mode #siteTitle,
 body.dark-mode .card-details-item p,
