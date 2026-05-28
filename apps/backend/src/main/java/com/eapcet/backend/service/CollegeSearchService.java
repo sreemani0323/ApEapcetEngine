@@ -11,6 +11,7 @@ import com.eapcet.backend.repository.CutoffRepository;
 import com.eapcet.backend.util.AdmissionProbability;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +29,15 @@ public class CollegeSearchService {
     private final CutoffRepository cutoffRepository;
     private final MLServiceClient mlServiceClient;
 
+    /**
+     * Cache key = full SearchRequestDTO (Lombok @Data provides equals + hashCode
+     * across all fields: rank, category, district, branchCode, region, type, name).
+     * TTL = 30 min. Max 300 entries — evicts LRU when full.
+     */
+    @Cacheable(value = "searchResults", key = "#req")
     public List<CollegeCardResponseDTO> searchColleges(SearchRequestDTO req) {
-        log.info("Performing flexible search: {}", req);
+        log.info("Cache MISS — running full search: rank={}, category={}, district={}, branch={}",
+                req.getRank(), req.getCategory(), req.getDistrict(), req.getBranchCode());
 
         boolean hasFilter = req.getDistrict() != null || req.getBranchCode() != null
                 || req.getRegion() != null || req.getCollegeType() != null

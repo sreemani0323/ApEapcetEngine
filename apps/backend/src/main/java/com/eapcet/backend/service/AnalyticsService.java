@@ -30,7 +30,7 @@ public class AnalyticsService {
      */
     @Cacheable("branchComparison")
     public List<BranchPackageDTO> compareBranchesByPackage() {
-        log.info("Aggregating branch comparison data (college counts)");
+        log.info("Cache MISS — aggregating branch comparison data from DB");
 
         List<CollegeBranch> allBranches = collegeBranchRepository.findAll();
 
@@ -73,7 +73,7 @@ public class AnalyticsService {
      */
     @Cacheable("trendingBranches")
     public List<TrendingBranchDTO> getTrendingBranches() {
-        log.info("Calculating trending branch velocity using SQL aggregation");
+        log.info("Cache MISS — calculating trending branch velocity from DB");
 
         List<Object[]> rows = cutoffRepository.findMedianCutoffByBranchAndYear();
 
