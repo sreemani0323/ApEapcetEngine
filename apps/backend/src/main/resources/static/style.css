@@ -1378,7 +1378,7 @@ body.dark-mode .card-location-link:hover { background: rgba(129,140,248,0.15); }
 
 body.dark-mode .prob-medium { color: #FBBF24 !important; }
 
-body.dark-mode a { color: var(--primary); }
+body.dark-mode a:not(.btn-primary):not(.btn-secondary):not(.popup-btn):not(.card-location-link):not(.nav-link) { color: var(--primary); }
 
 /* Dark Mode — Comparison */
 body.dark-mode .comparison-tray { background: #1A1A2E; border-top-color: var(--border-color); }
@@ -2152,10 +2152,12 @@ body.dark-mode input::placeholder { color: #6B7280; }
 
 /* -- Buttons -- */
 body.dark-mode .btn-primary {
+    color: #FFFFFF !important;
     border-color: rgba(255,255,255,0.15);
     box-shadow: 4px 4px 0px rgba(58,58,92,0.5);
 }
-body.dark-mode .btn-primary:hover { box-shadow: 6px 6px 0px rgba(58,58,92,0.5); }
+body.dark-mode .btn-primary:hover { color: #FFFFFF !important; box-shadow: 6px 6px 0px rgba(58,58,92,0.5); }
+body.dark-mode .map-card-button { color: #FFFFFF !important; }
 body.dark-mode .btn-secondary {
     border-color: var(--border-color);
     box-shadow: 4px 4px 0px rgba(58,58,92,0.4);
