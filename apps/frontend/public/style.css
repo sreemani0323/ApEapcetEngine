@@ -1228,6 +1228,34 @@ body.dark-mode .map-card-info { color: #9CA3AF; }
     color: var(--text-muted) !important;
 }
 
+/* ═══ Leaflet Attribution — fixed, immovable, compact ═══ */
+.leaflet-control-attribution {
+    pointer-events: none !important;       /* Can't drag it */
+    user-select: none !important;
+    background: rgba(255,255,255,0.82) !important;
+    backdrop-filter: blur(4px) !important;
+    border: 1.5px solid rgba(26,26,46,0.15) !important;
+    border-radius: 6px !important;
+    padding: 2px 8px !important;
+    font-size: 0.7rem !important;
+    color: #6B7280 !important;
+    box-shadow: none !important;
+    bottom: 6px !important;
+    right: 6px !important;
+}
+.leaflet-control-attribution a {
+    color: #4361EE !important;
+    pointer-events: auto !important;       /* Links inside still clickable */
+}
+body.dark-mode .leaflet-control-attribution {
+    background: rgba(15,15,26,0.85) !important;
+    border-color: rgba(58,58,92,0.4) !important;
+    color: #6B7280 !important;
+}
+body.dark-mode .leaflet-control-attribution a {
+    color: #818CF8 !important;
+}
+
 /* ═══ Popup inner content classes ═══ */
 .popup-inner { max-width: 250px; }
 .popup-title {

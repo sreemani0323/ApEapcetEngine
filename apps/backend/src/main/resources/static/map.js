@@ -200,7 +200,8 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Theme initialized");
 
     map = L.map('map', {
-        zoomControl: false // Disable default zoom control
+        zoomControl: false,
+        attributionControl: false  // We add our own fixed attribution below
     }).setView([15.9129, 79.7400], window.innerWidth < 768 ? 6 : 7); // Center of Andhra Pradesh
     
     console.log("Map initialized");
@@ -213,6 +214,10 @@ document.addEventListener("DOMContentLoaded", function () {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         zIndex: 1000
     }).addTo(map);
+
+    // Custom fixed attribution (OSM credit required by license, Leaflet branding removed)
+    L.control.attribution({ position: 'bottomright', prefix: false }).addTo(map)
+        .addAttribution('&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors');
 
     heatmapLayer = L.heatLayer([], {
         radius: 25,
