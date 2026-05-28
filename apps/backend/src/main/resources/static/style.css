@@ -2053,18 +2053,184 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
 .tag-estd-legacy i { margin-right: 2px; }
 
 /* ═══════════════════════════════════════════════════
-   DARK MODE — New Features
+   DARK MODE — Comprehensive Coverage
    ═══════════════════════════════════════════════════ */
-body.dark-mode .rank-range-section { background: var(--bg); }
-body.dark-mode .rank-range-card { background: var(--surface); }
-body.dark-mode .branch-summary { background: var(--surface); }
-body.dark-mode .branch-summary-card { background: var(--bg); }
-body.dark-mode .branch-summary-card:hover { background: var(--surface-raised); }
-body.dark-mode .filter-tab { background: var(--surface); color: var(--text-primary); }
+
+/* -- Body & global text -- */
+body.dark-mode { color: #E5E7EB; }
+body.dark-mode p, body.dark-mode span, body.dark-mode li { color: #D1D5DB; }
+
+/* -- Form labels & titles -- */
+body.dark-mode .form-group label { color: #9CA3AF; }
+body.dark-mode .form-title { color: #F3F4F6; }
+body.dark-mode .form-title .toggle-icon { color: #9CA3AF; }
+body.dark-mode .form-divider { color: #6B7280; }
+body.dark-mode .form-divider::before, body.dark-mode .form-divider::after { border-color: rgba(58,58,92,0.4); }
+
+/* -- Select / Input fields inside forms -- */
+body.dark-mode .predict-form select,
+body.dark-mode .predict-form input[type="text"],
+body.dark-mode .predict-form input[type="number"],
+body.dark-mode #calculatorForm select,
+body.dark-mode #calculatorForm input[type="text"],
+body.dark-mode #calculatorForm input[type="number"] {
+    background: #222240;
+    color: #E5E7EB;
+    border-color: var(--border-color);
+    box-shadow: 3px 3px 0px rgba(58,58,92,0.3);
+}
+body.dark-mode .predict-form select option,
+body.dark-mode #calculatorForm select option {
+    background: #1A1A2E;
+    color: #E5E7EB;
+}
+body.dark-mode .predict-form select:focus,
+body.dark-mode .predict-form input:focus,
+body.dark-mode #calculatorForm select:focus,
+body.dark-mode #calculatorForm input:focus {
+    border-color: var(--primary);
+    box-shadow: 3px 3px 0px var(--primary);
+}
+body.dark-mode input::placeholder { color: #6B7280; }
+
+/* -- Buttons -- */
+body.dark-mode .btn-primary {
+    border-color: rgba(255,255,255,0.15);
+    box-shadow: 4px 4px 0px rgba(58,58,92,0.5);
+}
+body.dark-mode .btn-primary:hover { box-shadow: 6px 6px 0px rgba(58,58,92,0.5); }
+body.dark-mode .btn-secondary {
+    border-color: var(--border-color);
+    box-shadow: 4px 4px 0px rgba(58,58,92,0.4);
+}
+body.dark-mode .btn-secondary:hover { box-shadow: 6px 6px 0px rgba(58,58,92,0.4); }
+
+/* -- Hero section stats -- */
+body.dark-mode .hero-stat-number { color: var(--accent-yellow); }
+body.dark-mode .hero-stat-label { color: rgba(255,255,255,0.65); }
+body.dark-mode .hero-content p { color: rgba(255,255,255,0.7); }
+
+/* -- Bento tiles -- */
+body.dark-mode .bento-tile-label { color: #9CA3AF; }
+body.dark-mode .bento-tile-icon { color: #6B7280; }
+body.dark-mode .bento-tile { border-color: var(--border-color); box-shadow: 4px 4px 0px rgba(58,58,92,0.4); }
+
+/* -- Card details -- */
+body.dark-mode .card-details-item strong { color: #9CA3AF; }
+body.dark-mode .card-footer span { color: #D1D5DB; }
+body.dark-mode .card-content-wrapper { border-color: var(--border-color); }
+body.dark-mode .college-card { border-color: var(--border-color); box-shadow: 4px 4px 0px rgba(58,58,92,0.4); }
+
+/* -- Results section -- */
+body.dark-mode .results-header h2 { color: #F3F4F6; }
+body.dark-mode .results-header { border-bottom-color: var(--border-color); }
+body.dark-mode .sort-control label { color: #9CA3AF; }
+body.dark-mode .results-count { color: #9CA3AF; }
+
+/* -- Compare checkbox wrapper -- */
+body.dark-mode .compare-checkbox-wrapper { color: #D1D5DB; }
+body.dark-mode .compare-checkbox-wrapper label { color: #D1D5DB; }
+
+/* -- Options list (dropdown checkboxes) -- */
+body.dark-mode .options-list label { color: #D1D5DB; }
+body.dark-mode .multiselect-options-container { border-color: var(--border-color); }
+body.dark-mode .multiselect-input::after { color: #9CA3AF; }
+
+/* -- Download menu -- */
+body.dark-mode .download-menu { border-color: var(--border-color); }
+body.dark-mode .download-menu button { color: #E5E7EB; }
+
+/* -- Comparison tray -- */
+body.dark-mode .comparison-tray .clear-btn { color: #9CA3AF; }
+body.dark-mode .comparison-tray .clear-btn:hover { color: var(--accent-danger); }
+
+/* -- Favorite button -- */
+body.dark-mode .favorite-btn { color: #6B7280; }
+body.dark-mode .favorite-btn.active { color: #F87171; }
+
+/* -- What-If Simulator -- */
 body.dark-mode .what-if-simulator {
     background: rgba(15, 15, 26, 0.5);
     border-color: rgba(255,255,255,0.1);
 }
+body.dark-mode .what-if-header { color: #F3F4F6; }
+body.dark-mode .what-if-header span { color: #F3F4F6; }
+body.dark-mode .what-if-rank { color: var(--accent-yellow); }
+body.dark-mode .what-if-result { color: #D1D5DB; }
+body.dark-mode .what-if-apply { color: #E5E7EB; }
+
+/* -- Analytics page — Stat cards -- */
+body.dark-mode .stat-card { background: #1A1A2E; border-color: var(--border-color); box-shadow: 4px 4px 0px rgba(58,58,92,0.4); }
+body.dark-mode .stat-card h3 { color: #F3F4F6; }
+body.dark-mode .stat-card p { color: #9CA3AF; }
+body.dark-mode .stat-card i { opacity: 0.7; }
+
+/* -- Chart containers -- */
+body.dark-mode .chart-container { background: #1A1A2E; border-color: var(--border-color); box-shadow: 4px 4px 0px rgba(58,58,92,0.4); }
+body.dark-mode .chart-container h3 { color: #F3F4F6; }
+
+/* -- Filter tabs (analytics/branch comparison) -- */
+body.dark-mode .filter-tab { background: #222240; color: #D1D5DB; border-color: var(--border-color); }
+body.dark-mode .filter-tab:hover { background: #2A2A4A; color: #F3F4F6; }
+body.dark-mode .filter-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* -- Map page -- */
+body.dark-mode .map-card { background: #1A1A2E; border-color: var(--border-color); }
+body.dark-mode .map-card-title { color: #F3F4F6; }
+body.dark-mode .map-card-info { color: #D1D5DB; }
+body.dark-mode .map-card-info span { color: #D1D5DB; }
+body.dark-mode .map-sidebar { background: #0F0F1A; }
+body.dark-mode .map-filter-section label { color: #9CA3AF; }
+body.dark-mode .map-filter-section select,
+body.dark-mode .map-filter-section input {
+    background: #222240;
+    color: #E5E7EB;
+    border-color: var(--border-color);
+}
+
+/* -- Calculator page -- */
+body.dark-mode .calculator-result { background: #1A1A2E; border-color: var(--border-color); }
+body.dark-mode .calculator-result h3 { color: #F3F4F6; }
+body.dark-mode .calculator-result p { color: #D1D5DB; }
+
+/* -- College detail page -- */
+body.dark-mode #cutoffChartContainer,
+body.dark-mode #changeChartContainer,
+body.dark-mode #branchTableContainer {
+    color: #E5E7EB;
+}
+body.dark-mode #cutoffChartContainer h3,
+body.dark-mode #changeChartContainer h3,
+body.dark-mode #branchTableContainer h3 { color: #F3F4F6; }
+body.dark-mode #branchTable th { background: #222240; color: var(--primary); }
+body.dark-mode #branchTable td { color: #D1D5DB; border-color: rgba(58,58,92,0.3); }
+body.dark-mode #categorySelect {
+    background: #222240;
+    color: #E5E7EB;
+    border-color: var(--border-color);
+}
+
+/* -- Branch comparison page -- */
+body.dark-mode .branch-selection-card { background: #1A1A2E; border-color: var(--border-color); }
+body.dark-mode .branch-selection-card label { color: #D1D5DB; }
+body.dark-mode .branch-selection-card select {
+    background: #222240;
+    color: #E5E7EB;
+    border-color: var(--border-color);
+}
+
+/* -- Rank range & branch summary -- */
+body.dark-mode .rank-range-section { background: var(--bg); }
+body.dark-mode .rank-range-card { background: var(--surface); border-color: var(--border-color); }
+body.dark-mode .branch-summary { background: var(--surface); }
+body.dark-mode .branch-summary-card { background: var(--bg); border-color: var(--border-color); }
+body.dark-mode .branch-summary-card:hover { background: var(--surface-raised); }
+
+/* -- Scrollbar for dark mode -- */
+body.dark-mode ::-webkit-scrollbar { width: 8px; }
+body.dark-mode ::-webkit-scrollbar-track { background: #0F0F1A; }
+body.dark-mode ::-webkit-scrollbar-thumb { background: #3A3A5C; border-radius: 4px; }
+body.dark-mode ::-webkit-scrollbar-thumb:hover { background: #4A4A6A; }
 
 /* ═══════════════════════════════════════════════════
    RESPONSIVE — New Features
