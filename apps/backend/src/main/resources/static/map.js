@@ -522,13 +522,13 @@ document.addEventListener("DOMContentLoaded", function () {
             markers.push(marker);
             
             const popupContent = `
-                <div style="max-width: 250px;">
-                    <h4 style="margin: 0 0 0.5rem 0; color: var(--heading-color, #2c3e50); font-family: 'Space Grotesk', sans-serif;">${college.name}</h4>
-                    <p style="margin: 0.25rem 0; font-size: 0.9rem; color: #27ae60;">
+                <div class="popup-inner">
+                    <h4 class="popup-title">${college.name}</h4>
+                    <p class="popup-location">
                         <i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> ${college.place || college.district}
                     </p>
-                    <p style="margin: 0.25rem 0; font-size: 0.9rem;"><strong>District:</strong> ${college.district}</p>
-                    <a href="college.html?instcode=${college.instcode}" style="display:inline-block;margin-top:0.5rem;padding:0.35rem 0.8rem;background:#4361EE;color:white;text-decoration:none;border-radius:6px;font-size:0.8rem;font-weight:700;border:2px solid #1A1A2E;">View Details →</a>
+                    <p class="popup-info"><strong>District:</strong> ${college.district}</p>
+                    <a href="college.html?instcode=${college.instcode}" class="popup-btn">View Details <i class="fas fa-arrow-right"></i></a>
                 </div>
             `;
             
@@ -575,13 +575,13 @@ document.addEventListener("DOMContentLoaded", function () {
         markers.push(marker);
         
         const popupContent = `
-            <div style="max-width: 250px;">
-                <h4 style="margin: 0 0 0.5rem 0; color: var(--heading-color, #2c3e50); font-family: 'Space Grotesk', sans-serif;">${college.name}</h4>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem; color: #27ae60;">
+            <div class="popup-inner">
+                <h4 class="popup-title">${college.name}</h4>
+                <p class="popup-location">
                     <i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> ${college.place || college.district}
                 </p>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><strong>District:</strong> ${college.district}</p>
-                <a href="college.html?instcode=${college.instcode}" style="display:inline-block;margin-top:0.5rem;padding:0.35rem 0.8rem;background:#4361EE;color:white;text-decoration:none;border-radius:6px;font-size:0.8rem;font-weight:700;border:2px solid #1A1A2E;">View Details →</a>
+                <p class="popup-info"><strong>District:</strong> ${college.district}</p>
+                <a href="college.html?instcode=${college.instcode}" class="popup-btn">View Details <i class="fas fa-arrow-right"></i></a>
             </div>
         `;
         
