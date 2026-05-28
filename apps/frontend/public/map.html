@@ -212,11 +212,9 @@
     <script src="map.js?v=3.0.0"></script>
     
     <script>
-        console.log("HTML inline script started");
         
         // Wait for DOM to be fully loaded
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("HTML inline script DOM loaded");
             
             // Map view toggle functionality
             const toggleMarkersBtn = document.getElementById('toggleMarkers');
@@ -228,8 +226,6 @@
             const scrollButtons = document.getElementById('scrollButtons');
             const scrollTopBtn = document.getElementById('scrollTopBtn');
             const scrollBottomBtn = document.getElementById('scrollBottomBtn');
-            
-            console.log("Scroll buttons elements retrieved");
             
             // Show/hide scroll buttons based on scroll position
             window.addEventListener('scroll', function() {
@@ -285,7 +281,6 @@
             // Refresh button functionality
             const refreshBtn = document.getElementById('refreshBtn');
             refreshBtn.addEventListener('click', function() {
-                console.log("Refresh button clicked");
                 // Clear localStorage cache
                 localStorage.removeItem('mapCollegesData');
                 localStorage.removeItem('mapCollegesDataTimestamp');
@@ -297,10 +292,8 @@
                 
                 // Reload data (this would call the same functions that load the initial data)
                 if (typeof window.loadColleges === 'function') {
-                    console.log("Calling loadColleges function");
                     window.loadColleges();
                 } else {
-                    console.log("loadColleges function not available, reloading page");
                     location.reload();
                 }
             });
@@ -324,8 +317,6 @@
                     }
                 });
             }
-            
-            console.log("HTML inline script completed");
         });
     </script>
     

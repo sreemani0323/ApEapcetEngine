@@ -126,7 +126,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             try {
                 branches = JSON.parse(cachedBranches);
                 const allColleges = JSON.parse(cachedColleges);
-                console.log(`Loaded ${branches.length} branches and ${allColleges.length} colleges from localStorage cache`);
 
                 renderBranchCheckboxes();
                 
@@ -155,7 +154,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 if (ageInMinutes < 30) { // Cache is valid for 30 minutes
                     try {
                         branches = JSON.parse(cachedBranches);
-                        console.log(`Loaded ${branches.length} branches from localStorage cache`);
 
                         renderBranchCheckboxes();
                         
@@ -173,7 +171,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
             
             branches = await response.json();
-            console.log(`Loaded ${branches.length} branches from backend:`, branches);
 
             try {
                 localStorage.setItem('branchComparisonBranchesData', JSON.stringify(branches));
@@ -250,7 +247,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         branchData = {};
         
         try {
-            console.log('Fetching branch comparison and trend data from backend...');
             const [compareRes, trendRes] = await Promise.all([
                 fetch(`/api/analytics/compare-branches?_=${new Date().getTime()}`),
                 fetch(`/api/analytics/trending-branches?all=true&_=${new Date().getTime()}`)
@@ -262,9 +258,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             
             const compareList = await compareRes.json();
             const trendList = await trendRes.json();
-            
-            console.log('Fetched comparison list:', compareList);
-            console.log('Fetched trend list:', trendList);
 
             const BRANCH_NAME_TO_CODE = {};
             Object.entries(BRANCH_CODE_TO_NAME).forEach(([code, name]) => {
@@ -272,7 +265,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
             for (const branch of selectedBranches) {
-                console.log(`Matching stats for branch: ${branch}`);
                 const code = BRANCH_NAME_TO_CODE[branch] || branch;
                 const item = compareList.find(i => i.branch_code === code);
                 const trendItem = trendList.find(i => i.branch_code === code);
@@ -284,14 +276,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                     competitionIncrease: trendItem ? Math.round(trendItem.competition_increase) : 0,
                     trendStatus: trendItem ? trendItem.trend_status : 'Stable'
                 };
-                console.log(`Stats for ${branch}:`, branchData[branch]);
             }
             
             if (Object.keys(branchData).length === 0) {
                 throw new Error('No data found for selected branches. Please try different branches.');
             }
-            
-            console.log('Rendering comparison...');
             renderComparison();
             loadingSpinner.style.display = "none";
             comparisonResults.style.display = "block";
@@ -552,8 +541,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function reloadBranchData() {
-        sessionStorage.removeItem('branchComparisonBranchesData');
-        sessionStorage.removeItem('branchComparisonCollegesData');
+        localStorage.removeItem('branchComparisonBranchesData');
+        localStorage.removeItem('branchComparisonCollegesData');
         location.reload();
     }
 

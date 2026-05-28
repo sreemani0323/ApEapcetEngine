@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 const data = JSON.parse(cachedData);
                 allColleges = data;
-                console.log(`Loaded ${allColleges.length} colleges from localStorage cache`);
                 loadingDiv.style.display = "none";
             } catch (e) {
                 console.error("Failed to parse cached calculator data:", e);
@@ -94,7 +93,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 try {
                     const data = JSON.parse(cachedData);
                     allColleges = data;
-                    console.log(`Loaded ${allColleges.length} colleges from localStorage cache`);
                     loadingDiv.style.display = "none";
                     return;
                 } catch (e) {
@@ -114,7 +112,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             allColleges = data;
-            console.log(`Loaded ${allColleges.length} colleges`);
             loadingDiv.style.display = "none";
         })
         .catch(err => {

@@ -99,7 +99,6 @@ public class RateLimitFilter implements Filter {
                     HttpStatus.TOO_MANY_REQUESTS,
                     "Rate limit exceeded. Try again shortly."
             );
-            pd.setTitle("Too Many Requests");
             res.getWriter().write(
                     "{\"type\":\"about:blank\",\"title\":\"Too Many Requests\",\"status\":429,\"detail\":\""
                             + pd.getDetail() + "\"}"

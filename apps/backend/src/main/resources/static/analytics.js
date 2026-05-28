@@ -128,7 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     renderCharts(data);
                     loadingSpinner.style.display = "none";
                     analyticsContent.style.display = "block";
-                    console.log("Loaded analytics data from localStorage cache");
                     return;
                 } catch (e) {
                     console.warn("Failed to parse cached analytics data:", e);

@@ -244,8 +244,6 @@ a:hover { color: var(--primary-hover); }
     align-items: center;
 }
 
-.nav-toggle { display: none; }
-
 .nav-link {
     padding: 0.6rem 1.25rem;
     border-radius: var(--radius-sm);
@@ -983,7 +981,6 @@ input:checked + .toggle-slider:before {
 }
 
 .bento-tile-lg { grid-column: span 2; }
-.bento-tile-xl { grid-column: span 2; grid-row: span 2; }
 
 .bento-tile-number {
     font-family: var(--font-heading);
@@ -1067,20 +1064,6 @@ input:checked + .toggle-slider:before {
 .reveal-delay-4 { transition-delay: 0.2s; }
 .reveal-delay-5 { transition-delay: 0.25s; }
 
-/* Section heading wipe reveal */
-.heading-reveal {
-    background: linear-gradient(90deg, var(--text) 50%, transparent 50%);
-    background-size: 200% 100%;
-    background-position: 100% 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transition: background-position 0.8s ease;
-}
-
-.heading-reveal.revealed {
-    background-position: 0% 0;
-}
 
 /* ═══════════════════════════════════════════════════
    19. COMPARISON TRAY & MODAL
@@ -1151,10 +1134,6 @@ input:checked + .toggle-slider:before {
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-spinner { position: fixed; left: 0; top: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(0,0,0,0.7); z-index: 9999; }
 
-/* Favorite button */
-.favorite-btn { position: absolute; top: 1rem; right: 9rem; background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); transition: all 0.3s ease; z-index: 10; padding: 0.5rem; }
-.favorite-btn:hover { color: var(--accent-danger); transform: scale(1.2); }
-.favorite-btn.favorited { color: var(--accent-danger); }
 
 /* ═══════════════════════════════════════════════════
    MAP PAGE — CARD OVERRIDES
@@ -1197,8 +1176,6 @@ input:checked + .toggle-slider:before {
     border-radius: var(--radius-sm);
 }
 
-body.dark-mode .map-card-title { color: #E5E7EB; }
-body.dark-mode .map-card-info { color: #9CA3AF; }
 
 /* ═══ Leaflet Popup Theme Support ═══ */
 .leaflet-popup-content-wrapper {
@@ -1414,9 +1391,8 @@ body.dark-mode .comparison-tray p { color: #F3F4F6; }
 body.dark-mode .modal-content, body.dark-mode .modal-content-large { background: #1A1A2E; }
 body.dark-mode .modal-header { border-color: var(--border-color); }
 body.dark-mode .modal-title { color: #F3F4F6; }
-body.dark-mode .comparison-table th { background: #222240; color: var(--primary); border-right-color: var(--primary); }
+body.dark-mode .comparison-table th { background: #222240; color: var(--primary); border-right-color: var(--primary); border-color: var(--border-color); }
 body.dark-mode .comparison-table td { color: #E5E7EB; border-color: var(--border-color); }
-body.dark-mode .comparison-table th { border-color: var(--border-color); }
 body.dark-mode .comparison-table .college-name-row { color: #F3F4F6; }
 
 /* Dark Mode — Badges */
@@ -1603,7 +1579,6 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
 
     /* Bento grid */
     .bento-grid { grid-template-columns: repeat(2, 1fr); }
-    .bento-tile-xl { grid-column: span 2; grid-row: span 1; }
     .hero-stats { gap: 2rem; }
 
     /* Form grid */
@@ -1678,7 +1653,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
 
     /* Bento */
     .bento-grid { grid-template-columns: 1fr 1fr; }
-    .bento-tile-lg, .bento-tile-xl { grid-column: span 2; }
+    .bento-tile-lg
     .bento-tile-number { font-size: 1.8rem; }
     .bento-tile { padding: 1rem; }
 
@@ -1767,7 +1742,6 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
     .sort-control label { display: none; }
 
     /* Favorite button */
-    .favorite-btn { top: auto; bottom: 0.75rem; right: 0.75rem; font-size: 1.25rem; }
 
     /* Scroll buttons */
     .scroll-buttons { bottom: 1rem; right: 1rem; }
@@ -1793,7 +1767,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
 /* ── Small phones: ≤ 480px ── */
 @media (max-width: 480px) {
     .bento-grid { grid-template-columns: 1fr; }
-    .bento-tile-lg, .bento-tile-xl { grid-column: span 1; }
+    .bento-tile-lg
 
     .hero-stats { flex-direction: column; gap: 0.75rem; }
     .hero-content h2 { font-size: 1.35rem; }
@@ -2142,7 +2116,6 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
    ═══════════════════════════════════════════════════ */
 
 /* -- Body & global text -- */
-body.dark-mode { color: #E5E7EB; }
 body.dark-mode p, body.dark-mode span, body.dark-mode li { color: #D1D5DB; }
 
 /* -- Form labels & titles -- */
@@ -2232,8 +2205,6 @@ body.dark-mode .comparison-tray .clear-btn { color: #9CA3AF; }
 body.dark-mode .comparison-tray .clear-btn:hover { color: var(--accent-danger); }
 
 /* -- Favorite button -- */
-body.dark-mode .favorite-btn { color: #6B7280; }
-body.dark-mode .favorite-btn.active { color: #F87171; }
 
 /* -- What-If Simulator -- */
 body.dark-mode .what-if-simulator {
@@ -2276,9 +2247,6 @@ body.dark-mode .map-filter-section input {
 }
 
 /* -- Calculator page -- */
-body.dark-mode .calculator-result { background: #1A1A2E; border-color: var(--border-color); }
-body.dark-mode .calculator-result h3 { color: #F3F4F6; }
-body.dark-mode .calculator-result p { color: #D1D5DB; }
 
 /* -- College detail page -- */
 body.dark-mode #cutoffChartContainer,

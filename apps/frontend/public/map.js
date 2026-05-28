@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("Map page DOM loaded");
     
     function createBackgroundAnimation() {
         const container = document.getElementById('backgroundAnimation');
@@ -45,8 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let markers = [];
     let heatmapLayer = null;
     let selectedSearchCollege = null;
-    
-    console.log("Elements retrieved");
 
 
 
@@ -194,17 +191,10 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("theme", newTheme);
     });
 
-
-
-    
-    console.log("Theme initialized");
-
     map = L.map('map', {
         zoomControl: false,
         attributionControl: false  // We add our own fixed attribution below
     }).setView([15.9129, 79.7400], window.innerWidth < 768 ? 6 : 7); // Center of Andhra Pradesh
-    
-    console.log("Map initialized");
 
     L.control.zoom({
         position: 'topright'
@@ -225,8 +215,6 @@ document.addEventListener("DOMContentLoaded", function () {
         maxZoom: 17,
         gradient: {0.4: 'blue', 0.65: 'lime', 1: 'red'}
     });
-    
-    console.log("Tile layer added");
 
     searchBox.addEventListener('input', function() {
         const query = searchBox.value;
@@ -287,14 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `).join('');
         
         searchDropdown.style.display = 'block';
-
-        const items = searchDropdown.querySelectorAll('.college-dropdown-item');
-        items.forEach(item => {
-            const newItem = item.cloneNode(true);
-            item.parentNode.replaceChild(newItem, item);
-        });
-
-        searchDropdown.querySelectorAll('.college-dropdown-item').forEach(item => {
+            searchDropdown.querySelectorAll('.college-dropdown-item').forEach(item => {
             item.addEventListener('click', function() {
                 const instcode = this.getAttribute('data-instcode');
                 selectedSearchCollege = uniqueColleges.get(instcode);
@@ -375,7 +356,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function loadColleges() {
-        console.log("loadColleges called");
 
         resetMapResults();
         
@@ -392,26 +372,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 try {
                     const data = JSON.parse(cachedData);
                     allColleges = data;
-                    console.log("Using cached data in loadColleges");
                     filterAndDisplay();
                     loadingSpinner.style.display = "none";
-                    console.log("Loaded map data from localStorage cache");
                     return;
                 } catch (e) {
                     console.warn("Failed to parse cached map data:", e);
                 }
             }
         }
-
-        console.log("Fetching fresh data from explore API");
         
         fetch(`/api/colleges/explore?_=${new Date().getTime()}`)
         .then(res => {
-            console.log("API response received");
             return res.json();
         })
         .then(data => {
-            console.log("API data parsed, enriching client-side...");
             const mappedData = data.map(c => {
                 const regionVal = getRegionForDistrict(c.district);
                 return {
@@ -435,9 +409,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             allColleges = mappedData;
-            console.log(`Loaded ${allColleges.length} colleges from API`);
-            
-            console.log("Data loaded, calling filterAndDisplay");
             filterAndDisplay();
             loadingSpinner.style.display = "none";
         })
@@ -465,7 +436,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     
     function filterAndDisplay() {
-        console.log("filterAndDisplay called");
         
         const region = regionFilter.value;
         const searchTerm = searchBox.value.toLowerCase().trim();
@@ -496,8 +466,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 uniqueColleges.set(college.instcode, college);
             }
         });
-        
-        console.log(`Filtered colleges: ${filtered.length}, Unique colleges: ${uniqueColleges.size}`);
 
         const heatmapData = [];
         let collegesWithCoords = 0;
@@ -514,10 +482,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     coords = [15.9129, 79.7400]; // Default to center of Andhra Pradesh
                 } else {
-                    console.log(`Using district coordinates for ${college.name}: ${college.district} -> [${coords[0]}, ${coords[1]}]`);
                 }
             } else {
-                console.log(`Using place coordinates for ${college.name}: ${college.place} -> [${coords[0]}, ${coords[1]}]`);
             }
             collegesWithCoords++;
 
@@ -541,20 +507,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         heatmapLayer.setLatLngs(heatmapData);
-        
-        console.log(`Colleges with coordinates: ${collegesWithCoords}, Colleges without coordinates: ${collegesWithoutCoords}`);
 
         displayCollegeList(Array.from(uniqueColleges.values()));
 
         selectedSearchCollege = null;
 
         loadingSpinner.style.display = "none";
-        
-        console.log("filterAndDisplay completed");
     }
     
     function displaySingleCollege(college) {
-        console.log("displaySingleCollege called");
 
         markers.forEach(m => map.removeLayer(m));
         markers = [];
@@ -570,10 +531,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 coords = [15.9129, 79.7400]; // Default to center of Andhra Pradesh
             } else {
-                console.log(`Using district coordinates for ${college.name}: ${college.district} -> [${coords[0]}, ${coords[1]}]`);
             }
         } else {
-            console.log(`Using place coordinates for ${college.name}: ${college.place} -> [${coords[0]}, ${coords[1]}]`);
         }
         
         const marker = L.marker(coords).addTo(map);
@@ -598,13 +557,9 @@ document.addEventListener("DOMContentLoaded", function () {
         displayCollegeList([college]);
 
         loadingSpinner.style.display = "none";
-        
-        console.log("displaySingleCollege completed");
     }
     
     function displayCollegeList(colleges, districtName = null) {
-        console.log("displayCollegeList called");
-        console.log(`Input colleges: ${colleges.length}`);
         
         if (districtName) {
             collegeList.innerHTML = `<h3 style="grid-column: 1/-1; color: var(--color-primary);">
@@ -622,16 +577,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 uniqueColleges.set(c.instcode, c);
             }
         });
-        
-        console.log(`Unique colleges in displayCollegeList: ${uniqueColleges.size}`);
 
         const sortedColleges = Array.from(uniqueColleges.values()).sort((a, b) => {
             const nameA = (a.name || '').toLowerCase();
             const nameB = (b.name || '').toLowerCase();
             return nameA.localeCompare(nameB);
         });
-
-        const selectedColleges = [];
 
         sortedColleges.forEach(college => {
 
@@ -650,12 +601,11 @@ document.addEventListener("DOMContentLoaded", function () {
             card.style.cssText = "padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); transition: transform 0.3s; position: relative; padding-top: 4rem;";
 
             const uniqueId = `${college.instcode}`;
-            const isSelected = false; // No persistence between page loads
 
             const comparisonCheckbox = `
                 <div class="compare-checkbox-wrapper">
                     <label for="compare-${uniqueId}" title="Compare">
-                        <input type="checkbox" id="compare-${uniqueId}" class="compare-checkbox" data-college='${JSON.stringify(college).replace(/"/g, '"').replace(/'/g, "&#39;")}' data-unique-id="${uniqueId}" ${isSelected ? 'checked' : ''} onchange="handleMapCompareCheckbox(event)" />
+                        <input type="checkbox" id="compare-${uniqueId}" class="compare-checkbox" data-college='${JSON.stringify(college).replace(/"/g, '"').replace(/'/g, "&#39;")}' data-unique-id="${uniqueId}"  onchange="handleMapCompareCheckbox(event)" />
                         <span>Compare</span>
                     </label>
                 </div>
@@ -692,8 +642,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         initializeMapComparisonTray();
-        
-        console.log("displayCollegeList completed");
     }
 
     let selectedCollegesInMemory = [];
@@ -994,11 +942,7 @@ document.addEventListener("DOMContentLoaded", function () {
             map.removeLayer(heatmapLayer);
         }
     };
-
-    console.log("Initializing colleges data load...");
     setTimeout(function() {
         loadColleges();
     }, 100);
-    
-    console.log("Map page initialization completed");
 });
