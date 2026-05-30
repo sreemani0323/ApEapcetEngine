@@ -988,8 +988,12 @@ document.addEventListener("DOMContentLoaded", function () {
         sortedData.forEach((college, index) => {
             const card = document.createElement("div");
 
-            const uniqueId = `${college.instcode}-${college.branch}-${college.category}-${college.cutoff}`; 
-            card.className = `college-card reveal-delay-${(index % 5) + 1}`;
+            // Staggered scroll reveal, but reveal first 3 cards immediately so they are visible instantly when loader hides.
+            if (index < 3) {
+                card.className = `college-card reveal revealed reveal-delay-${(index % 5) + 1}`;
+            } else {
+                card.className = `college-card reveal reveal-delay-${(index % 5) + 1}`;
+            }
             card.dataset.id = uniqueId; 
             
             const isSelected = selectedColleges.some(c => c.uniqueId === uniqueId);

@@ -719,11 +719,6 @@ input:checked + .toggle-slider:before {
     position: relative;
     padding: 0;
     min-height: 180px;
-    animation: cardFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-@keyframes cardFadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
 }
 
 .college-card:hover {
