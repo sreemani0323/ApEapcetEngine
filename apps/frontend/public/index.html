@@ -8,7 +8,7 @@
     <meta http-equiv="Expires" content="0">
     <title>ApEapcetEngine — College Predictor</title>
     <meta name="description" content="ApEapcetEngine: Predict your EAMCET college admissions based on rank, branch, quota, and gender. Data-driven insights for smart counselling decisions.">
-    <link rel="stylesheet" href="style.css?v=3.0.0" />
+    <link rel="stylesheet" href="style.css?v=4.0.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -275,19 +275,41 @@
         </div> 
 
 
-        <!-- ═══ Smart Loading Overlay (fixed, full-screen — can't miss it) ═══ -->
-        <div id="loadingSpinner" class="smart-loader-overlay" style="display:none;">
-            <div class="smart-loader-box">
+        <!-- ═══ Smart Loading Overlay ═══ -->
+        <div id="loadingSpinner" class="smart-loader-overlay"
+             style="display:none; position:fixed; inset:0; z-index:9999;
+                    background:rgba(8,8,20,0.78); backdrop-filter:blur(6px);
+                    -webkit-backdrop-filter:blur(6px);
+                    align-items:center; justify-content:center;">
+
+            <div class="smart-loader-box"
+                 style="background:var(--surface,#fff); border-radius:16px;
+                        box-shadow:0 8px 40px rgba(67,97,238,0.25),0 2px 8px rgba(0,0,0,0.15);
+                        padding:2rem 2.5rem 1.75rem;
+                        display:flex; flex-direction:column; align-items:center;
+                        gap:0.85rem; max-width:320px; width:calc(100% - 2.5rem);
+                        text-align:center;">
+
                 <lottie-player
                     src="searching.json"
                     background="transparent"
                     speed="1"
                     loop autoplay
-                    style="width:160px;height:160px;">
+                    style="width:150px;height:150px;flex-shrink:0;">
                 </lottie-player>
-                <p id="loaderStatusText" class="loader-status-text">Scanning colleges matching your rank...</p>
-                <div class="loader-status-bar">
-                    <div id="loaderStatusBar" class="loader-status-fill"></div>
+
+                <p id="loaderStatusText" class="loader-status-text"
+                   style="margin:0;font-weight:600;line-height:1.4;
+                          font-size:0.95rem;min-height:1.3em;
+                          transition:opacity 0.3s ease;">Scanning colleges...</p>
+
+                <div class="loader-status-bar"
+                     style="height:4px;width:100%;border-radius:99px;
+                            background:rgba(128,128,128,0.2);overflow:hidden;">
+                    <div id="loaderStatusBar" class="loader-status-fill"
+                         style="height:100%;width:0%;border-radius:99px;
+                                background:linear-gradient(90deg,#4361ee,#818cf8);
+                                transition:width 1s cubic-bezier(0.4,0,0.2,1);"></div>
                 </div>
             </div>
         </div>
@@ -355,7 +377,7 @@
     
     <script src="nav-drawer.js?v=3.0.0"></script>
     <script src="validation-popups.js?v=3.0.0"></script>
-    <script src="main.js?v=3.0.0"></script>
+    <script src="main.js?v=4.0.0"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
