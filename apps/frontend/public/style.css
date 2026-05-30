@@ -657,13 +657,18 @@ input:checked + .toggle-slider:before {
     font-weight: 900;
     font-size: 0.8rem;
     color: var(--text-muted, #6b7280);
-    flex-shrink: 0;
-    margin-left: 0.5rem;
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
     transition: transform 0.2s ease;
     pointer-events: none;
 }
 .multiselect-dropdown.open .multiselect-input::after {
-    transform: rotate(180deg);
+    transform: translateY(-50%) rotate(180deg);
+}
+.multiselect-input .dropdown-arrow {
+    display: none !important;
 }
 .multiselect-input:focus, .sort-control select:focus {
     border-color: var(--primary);

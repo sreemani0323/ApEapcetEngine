@@ -26,7 +26,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const instcode = params.get('instcode');
 
     if (!instcode) {
-        document.getElementById('loadingSpinner').style.display = 'none';
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(false);
+        } else {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
         document.getElementById('errorState').style.display = 'block';
         return;
     }
@@ -102,7 +106,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Load detail ──
     async function loadDetail(category) {
-        document.getElementById('loadingSpinner').style.display = 'flex';
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'college' });
+        } else {
+            document.getElementById('loadingSpinner').style.display = 'flex';
+        }
         document.getElementById('collegeInfo').style.display = 'none';
         document.getElementById('errorState').style.display = 'none';
 
@@ -116,7 +124,11 @@ document.addEventListener('DOMContentLoaded', function () {
             renderCollege(data);
         } catch (err) {
             console.error('Failed to load college detail:', err);
-            document.getElementById('loadingSpinner').style.display = 'none';
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
             document.getElementById('errorState').style.display = 'block';
             document.getElementById('errorTitle').textContent = 'Failed to Load';
             document.getElementById('errorMsg').textContent = `Could not fetch data for institution "${instcode}". The backend may be down.`;
@@ -125,7 +137,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ── Render College ──
     function renderCollege(data) {
-        document.getElementById('loadingSpinner').style.display = 'none';
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(false);
+        } else {
+            document.getElementById('loadingSpinner').style.display = 'none';
+        }
         document.getElementById('collegeInfo').style.display = 'block';
         document.title = `${data.name} — ApEapcetEngine`;
 

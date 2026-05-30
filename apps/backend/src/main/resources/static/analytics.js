@@ -26,7 +26,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = JSON.parse(cachedData);
             updateSummaryCards(data);
             renderCharts(data);
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
             analyticsContent.style.display = "block";
         } catch (e) {
             console.error("Failed to parse cached analytics data:", e);
@@ -113,9 +117,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function loadAnalytics() {
-        loadingSpinner.style.display = "flex";
-        const statusEl = loadingSpinner.querySelector('.loader-status-text, p');
-        if (statusEl) statusEl.textContent = 'Synthesizing live analytics data...';
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'analytics' });
+        } else {
+            loadingSpinner.style.display = "flex";
+            const statusEl = loadingSpinner.querySelector('.loader-status-text, p');
+            if (statusEl) statusEl.textContent = 'Synthesizing live analytics data...';
+        }
         
         const cachedData = localStorage.getItem('analyticsData');
         const cacheTimestamp = localStorage.getItem('analyticsDataTimestamp');
@@ -127,7 +135,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     const data = JSON.parse(cachedData);
                     updateSummaryCards(data);
                     renderCharts(data);
-                    loadingSpinner.style.display = "none";
+                    if (typeof window.showSmartSpinner === 'function') {
+                        window.showSmartSpinner(false);
+                    } else {
+                        loadingSpinner.style.display = "none";
+                    }
                     analyticsContent.style.display = "block";
                     return;
                 } catch (e) {
@@ -173,12 +185,20 @@ document.addEventListener("DOMContentLoaded", function () {
             
             updateSummaryCards(synthesizedData);
             renderCharts(synthesizedData);
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
             analyticsContent.style.display = "block";
         })
         .catch(err => {
             console.error("Failed to load/synthesize analytics:", err);
-            loadingSpinner.innerHTML = "<p style='color: red; padding: 2rem;'>Failed to load analytics data from server</p>";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            }
+            analyticsContent.innerHTML = "<p style='color: red; padding: 2rem; text-align: center;'>Failed to load analytics data from server. Please try refreshing the page.</p>";
+            analyticsContent.style.display = "block";
         });
     }
     

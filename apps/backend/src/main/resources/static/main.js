@@ -708,93 +708,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /** Show the smart loader. rank + branchHint personalise status messages. */
     function showSpinner(show, rank, branchHint) {
-        if (!loadingSpinner) return;
-        if (show) {
-            loadingSpinner.style.display = 'flex';
-
-            const msgs = _buildStatusMessages(rank, branchHint);
-
-            // Reset bar
-            if (loaderStatusBar)  loaderStatusBar.style.width = '0%';
-            if (loaderStatusText) loaderStatusText.textContent = msgs[0].text;
-            if (loaderStatusBar)  setTimeout(() => { loaderStatusBar.style.width = msgs[0].pct + '%'; }, 80);
-
-            // Advance through phases: cumulative delays in ms
-            const cumulativeDelays = [4000, 10000, 20000, 30000, 42000];
-
-            const _timeouts = [];
-            cumulativeDelays.forEach((delay, i) => {
-                const phaseIdx = i + 1;
-                if (phaseIdx >= msgs.length) return;
-                const t = setTimeout(() => {
-                    const m = msgs[phaseIdx];
-                    if (loaderStatusText) {
-                        loaderStatusText.style.opacity = '0';
-                        setTimeout(() => {
-                            if (loaderStatusText) loaderStatusText.textContent = m.text;
-                            loaderStatusText.style.opacity = '1';
-                        }, 200);
-                    }
-                    if (loaderStatusBar) loaderStatusBar.style.width = m.pct + '%';
-                }, delay);
-                _timeouts.push(t);
-            });
-            // Store timeouts so we can clear them on hide
-            loadingSpinner._smartTimeouts = _timeouts;
-
-            // Staggered skeleton card entrance
-            const skCards = document.querySelectorAll('.skeleton-card');
-            skCards.forEach((card, i) => {
-                card.style.animation = 'none';
-                card.style.opacity   = '0';
-                setTimeout(() => {
-                    card.style.animation = '';
-                    card.style.opacity   = '';
-                }, 50 + i * 150);
-            });
-        } else {
-            // Hide: clear all pending phase timeouts, snap bar to 100%, fade out loader
-
-            if (loadingSpinner._smartTimeouts) {
-                loadingSpinner._smartTimeouts.forEach(t => clearTimeout(t));
-                loadingSpinner._smartTimeouts = [];
-            }
-            if (loadingSpinner._errorTimeout) {
-                clearTimeout(loadingSpinner._errorTimeout);
-                loadingSpinner._errorTimeout = null;
-            }
-            // Reset lottie back to searching if it was switched to error
-            const lp = loadingSpinner.querySelector('lottie-player');
-            if (lp && lp.src && lp.src.includes('404error')) {
-                lp.load('searching.json');
-            }
-            if (loaderStatusBar)  loaderStatusBar.style.width = '100%';
-            if (loaderStatusText) loaderStatusText.textContent = 'Done! Here are your matches \u2714';
-            setTimeout(() => { loadingSpinner.style.display = 'none'; }, 300);
-        }
-
-        // After 90s with no response — switch to 404 error animation
-        if (show) {
-            loadingSpinner._errorTimeout = setTimeout(() => {
-                const lp = loadingSpinner.querySelector('lottie-player');
-                if (lp) lp.load('404error.json');
-                if (loaderStatusText) {
-                    loaderStatusText.style.opacity = '0';
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(show, { type: 'predict', rank, branchHint });
+            if (show) {
+                // Staggered skeleton card entrance
+                const skCards = document.querySelectorAll('.skeleton-card');
+                skCards.forEach((card, i) => {
+                    card.style.animation = 'none';
+                    card.style.opacity   = '0';
                     setTimeout(() => {
-                        if (loaderStatusText) {
-                            loaderStatusText.textContent = 'Could not connect. Please check your network and try again.';
-                            loaderStatusText.style.opacity = '1';
-                            loaderStatusText.style.color = '#ef4444';
-                        }
-                        if (loaderStatusBar) loaderStatusBar.style.width = '0%';
-                    }, 250);
-                }
-                // Clear remaining phase timeouts
-                if (loadingSpinner._smartTimeouts) {
-                    loadingSpinner._smartTimeouts.forEach(t => clearTimeout(t));
-                    loadingSpinner._smartTimeouts = [];
-                }
-            }, 90000);
+                        card.style.animation = '';
+                        card.style.opacity   = '';
+                    }, 50 + i * 150);
+                });
+            }
         }
     }
 

@@ -59,8 +59,12 @@ document.addEventListener("DOMContentLoaded", function () {
     loadColleges();
 
     function loadColleges() {
-        loadingDiv.innerHTML = '<div class="spinner"></div>';
-        loadingDiv.style.display = "flex";
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'calculator' });
+        } else {
+            loadingDiv.innerHTML = '<div class="spinner"></div>';
+            loadingDiv.style.display = "flex";
+        }
 
         const cachedData = localStorage.getItem('calculatorCollegesData');
         const cacheTimestamp = localStorage.getItem('calculatorCollegesDataTimestamp');
@@ -71,7 +75,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 try {
                     const data = JSON.parse(cachedData);
                     allColleges = data;
-                    loadingDiv.style.display = "none";
+                    if (typeof window.showSmartSpinner === 'function') {
+                        window.showSmartSpinner(false);
+                    } else {
+                        loadingDiv.style.display = "none";
+                    }
                     return;
                 } catch (e) {
                     console.warn("Failed to parse cached calculator data:", e);
@@ -90,12 +98,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             
             allColleges = data;
-            loadingDiv.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingDiv.style.display = "none";
+            }
         })
         .catch(err => {
             console.error("Failed to load colleges:", err);
-            loadingDiv.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            }
+            
+            // Show error inside resultDiv since loading is hidden
+            resultDiv.innerHTML = `
+                <div style="text-align: center; padding: 2rem; background: var(--surface); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
                     <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Unable to Load Data</h3>
                     <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
@@ -106,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </a>
                 </div>
             `;
+            resultDiv.style.display = "block";
         });
     }
 
@@ -268,7 +286,11 @@ document.addEventListener("DOMContentLoaded", function () {
             desired_probability: parseFloat(probabilitySelect.value)
         };
         
-        loadingDiv.style.display = "flex";
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'calculator' });
+        } else {
+            loadingDiv.style.display = "flex";
+        }
         resultDiv.style.display = "none";
         
         fetch(`/api/reverse-calculate?_=${new Date().getTime()}`, {
@@ -286,11 +308,19 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             displayResult(data);
-            loadingDiv.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingDiv.style.display = "none";
+            }
         })
         .catch(err => {
             console.error("Calculation failed:", err);
-            loadingDiv.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingDiv.style.display = "none";
+            }
             alert(err.message || "Failed to calculate. Please check your selections.");
         });
     });

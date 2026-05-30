@@ -125,7 +125,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 renderBranchCheckboxes();
                 
-                loadingSpinner.style.display = "none";
+                if (typeof window.showSmartSpinner === 'function') {
+                    window.showSmartSpinner(false);
+                } else {
+                    loadingSpinner.style.display = "none";
+                }
                 return;
             } catch (e) {
                 console.error("Failed to parse cached branch comparison data:", e);
@@ -139,8 +143,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     async function loadInitialData() {
         try {
-            loadingSpinner.style.display = "flex";
-            loadingSpinner.innerHTML = '<div class="spinner"></div><p>Loading available branches...</p>';
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(true, { type: 'branch-comparison' });
+            } else {
+                loadingSpinner.style.display = "flex";
+                loadingSpinner.innerHTML = '<div class="spinner"></div><p>Loading available branches...</p>';
+            }
 
             const cachedBranches = localStorage.getItem('branchComparisonBranchesData');
             const cacheTimestamp = localStorage.getItem('branchComparisonBranchesDataTimestamp');
@@ -153,7 +161,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                         renderBranchCheckboxes();
                         
-                        loadingSpinner.style.display = "none";
+                        if (typeof window.showSmartSpinner === 'function') {
+                            window.showSmartSpinner(false);
+                        } else {
+                            loadingSpinner.style.display = "none";
+                        }
                         return;
                     } catch (e) {
                         console.warn("Failed to parse cached branch comparison branches data:", e);
@@ -181,18 +193,35 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             renderBranchCheckboxes();
             
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
             
         } catch (err) {
             console.error('Failed to load branches:', err);
-            loadingSpinner.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
-                    <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Failed to Load Branches</h3>
-                    <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
-                        ${err.message || 'Could not connect to server.'}
-                    </p>
-                    <button onclick="location.reload()" class="btn-primary">
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            }
+            
+            // Show error inside branchSelection container
+            const selectionDiv = document.getElementById("branchSelection");
+            if (selectionDiv) {
+                selectionDiv.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; grid-column: 1 / -1; background: var(--surface); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
+                        <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Failed to Load Branches</h3>
+                        <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
+                            ${err.message || 'Could not connect to server.'}
+                        </p>
+                        <button onclick="location.reload()" class="btn-primary">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                    </div>
+                `;
+            }
+        }
                         <i class="fas fa-redo"></i> Try Again
                     </button>
                 </div>
@@ -236,8 +265,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     compareBtn.addEventListener("click", compareBranches);
     
     async function compareBranches() {
-        loadingSpinner.style.display = "flex";
-        loadingSpinner.innerHTML = '<div class="spinner"></div><p>Loading comparison data...</p>';
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'branch-comparison' });
+        } else {
+            loadingSpinner.style.display = "flex";
+            loadingSpinner.innerHTML = '<div class="spinner"></div><p>Loading comparison data...</p>';
+        }
         comparisonResults.style.display = "none";
         branchData = {};
         
@@ -277,14 +310,21 @@ document.addEventListener("DOMContentLoaded", async function () {
                 throw new Error('No data found for selected branches. Please try different branches.');
             }
             renderComparison();
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
             comparisonResults.style.display = "block";
             comparisonResults.scrollIntoView({ behavior: "smooth" });
             
         } catch (err) {
             console.error("Failed to fetch branch data:", err);
-            loadingSpinner.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            }
+            comparisonResults.innerHTML = `
+                <div style="text-align: center; padding: 2rem; background: var(--surface); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
                     <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Failed to Load Comparison</h3>
                     <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
@@ -295,6 +335,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     </button>
                 </div>
             `;
+            comparisonResults.style.display = "block";
         }
     }
     

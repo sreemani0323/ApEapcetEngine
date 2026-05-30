@@ -309,15 +309,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
             displaySingleCollege(selectedSearchCollege);
 
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(true, { type: 'map' });
+            } else {
+                loadingSpinner.style.display = "flex";
+            }
         } else if (searchBox.value.trim()) {
 
             filterAndDisplay();
 
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
         } else {
 
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
         }
     });
 
@@ -328,7 +340,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         collegeList.innerHTML = '';
 
-        loadingSpinner.style.display = "flex";
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'map' });
+        } else {
+            loadingSpinner.style.display = "flex";
+        }
     }
 
     document.addEventListener('click', function(e) {
@@ -359,8 +375,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         resetMapResults();
         
-        loadingSpinner.innerHTML = '<div class="spinner"></div>';
-        loadingSpinner.style.display = "flex";
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(true, { type: 'map' });
+        } else {
+            loadingSpinner.innerHTML = '<div class="spinner"></div>';
+            loadingSpinner.style.display = "flex";
+        }
         collegeList.innerHTML = "";
 
         const cachedData = localStorage.getItem('mapCollegesData');
@@ -373,7 +393,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     const data = JSON.parse(cachedData);
                     allColleges = data;
                     filterAndDisplay();
-                    loadingSpinner.style.display = "none";
+                    if (typeof window.showSmartSpinner === 'function') {
+                        window.showSmartSpinner(false);
+                    } else {
+                        loadingSpinner.style.display = "none";
+                    }
                     return;
                 } catch (e) {
                     console.warn("Failed to parse cached map data:", e);
@@ -411,12 +435,19 @@ document.addEventListener("DOMContentLoaded", function () {
             
             allColleges = mappedData;
             filterAndDisplay();
-            loadingSpinner.style.display = "none";
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            } else {
+                loadingSpinner.style.display = "none";
+            }
         })
         .catch(err => {
             console.error("Failed to load colleges:", err);
-            loadingSpinner.innerHTML = `
-                <div style="text-align: center; padding: 2rem;">
+            if (typeof window.showSmartSpinner === 'function') {
+                window.showSmartSpinner(false);
+            }
+            collegeList.innerHTML = `
+                <div style="text-align: center; padding: 2rem; grid-column: 1 / -1; background: var(--surface); border: var(--border); border-radius: var(--radius); box-shadow: var(--shadow);">
                     <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c; margin-bottom: 1rem;"></i>
                     <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Unable to Load Map Data</h3>
                     <p style="color: var(--color-text-secondary); margin-bottom: 1.5rem;">
@@ -513,7 +544,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedSearchCollege = null;
 
-        loadingSpinner.style.display = "none";
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(false);
+        } else {
+            loadingSpinner.style.display = "none";
+        }
     }
     
     function displaySingleCollege(college) {
@@ -557,7 +592,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         displayCollegeList([college]);
 
-        loadingSpinner.style.display = "none";
+        if (typeof window.showSmartSpinner === 'function') {
+            window.showSmartSpinner(false);
+        } else {
+            loadingSpinner.style.display = "none";
+        }
     }
     
     function displayCollegeList(colleges, districtName = null) {
