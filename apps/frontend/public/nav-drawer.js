@@ -122,16 +122,9 @@ window.showSmartSpinner = function (show, options = {}) {
                 spinner._errorTimeout = null;
             }
             
-            const statusText = spinner.querySelector('.loader-status-text');
-            const statusBar = spinner.querySelector('.loader-status-fill');
-            if (statusBar) statusBar.style.width = '100%';
-            if (statusText) statusText.textContent = 'Done! \u2714';
-            
-            setTimeout(() => {
-                spinner.style.display = 'none';
-                const container = spinner.querySelector('.lottie-container') || spinner.querySelector('#lottieContainer');
-                if (container) container.innerHTML = '';
-            }, 300);
+            spinner.style.display = 'none';
+            const container = spinner.querySelector('.lottie-container') || spinner.querySelector('#lottieContainer');
+            if (container) container.innerHTML = '';
         }
         return;
     }
