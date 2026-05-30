@@ -2401,3 +2401,8 @@ body.dark-mode .fresh-data-toast { background: #1A1A2E; border-color: var(--prim
     .loader-status-text { font-size: 0.88rem; }
     .fresh-data-toast { font-size: 0.78rem; top: 60px; }
 }
+
+@keyframes loaderPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}

@@ -7,11 +7,12 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Reverse Calculator - ApEapcetEngine</title>
-    <link rel="stylesheet" href="style.css?v=3.0.0" />
+    <link rel="stylesheet" href="style.css?v=4.0.0" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     
 
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
     <header class="page-header">
@@ -111,7 +112,7 @@
             </form>
             
             <div id="result" style="display: none; max-width: 700px; margin: 2rem auto;"></div>
-            <div id="loading" class="loading-spinner" style="display: none;"><div class="spinner"></div></div>
+            <div id="loading" class="smart-loader-overlay" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(8,8,20,0.78); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); align-items:center; justify-content:center;"><div style="background:var(--surface,#fff); border-radius:16px; box-shadow:0 8px 40px rgba(67,97,238,0.25); padding:2rem 2.5rem; display:flex; flex-direction:column; align-items:center; gap:0.85rem; max-width:320px; width:calc(100% - 2.5rem); text-align:center;"><lottie-player src="searching.json" background="transparent" speed="1" loop autoplay style="width:150px;height:150px;"></lottie-player><p style="margin:0;font-weight:600;font-size:0.9rem;color:var(--text,#1a1a2e);">Calculating results...</p></div></div>
         </div>
     </main>
 

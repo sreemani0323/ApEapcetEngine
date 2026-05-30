@@ -791,9 +791,42 @@ document.addEventListener("DOMContentLoaded", function () {
                 loadingSpinner._smartTimeouts.forEach(t => clearTimeout(t));
                 loadingSpinner._smartTimeouts = [];
             }
+            if (loadingSpinner._errorTimeout) {
+                clearTimeout(loadingSpinner._errorTimeout);
+                loadingSpinner._errorTimeout = null;
+            }
+            // Reset lottie back to searching if it was switched to error
+            const lp = loadingSpinner.querySelector('lottie-player');
+            if (lp && lp.src && lp.src.includes('404error')) {
+                lp.load('searching.json');
+            }
             if (loaderStatusBar)  loaderStatusBar.style.width = '100%';
-            if (loaderStatusText) loaderStatusText.textContent = 'Done! Here are your matches ✔';
+            if (loaderStatusText) loaderStatusText.textContent = 'Done! Here are your matches \u2714';
             setTimeout(() => { loadingSpinner.style.display = 'none'; }, 300);
+        }
+
+        // After 90s with no response — switch to 404 error animation
+        if (show) {
+            loadingSpinner._errorTimeout = setTimeout(() => {
+                const lp = loadingSpinner.querySelector('lottie-player');
+                if (lp) lp.load('404error.json');
+                if (loaderStatusText) {
+                    loaderStatusText.style.opacity = '0';
+                    setTimeout(() => {
+                        if (loaderStatusText) {
+                            loaderStatusText.textContent = 'Could not connect. Please check your network and try again.';
+                            loaderStatusText.style.opacity = '1';
+                            loaderStatusText.style.color = '#ef4444';
+                        }
+                        if (loaderStatusBar) loaderStatusBar.style.width = '0%';
+                    }, 250);
+                }
+                // Clear remaining phase timeouts
+                if (loadingSpinner._smartTimeouts) {
+                    loadingSpinner._smartTimeouts.forEach(t => clearTimeout(t));
+                    loadingSpinner._smartTimeouts = [];
+                }
+            }, 90000);
         }
     }
 
