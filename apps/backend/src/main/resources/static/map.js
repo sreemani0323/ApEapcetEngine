@@ -250,8 +250,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 const place = (c.place || '').toLowerCase();
 
                 const nameNoSpaces = name.replace(/\s+/g, '');
-                const queryNoSpaces = query.replace(/\s+/g, '');
-                if (name.includes(query) || place.includes(query) || nameNoSpaces.includes(queryNoSpaces)) {
+                const queryNoSpaces = trimmedQuery.replace(/\s+/g, '');
+                if (name.includes(trimmedQuery) || place.includes(trimmedQuery) || nameNoSpaces.includes(queryNoSpaces)) {
                     uniqueColleges.set(c.instcode, c);
                 }
             }
@@ -383,6 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         fetch(`/api/colleges/explore?_=${new Date().getTime()}`)
         .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return res.json();
         })
         .then(data => {
@@ -605,7 +606,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const comparisonCheckbox = `
                 <div class="compare-checkbox-wrapper">
                     <label for="compare-${uniqueId}" title="Compare">
-                        <input type="checkbox" id="compare-${uniqueId}" class="compare-checkbox" data-college='${JSON.stringify(college).replace(/"/g, '"').replace(/'/g, "&#39;")}' data-unique-id="${uniqueId}"  onchange="handleMapCompareCheckbox(event)" />
+                        <input type="checkbox" id="compare-${uniqueId}" class="compare-checkbox" data-college='${JSON.stringify(college).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, "&#39;")}' data-unique-id="${uniqueId}"  onchange="handleMapCompareCheckbox(event)" />
                         <span>Compare</span>
                     </label>
                 </div>
@@ -653,7 +654,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let collegeData;
         try {
 
-            const dataString = checkbox.getAttribute('data-college').replace(/"/g, '"').replace(/&#39;/g, "'");
+            const dataString = checkbox.getAttribute('data-college').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
             collegeData = JSON.parse(dataString);
         } catch (e) {
             console.error("Error parsing college data, preventing selection:", e);

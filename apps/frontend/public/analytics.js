@@ -114,7 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadAnalytics() {
         loadingSpinner.style.display = "flex";
-        loadingSpinner.innerHTML = '<div class="spinner"></div><p style="margin-top: 10px; color: var(--color-text-secondary);">Synthesizing live analytics data...</p>';
+        const statusEl = loadingSpinner.querySelector('.loader-status-text, p');
+        if (statusEl) statusEl.textContent = 'Synthesizing live analytics data...';
         
         const cachedData = localStorage.getItem('analyticsData');
         const cacheTimestamp = localStorage.getItem('analyticsDataTimestamp');
@@ -136,9 +137,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         Promise.all([
-            fetch(`/api/stats/dashboard?_=${new Date().getTime()}`).then(res => res.json()),
-            fetch(`/api/analytics/compare-branches?_=${new Date().getTime()}`).then(res => res.json()),
-            fetch(`/api/colleges/explore?_=${new Date().getTime()}`).then(res => res.json())
+            fetch(`/api/stats/dashboard?_=${new Date().getTime()}`).then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); }),
+            fetch(`/api/analytics/compare-branches?_=${new Date().getTime()}`).then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); }),
+            fetch(`/api/colleges/explore?_=${new Date().getTime()}`).then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
         ])
         .then(([dashboard, compareBranchesData, exploreData]) => {
             // Synthesize the statistics structure client-side

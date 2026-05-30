@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const darkModeSwitch = document.getElementById('darkModeSwitch');
     const theme = localStorage.getItem('theme') || 'light';
     document.body.classList.toggle('dark-mode', theme === 'dark');
+    let onThemeChange = null;
     if (darkModeSwitch) {
         darkModeSwitch.checked = theme === 'dark';
         darkModeSwitch.addEventListener('change', () => {
@@ -16,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
             if (typeof onThemeChange === 'function') onThemeChange();
         });
     }
-    let onThemeChange = null;
 
 
 
@@ -437,7 +437,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     const branch = data.branches.find(b => b.branch_code === branchCode);
                     return { category: cat, cutoff: branch ? branch.cutoff_2024 : null };
                 })
-                .catch(() => ({ category: cat, cutoff: null }))
+                .catch(err => {
+                    console.warn(`Category ${cat} fetch failed:`, err.message);
+                    return { category: cat, cutoff: null };
+                })
         );
 
         const results = await Promise.allSettled(promises);
@@ -523,6 +526,12 @@ document.addEventListener('DOMContentLoaded', function () {
     renderCollege = function (data) {
         originalRenderCollege(data);
         populateCategoryBranchSelect(data);
+        // Set onThemeChange to re-render the category chart on theme toggle
+        onThemeChange = () => {
+            if (categoryBranchSelect && categoryBranchSelect.value) {
+                loadCategoryChart(categoryBranchSelect.value);
+            }
+        };
     };
 
     // Branch change handler for category chart

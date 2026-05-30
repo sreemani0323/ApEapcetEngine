@@ -114,18 +114,14 @@ document.addEventListener("DOMContentLoaded", async function () {
     branchSelection.parentElement.style.display = "block";
 
     const cachedBranches = localStorage.getItem('branchComparisonBranchesData');
-    const cachedColleges = localStorage.getItem('branchComparisonCollegesData');
     const branchesCacheTimestamp = localStorage.getItem('branchComparisonBranchesDataTimestamp');
-    const collegesCacheTimestamp = localStorage.getItem('branchComparisonCollegesDataTimestamp');
     
-    if (cachedBranches && cachedColleges && branchesCacheTimestamp && collegesCacheTimestamp) {
+    if (cachedBranches && branchesCacheTimestamp) {
         const branchesAgeInMinutes = (Date.now() - parseInt(branchesCacheTimestamp)) / (1000 * 60);
-        const collegesAgeInMinutes = (Date.now() - parseInt(collegesCacheTimestamp)) / (1000 * 60);
 
-        if (branchesAgeInMinutes < 30 && collegesAgeInMinutes < 60) {
+        if (branchesAgeInMinutes < 30) {
             try {
                 branches = JSON.parse(cachedBranches);
-                const allColleges = JSON.parse(cachedColleges);
 
                 renderBranchCheckboxes();
                 
@@ -235,7 +231,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
         
         compareBtn.disabled = true;
-        compareBtn.textContent = "Select at least 2 branches";
     }
     
     compareBtn.addEventListener("click", compareBranches);
@@ -542,7 +537,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function reloadBranchData() {
         localStorage.removeItem('branchComparisonBranchesData');
-        localStorage.removeItem('branchComparisonCollegesData');
         location.reload();
     }
 

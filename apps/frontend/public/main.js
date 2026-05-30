@@ -332,13 +332,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const translations = {
         btnPredict: "Predict Now", btnClear: "Clear All Filters", disclaimerStrong: "Disclaimer:",
         disclaimerText: "Prediction is based on previous years' cutoff data and trends. Actual cutoffs may vary due to factors such as applicants and seat availability.",
-        sortLabel: "Sort By:", selectAll: "Select All", sortProbabilityDesc: "Probability (High to Low)", sortProbabilityAsc: "Probability (Low to High)",
-        sortCutoffAsc: "Cutoff Rank (Low to High)", sortCutoffDesc: "Cutoff Rank (High to Low)",
-
+        selectAll: "Select All",
 
         btnSavePdf: "Save as PDF", btnSaveCsv: "Save as CSV",
         noDataText: "No colleges found matching your criteria.", noInputText: "Please enter a valid positive rank or select at least one filter.",
-        fetchError: "Could not fetch predictions. Please try again later.", itemsSelected: "items selected",
+        fetchError: "Could not fetch predictions. Please try again later.",
         downloadNoData: "Please predict colleges first to download results.",
         labelBranch: "Branch Preference", selectBranch: "Select Branch",
         labelQuota: "Reservation Quota", selectQuota: "Select Quota",
@@ -407,7 +405,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let rawData = [];
     let sortedData = [];
     let selectedColleges = []; 
-    let allCollegesCache = []; // Cache for all colleges data
+
 
     // BRANCH_CODE_TO_NAME defined above
 
@@ -505,25 +503,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const navFlag = sessionStorage.getItem('mainPageNavigation');
-        if (navFlag) {
-            navigationFlag = true;
-            sessionStorage.removeItem('mainPageNavigation');
-        }
-    });
 
-    document.addEventListener('visibilitychange', function() {
-        // Visibility change handling would go here if needed
-    });
-
-    window.addEventListener('blur', function() {
-        // Blur handling would go here if needed
-    });
-
-    window.addEventListener('focus', function() {
-        // Focus handling would go here if needed
-    });
 
     /**
      * Initializes the page by setting up theme, multiselects, and event listeners.
@@ -631,11 +611,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /**
      * Clears cached data on page refresh.
      */
-    function clearCacheOnRefresh() {
-        localStorage.removeItem('collegeResults');
-        localStorage.removeItem('sortedResults');
-        localStorage.removeItem('collegeFormState');
-    }
+
     
     /**
      * Checks URL parameters for direct college access.
@@ -675,7 +651,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         };
                     });
                     rawData = mappedColleges;
-                    renderBentoSummary(rawData, parseInt(rankInput.value));
+                    renderBentoSummary(rawData, parseInt(rankInput.value) || 0);
                     filterAndRenderColleges();
                     showSpinner(false);
 
@@ -692,14 +668,7 @@ document.addEventListener("DOMContentLoaded", function () {
     /**
      * Loads all colleges data into cache for faster access in other views.
      */
-    function loadAllCollegesCache() {
-        fetch(`/api/colleges/explore?_=${new Date().getTime()}`)
-        .then(res => res.json())
-        .then(data => {
-            allCollegesCache = data;
-        })
-        .catch(err => console.error("Failed to load colleges:", err));
-    }
+
 
     /**
      * Sets the application theme (light or dark mode).
@@ -718,8 +687,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const loaderStatusText = document.getElementById('loaderStatusText');
     const loaderStatusBar  = document.getElementById('loaderStatusBar');
     const freshDataToast   = document.getElementById('freshDataToast');
-    let   _loaderTimer     = null;  // interval handle
-    let   _loaderPhase     = 0;
+
 
     /**
      * Rank-aware, branch-aware status messages.
@@ -743,7 +711,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!loadingSpinner) return;
         if (show) {
             loadingSpinner.style.display = 'flex';
-            _loaderPhase = 0;
+
             const msgs = _buildStatusMessages(rank, branchHint);
 
             // Reset bar
@@ -753,7 +721,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Advance through phases: cumulative delays in ms
             const cumulativeDelays = [4000, 10000, 20000, 30000, 42000];
-            clearInterval(_loaderTimer);
+
             const _timeouts = [];
             cumulativeDelays.forEach((delay, i) => {
                 const phaseIdx = i + 1;
@@ -786,7 +754,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         } else {
             // Hide: clear all pending phase timeouts, snap bar to 100%, fade out loader
-            clearInterval(_loaderTimer);
+
             if (loadingSpinner._smartTimeouts) {
                 loadingSpinner._smartTimeouts.forEach(t => clearTimeout(t));
                 loadingSpinner._smartTimeouts = [];
@@ -943,7 +911,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!dataSource) return;
 
         const selectedTexts = selectedValues.map(val => dataSource.find(opt => opt.value === val)?.text || val);
-        selectedItemsSpan.textContent = selectedTexts.length === 1 ? selectedTexts[0] : `${selectedTexts.length} ${translations.itemsSelected}`;
+        selectedItemsSpan.textContent = selectedTexts.length === 1 ? selectedTexts[0] : `${selectedTexts.length} items selected`;
     }
 
     /**
@@ -1254,11 +1222,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             } else {
                 checkbox.checked = false;
-                showValidationModal(
-                    ValidationMessages.comparisonLimit.title,
-                    ValidationMessages.comparisonLimit.message,
-                    ValidationMessages.comparisonLimit.type
-                );
+                if (ValidationMessages && ValidationMessages.comparisonLimit) {
+                    showValidationModal(
+                        ValidationMessages.comparisonLimit.title,
+                        ValidationMessages.comparisonLimit.message,
+                        ValidationMessages.comparisonLimit.type
+                    );
+                } else {
+                    alert('Maximum 3 colleges for comparison.');
+                }
                 return;
             }
         } else {
@@ -1454,15 +1426,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         sortBySelect.addEventListener("change", filterAndRenderColleges);
 
-        if (compareNowBtn) {
-            compareNowBtn.addEventListener('click', () => openComparisonModal(true));
-        }
 
-        document.addEventListener('click', function(e) {
-            if (e.target.id === 'compare-now-btn' || (e.target.closest && e.target.closest('#compare-now-btn'))) {
-                openComparisonModal(true);
-            }
-        });
         
         if (clearCompareBtn) {
             clearCompareBtn.addEventListener('click', () => {
@@ -1582,11 +1546,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (rank > 350000) {
-                if (typeof showValidationModal === 'function') {
+                if (typeof showValidationModal === 'function' && ValidationMessages && ValidationMessages.invalidRank) {
                     showValidationModal(
-                        'Invalid Rank',
-                        'Please enter a rank between 1 and 350000.',
-                        'error'
+                        ValidationMessages.invalidRank.title,
+                        ValidationMessages.invalidRank.message,
+                        ValidationMessages.invalidRank.type
                     );
                 } else {
                     alert('Please enter a rank between 1 and 350000.');

@@ -1641,7 +1641,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
     .predict-form { padding: 1.25rem; }
 
     /* Cards — stacked layout for badges */
-    .card-content-wrapper { padding: 1.25rem; padding-top: 3rem; }
+    .card-content-wrapper { padding: 1.25rem; }
     .card-title { font-size: 1.1rem; }
     .card-branch-info { font-size: 0.85rem; margin-bottom: 0.75rem; }
     .card-details-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
@@ -1674,8 +1674,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
     }
 
     /* Bento */
-    .bento-grid { grid-template-columns: 1fr 1fr; }
-    .bento-tile-lg
+    .bento-tile-lg,
     .bento-tile-number { font-size: 1.8rem; }
     .bento-tile { padding: 1rem; }
 
@@ -1789,7 +1788,8 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
 /* ── Small phones: ≤ 480px ── */
 @media (max-width: 480px) {
     .bento-grid { grid-template-columns: 1fr; }
-    .bento-tile-lg
+    .bento-tile-lg,
+    .bento-tile-number { font-size: 1.8rem; }
 
     .hero-stats { flex-direction: column; gap: 0.75rem; }
     .hero-content h2 { font-size: 1.35rem; }
@@ -2021,7 +2021,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
     transform: translate(-1px, -1px);
     box-shadow: 3px 3px 0px var(--border-color);
 }
-.filter-tab:active, .filter-tab.active {
+.filter-tab:active {
     transform: translate(2px, 2px);
     box-shadow: 0px 0px 0px var(--border-color);
 }
@@ -2180,6 +2180,9 @@ body.dark-mode .btn-primary {
     box-shadow: 4px 4px 0px rgba(58,58,92,0.5);
 }
 body.dark-mode .btn-primary:hover { color: #FFFFFF !important; box-shadow: 6px 6px 0px rgba(58,58,92,0.5); }
+body.dark-mode .hero-rank-input .btn-primary:hover {
+    box-shadow: none;
+}
 body.dark-mode .map-card-button { color: #FFFFFF !important; }
 body.dark-mode .btn-secondary {
     border-color: var(--border-color);
@@ -2194,7 +2197,7 @@ body.dark-mode .hero-content p { color: rgba(255,255,255,0.7); }
 
 /* -- Bento tiles -- */
 body.dark-mode .bento-tile-label { color: #9CA3AF; }
-body.dark-mode .bento-tile-icon { color: #6B7280; }
+
 body.dark-mode .bento-tile { border-color: var(--border-color); box-shadow: 4px 4px 0px rgba(58,58,92,0.4); }
 
 /* -- Card details -- */
@@ -2255,18 +2258,9 @@ body.dark-mode .filter-tab:hover { background: #2A2A4A; color: #F3F4F6; }
 body.dark-mode .filter-tab.active { background: var(--primary); color: white; border-color: var(--primary); }
 
 /* -- Map page -- */
-body.dark-mode .map-card { background: #1A1A2E; border-color: var(--border-color); }
 body.dark-mode .map-card-title { color: #F3F4F6; }
 body.dark-mode .map-card-info { color: #D1D5DB; }
 body.dark-mode .map-card-info span { color: #D1D5DB; }
-body.dark-mode .map-sidebar { background: #0F0F1A; }
-body.dark-mode .map-filter-section label { color: #9CA3AF; }
-body.dark-mode .map-filter-section select,
-body.dark-mode .map-filter-section input {
-    background: #222240;
-    color: #E5E7EB;
-    border-color: var(--border-color);
-}
 
 /* -- Calculator page -- */
 

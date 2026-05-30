@@ -56,29 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    const cachedData = localStorage.getItem('calculatorCollegesData');
-    const cacheTimestamp = localStorage.getItem('calculatorCollegesDataTimestamp');
-    
-    if (cachedData && cacheTimestamp) {
-        const ageInMinutes = (Date.now() - parseInt(cacheTimestamp)) / (1000 * 60);
-        if (ageInMinutes < 60) { // Cache is valid for 1 hour
-            try {
-                const data = JSON.parse(cachedData);
-                allColleges = data;
-                loadingDiv.style.display = "none";
-            } catch (e) {
-                console.error("Failed to parse cached calculator data:", e);
-
-                loadColleges();
-            }
-        } else {
-
-            loadColleges();
-        }
-    } else {
-
-        loadColleges();
-    }
+    loadColleges();
 
     function loadColleges() {
         loadingDiv.innerHTML = '<div class="spinner"></div>';
@@ -257,7 +235,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function loadBranches(instcode) {
         fetch(`/api/colleges/${instcode}/branches?_=${new Date().getTime()}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error(`Failed to load branches (${res.status})`);
+                return res.json();
+            })
             .then(branches => {
                 branchSelect.innerHTML = '<option value="">Select Branch</option>' +
                     branches.map(b => {
@@ -266,7 +247,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         return `<option value="${code}">${name} (${code})</option>`;
                     }).join('');
             })
-            .catch(err => console.error("Failed to load branches:", err));
+            .catch(err => {
+                console.error('Failed to load branches:', err);
+                branchSelect.innerHTML = '<option value="">Error loading branches</option>';
+            });
     }
 
     form.addEventListener("submit", function(e) {
