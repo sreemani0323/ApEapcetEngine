@@ -632,7 +632,7 @@ input:checked + .toggle-slider:before {
 /* Inputs & Selects */
 .multiselect-input, .sort-control select {
     width: 100%;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 2.75rem 0.75rem 1rem;
     border-radius: var(--radius-sm);
     font-size: 0.95rem;
     font-family: var(--font-body);
@@ -643,6 +643,28 @@ input:checked + .toggle-slider:before {
     box-shadow: 3px 3px 0px rgba(26,26,46,0.15);
 }
 
+.multiselect-input {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+.multiselect-input::after {
+    content: "\f107";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.8rem;
+    color: var(--text-muted, #6b7280);
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    transition: transform 0.2s ease;
+    pointer-events: none;
+}
+.multiselect-dropdown.open .multiselect-input::after {
+    transform: rotate(180deg);
+}
 .multiselect-input:focus, .sort-control select:focus {
     border-color: var(--primary);
     box-shadow: 3px 3px 0px var(--primary);
@@ -1597,7 +1619,7 @@ body.dark-mode .scroll-buttons button { background: #222240; color: #E5E7EB; bor
 
     /* Touch targets — 44px minimum */
     .multiselect-input, .sort-control select {
-        padding: 0.75rem 1rem;
+        padding: 0.75rem 2.75rem 0.75rem 1rem;
         font-size: 0.95rem;
         min-height: 48px;
     }
