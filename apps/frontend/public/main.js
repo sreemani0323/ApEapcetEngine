@@ -712,13 +712,89 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem("theme", theme);
     }
 
+    /* ═══════════════════════════════════════════
+     * SMART LOADER — Progressive + Skeleton + Toast
+     * ═══════════════════════════════════════════ */
+    const loaderStatusText = document.getElementById('loaderStatusText');
+    const loaderStatusBar  = document.getElementById('loaderStatusBar');
+    const freshDataToast   = document.getElementById('freshDataToast');
+    let   _loaderTimer     = null;  // interval handle
+    let   _loaderPhase     = 0;
+
     /**
-     * Shows or hides the loading spinner.
-     * 
-     * @param {boolean} show - Whether to show or hide the spinner
+     * Rank-aware, branch-aware status messages.
+     * No infrastructure language — every line describes work for the user.
      */
-    function showSpinner(show) {
-        loadingSpinner.style.display = show ? "flex" : "none";
+    function _buildStatusMessages(rank, branchHint) {
+        const rankStr   = rank   ? `rank ${rank.toLocaleString('en-IN')}` : 'your profile';
+        const branchStr = branchHint ? `${branchHint} colleges` : 'colleges';
+        return [
+            { pct: 5,  text: `Scanning ${branchStr} matching ${rankStr}...` },
+            { pct: 28, text: `Cross-checking branch cutoffs across AP districts...` },
+            { pct: 52, text: `Pulling latest allotment data — almost sorted...` },
+            { pct: 74, text: `Running predictions through the model...` },
+            { pct: 90, text: `Final check on college rankings — nearly done...` },
+            { pct: 96, text: `Wrapping up results just for you...` }
+        ];
+    }
+
+    /** Show the smart loader. rank + branchHint personalise status messages. */
+    function showSpinner(show, rank, branchHint) {
+        if (!loadingSpinner) return;
+        if (show) {
+            loadingSpinner.style.display = 'flex';
+            _loaderPhase = 0;
+            const msgs = _buildStatusMessages(rank, branchHint);
+
+            // Reset bar
+            if (loaderStatusBar)  loaderStatusBar.style.width = '0%';
+            if (loaderStatusText) loaderStatusText.textContent = msgs[0].text;
+            if (loaderStatusBar)  setTimeout(() => { loaderStatusBar.style.width = msgs[0].pct + '%'; }, 80);
+
+            // Advance through phases: cumulative delays in ms
+            const cumulativeDelays = [4000, 10000, 20000, 30000, 42000];
+            clearInterval(_loaderTimer);
+            const _timeouts = [];
+            cumulativeDelays.forEach((delay, i) => {
+                const phaseIdx = i + 1;
+                if (phaseIdx >= msgs.length) return;
+                const t = setTimeout(() => {
+                    const m = msgs[phaseIdx];
+                    if (loaderStatusText) {
+                        loaderStatusText.style.opacity = '0';
+                        setTimeout(() => {
+                            if (loaderStatusText) loaderStatusText.textContent = m.text;
+                            loaderStatusText.style.opacity = '1';
+                        }, 200);
+                    }
+                    if (loaderStatusBar) loaderStatusBar.style.width = m.pct + '%';
+                }, delay);
+                _timeouts.push(t);
+            });
+            // Store timeouts so we can clear them on hide
+            loadingSpinner._smartTimeouts = _timeouts;
+
+            // Staggered skeleton card entrance
+            const skCards = document.querySelectorAll('.skeleton-card');
+            skCards.forEach((card, i) => {
+                card.style.animation = 'none';
+                card.style.opacity   = '0';
+                setTimeout(() => {
+                    card.style.animation = '';
+                    card.style.opacity   = '';
+                }, 50 + i * 150);
+            });
+        } else {
+            // Hide: clear all pending phase timeouts, snap bar to 100%, fade out loader
+            clearInterval(_loaderTimer);
+            if (loadingSpinner._smartTimeouts) {
+                loadingSpinner._smartTimeouts.forEach(t => clearTimeout(t));
+                loadingSpinner._smartTimeouts = [];
+            }
+            if (loaderStatusBar)  loaderStatusBar.style.width = '100%';
+            if (loaderStatusText) loaderStatusText.textContent = 'Done! Here are your matches ✔';
+            setTimeout(() => { loadingSpinner.style.display = 'none'; }, 300);
+        }
     }
 
     /**
@@ -1564,7 +1640,10 @@ document.addEventListener("DOMContentLoaded", function () {
             requestData.district = selectedDistricts[0];
         }
         resetResults();
-        showSpinner(true);
+        // Extract rank and branch hint for personalised status messages
+        const _rank       = hasRank ? rank : null;
+        const _branchHint = selectedBranches.length >= 1 ? selectedBranches[0] : null;
+        showSpinner(true, _rank, _branchHint);
         const url = `/api/search-colleges`;
         fetch(url, {
             method: "POST",
@@ -1604,9 +1683,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 openComparisonModal(true);
             });
         }
-
         initializeMainComparisonTray();
     }, 1000);
+
+    /* ═══ Pre-ping: silent health check on page load ═══
+     * If backend responds slowly (>3s), it's cold — show the fresh-data toast.
+     * No infrastructure language — framed as "pulling fresh data".
+     */
+    (function prePingBackend() {
+        const PING_TIMEOUT_MS  = 3000;
+        const TOAST_AUTO_HIDE  = 28000; // hide after ~28s (by then results should load)
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), PING_TIMEOUT_MS);
+
+        fetch('/actuator/health', { signal: controller.signal, cache: 'no-store' })
+            .then(r => {
+                clearTimeout(timer);
+                if (!r.ok) throw new Error('not ok');
+                // Backend warm — no toast needed
+            })
+            .catch(() => {
+                // Timed out or failed — backend is cold, show the toast
+                if (freshDataToast) {
+                    freshDataToast.style.display = 'flex';
+                    // Auto-dismiss after results likely arrived
+                    setTimeout(() => {
+                        if (freshDataToast) freshDataToast.style.display = 'none';
+                    }, TOAST_AUTO_HIDE);
+                }
+            });
+    })();
 
     /**
      * Initializes the main comparison tray on page load.

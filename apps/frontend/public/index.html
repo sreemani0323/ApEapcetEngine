@@ -18,6 +18,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     
 
 </head>
@@ -273,8 +274,70 @@
 
         </div> 
 
-        <div id="loadingSpinner" class="loading-spinner" style="display:none;">
-            <div class="spinner"></div>
+        <!-- ═══ Smart Loading Experience ═══ -->
+        <div id="loadingSpinner" class="smart-loader" style="display:none;">
+
+            <!-- Lottie animation -->
+            <lottie-player
+                id="lottiePlayer"
+                src="searching.json"
+                background="transparent"
+                speed="1"
+                loop autoplay
+                style="width:180px;height:180px;margin:0 auto;">
+            </lottie-player>
+
+            <!-- Progressive status message -->
+            <div class="loader-status-wrap">
+                <p id="loaderStatusText" class="loader-status-text">Scanning colleges matching your rank...</p>
+                <div class="loader-status-bar"><div id="loaderStatusBar" class="loader-status-fill"></div></div>
+            </div>
+
+            <!-- Skeleton cards -->
+            <div class="skeleton-cards-grid" id="skeletonGrid">
+                <div class="skeleton-card" style="--delay:0ms">
+                    <div class="skeleton-card-label">Engineering</div>
+                    <div class="sk-line sk-title"></div>
+                    <div class="sk-line sk-sub"></div>
+                    <div class="sk-line sk-short"></div>
+                    <div class="sk-progress"><div class="sk-progress-fill"></div></div>
+                </div>
+                <div class="skeleton-card" style="--delay:80ms">
+                    <div class="skeleton-card-label">Computer Science</div>
+                    <div class="sk-line sk-title"></div>
+                    <div class="sk-line sk-sub"></div>
+                    <div class="sk-line sk-short"></div>
+                    <div class="sk-progress"><div class="sk-progress-fill"></div></div>
+                </div>
+                <div class="skeleton-card" style="--delay:160ms">
+                    <div class="skeleton-card-label">Electronics</div>
+                    <div class="sk-line sk-title"></div>
+                    <div class="sk-line sk-sub"></div>
+                    <div class="sk-line sk-short"></div>
+                    <div class="sk-progress"><div class="sk-progress-fill"></div></div>
+                </div>
+                <div class="skeleton-card" style="--delay:240ms">
+                    <div class="skeleton-card-label">Mechanical</div>
+                    <div class="sk-line sk-title"></div>
+                    <div class="sk-line sk-sub"></div>
+                    <div class="sk-line sk-short"></div>
+                    <div class="sk-progress"><div class="sk-progress-fill"></div></div>
+                </div>
+                <div class="skeleton-card" style="--delay:320ms">
+                    <div class="skeleton-card-label">Civil / Other</div>
+                    <div class="sk-line sk-title"></div>
+                    <div class="sk-line sk-sub"></div>
+                    <div class="sk-line sk-short"></div>
+                    <div class="sk-progress"><div class="sk-progress-fill"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fresh-data toast (pre-ping cold start notice) -->
+        <div id="freshDataToast" class="fresh-data-toast" style="display:none;">
+            <span class="toast-icon">✨</span>
+            <span id="freshDataToastMsg">First visit today — pulling the latest allotment data for you. First search takes ~30s.</span>
+            <button class="toast-close" onclick="document.getElementById('freshDataToast').style.display='none'">&times;</button>
         </div>
         
         <div class="scroll-buttons" id="scrollButtons">
