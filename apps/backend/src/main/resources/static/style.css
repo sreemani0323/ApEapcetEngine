@@ -719,6 +719,11 @@ input:checked + .toggle-slider:before {
     position: relative;
     padding: 0;
     min-height: 180px;
+    animation: cardFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes cardFadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .college-card:hover {
@@ -1085,11 +1090,11 @@ input:checked + .toggle-slider:before {
 }
 
 /* Stagger delays for cards */
-.reveal-delay-1 { transition-delay: 0.05s; }
-.reveal-delay-2 { transition-delay: 0.1s; }
-.reveal-delay-3 { transition-delay: 0.15s; }
-.reveal-delay-4 { transition-delay: 0.2s; }
-.reveal-delay-5 { transition-delay: 0.25s; }
+.reveal-delay-1 { transition-delay: 0.05s; animation-delay: 0.05s; }
+.reveal-delay-2 { transition-delay: 0.1s; animation-delay: 0.1s; }
+.reveal-delay-3 { transition-delay: 0.15s; animation-delay: 0.15s; }
+.reveal-delay-4 { transition-delay: 0.2s; animation-delay: 0.2s; }
+.reveal-delay-5 { transition-delay: 0.25s; animation-delay: 0.25s; }
 
 
 /* ═══════════════════════════════════════════════════

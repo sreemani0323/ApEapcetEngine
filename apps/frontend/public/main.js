@@ -989,7 +989,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const card = document.createElement("div");
 
             const uniqueId = `${college.instcode}-${college.branch}-${college.category}-${college.cutoff}`; 
-            card.className = `college-card reveal reveal-delay-${(index % 5) + 1}`;
+            card.className = `college-card reveal-delay-${(index % 5) + 1}`;
             card.dataset.id = uniqueId; 
             
             const isSelected = selectedColleges.some(c => c.uniqueId === uniqueId);
